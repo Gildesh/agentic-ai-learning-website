@@ -1,0 +1,63 @@
+---
+part: 6
+number: 8
+slug: full-stack-map
+title: "The full-stack map of a real app"
+summary: "You can draw the browser, the server, and the stored rows, and you can place a payment company beside the server."
+minutes: 7
+terms:
+  - full-stack
+  - frontend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+"Full-stack" gets used as a mood: one person does everything. As a map it is specific. A request starts in the browser, the server decides, stored rows change, and the browser draws the response. If you cannot point at those boxes, you cannot point at the bug.
+
+</Hook>
+
+## The idea
+
+A <Term id="full-stack">full-stack</Term> app has a <Term id="frontend">frontend</Term>, a backend, and a place the backend stores rows. The frontend is HTML, CSS, and JavaScript in the browser. The backend is the HTTP server. The store is a database, or a stand-in you will replace with one. Part 7 is the database. This page is the map so those pages have somewhere to land.
+
+A fourth box sits beside the server when money moves: the payment company. The browser never talks to it with a secret. The server does. The browser may show a form the payment company hosts. The card number is not your row. Your row is "this order is unpaid" until the server hears a confirmed result. The Part 4 case study failed because the map had no payment box and the frontend drew one.
+
+Draw the map before an agent adds files. Each box gets a sentence:
+
+```
+Frontend: the list of books and the tax button.
+Backend: POST /tax reads the rate and returns cents.
+Store: one row per book, one row for the rate.
+```
+
+A file that does not serve one of those sentences is extra. An agent will happily add a second server, a second framework, and a cache. The map is how you say no.
+
+When something breaks, ask which box. A wrong color is frontend. A 500 is backend. A 200 with yesterday's price is the store, or a backend that read the wrong row. A charge with no order is the payment box talking without your server.
+
+<FullStackMapFigure />
+
+## Real example
+
+The bookstore, four lines, no extra boxes:
+
+```
+Browser shows the title from GET /books/42.
+Server answers 200 with JSON, or 404.
+The row lives in the store, not in the HTML.
+Tax is computed on the server from the stored rate.
+```
+
+If a fifth line appears, such as "the page also emails the warehouse," that is a new box. Add it on purpose. Do not let it appear as a surprise file.
+
+<TryIt minutes={5}>
+
+Draw the four lines for one feature you care about. If you cannot name the request the browser sends, the feature is still a picture. Stop and name the method and path before you ask an agent to build it.
+
+</TryIt>
+
+<Mistake>
+
+Adding a database, a cache, and a second API because a diagram online had them. Boxes you cannot explain are boxes you cannot debug. Start with browser, server, and one store.
+
+</Mistake>

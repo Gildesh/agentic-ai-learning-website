@@ -1,0 +1,56 @@
+---
+part: 7
+number: 10
+slug: postgres-and-supabase
+title: "Postgres and Supabase"
+summary: "You can say what Postgres is, and you can repeat what Supabase's database docs say a project actually gives you."
+minutes: 7
+terms:
+  - SQL
+  - API
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The tutorial says "spin up Supabase" and the agent creates a second database, a fake in-memory store, and a comment that production will switch later. Later is how the bookstore ships with the fake. You need one sentence that is true about the product, and a rule that the app talks to that database.
+
+</Hook>
+
+## The idea
+
+PostgreSQL, which people call Postgres, is a relational database. You talk to it with <Term id="sql">SQL</Term>. Tables, primary keys, and foreign keys from the previous pages are Postgres's model. It is the database this course means when it says "the store," unless a page is contrasting another kind.
+
+Supabase hosts Postgres and other services around it. The database overview at `https://supabase.com/docs/guides/database/overview` says, in these words, that you use Supabase to connect, manage, and secure your Postgres database, and that every Supabase project gets a full Postgres database, not a Postgres abstraction. The same page says that database is the foundation Auth, Storage, Realtime, and Edge Functions are built on. It also says Row Level Security is how Supabase makes the database safe to query directly from the client, and to read that before exposing any table to your app.
+
+This course does not copy a price, a compute size, or a connection string. Those change, and a connection string is a secret. What you need from the overview is the product fact: your tables are Postgres tables. SQL you practiced still works. A migration is still how the schema changes. The dashboard's SQL editor, which that overview points at, is a place to run a statement you can also run from your machine.
+
+The app should use one connection, from the server, with the URL kept in the environment. A client library that queries tables from the browser is a choice that requires the [secrets page](/part/8/secrets-and-env) and the owner check in Part 8. Do not turn it on because a snippet did.
+
+An <Term id="api">API</Term> endpoint reads Postgres. It does not keep a second copy of the books in a file "for now."
+
+<SupabasePostgresFigure />
+
+## Real example
+
+A spec line that matches the docs without inventing a plan:
+
+```
+Database: the Supabase project's Postgres
+Tables: books, authors, changed only by migrations
+Server reads them. The browser does not open a table.
+```
+
+If you are not using Supabase, the first line becomes "Postgres on the host I named." The other two lines stay. The overview's warning about exposing a table is the reason the third line is blunt.
+
+<TryIt minutes={5}>
+
+Open the Supabase database overview, or your host's Postgres page, and copy the sentence that says what you are connecting to. Put it in the spec. If the sentence is not on the page you opened, you are on a marketing page. Find the docs.
+
+</TryIt>
+
+<Mistake>
+
+Treating Supabase as a different language from Postgres. The overview's point is that the project is Postgres. SQL, keys, and migrations still apply. A new noun in the tutorial is not a new database model.
+
+</Mistake>

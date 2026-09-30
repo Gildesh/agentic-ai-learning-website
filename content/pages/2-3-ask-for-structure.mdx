@@ -1,0 +1,68 @@
+---
+part: 2
+number: 3
+slug: ask-for-structure
+title: "Ask for structure: lists, tables, JSON"
+summary: "You can ask for a list, a markdown table, or JSON, and you can tell a reply a program could parse from one it cannot."
+minutes: 8
+terms:
+  - JSON
+  - prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask a chat for three books to feature this week. You get a friendly essay. You wanted rows you could paste into a spreadsheet. The essay is a fine poster. It is a bad spreadsheet.
+
+</Hook>
+
+## The idea
+
+Name the shape in the <Term id="prompt">prompt</Term>. Three shapes cover most of this course.
+
+A list is for a sequence of peer items. Ask for one item per line, and say whether numbers are allowed. "Three titles, one per line, no numbering" is a list contract.
+
+A markdown table is for items that share columns. Name the columns. "Columns: title, note. Header row required. No extra columns." A table that adds a Price column invented a field.
+
+<Term id="json">JSON</Term> (JavaScript Object Notation) is text a program can parse: objects in braces, lists in brackets, keys in double quotes. Use it when the next step is code, not a human reading a paragraph. Give the keys and a tiny example object. Say "JSON only, no markdown fence, no commentary." Models often wrap JSON in a ``` fence or a sentence. Both break a strict parser.
+
+JSON does not make the values true. It makes them addressable. `{"title":"Dune","price":12}` is valid JSON and, if you never gave a price, still an invention. Check values against the context. Check shape with a parser.
+
+If you are only going to read the answer, a list or a table is enough. JSON is for a handoff to code.
+
+<JsonShapeFigure />
+
+## Real example
+
+```
+Return a JSON array of two objects.
+Each object has keys "title" and "note" only.
+title and note are strings.
+Do not add price.
+JSON only.
+
+Books:
+- Dune, name on flyleaf
+- Circe, clean pages
+```
+
+A valid result looks like this:
+
+```
+[{"title":"Dune","note":"name on flyleaf"},{"title":"Circe","note":"clean pages"}]
+```
+
+Paste that line into a JSON checker, or into Python as `json.loads`. If it throws, the reply was not JSON yet. Common failures: a leading sentence, single quotes, or a trailing comma. Ask for a correction by quoting the parser error, which is the next page's habit of sending the real error.
+
+<TryIt minutes={5}>
+
+Send the prompt. Copy the reply into a note and delete anything before the first `[` and after the last `]`. If what remains loads as JSON and has no price key, the shape held. If a price key appears, the constraint failed even though the braces were correct.
+
+</TryIt>
+
+<Mistake>
+
+Asking for "JSON or a table, whichever is clearer." The model will choose. You wanted one shape because a later step depends on it. Pick the shape in the prompt.
+
+</Mistake>

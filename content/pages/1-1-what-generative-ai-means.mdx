@@ -1,0 +1,52 @@
+---
+part: 1
+number: 1
+slug: what-generative-ai-means
+title: 'What "generative AI" means'
+summary: "You can tell a system that returns a stored result from one that produces a new text, image, or file."
+minutes: 7
+terms:
+  - generative AI
+  - LLM
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You type "names for a bookstore that sells used paperbacks" into a chat box and get five sentences you have never seen. You type the same words into a search box and get links to pages that already exist. Both look like answers. Only one of them made something new.
+
+</Hook>
+
+## The idea
+
+<Term id="generative-ai">Generative AI</Term> is a system that produces a new artifact from a prompt: text, an image, audio, or code. The common engine for text is a <Term id="llm">large language model (LLM)</Term>. An LLM is trained to continue text. Given what you wrote, it predicts a likely next chunk, appends it, and repeats until the reply is done. The reply is new text. It was not copied out of a row labeled "bookstore names."
+
+A search engine does the other job. You send a query. It looks through an index of pages that were already published, and it returns links, sometimes with a short extract from those pages. The extract was stored. The model did not write it for you just now.
+
+The practical test is the artifact. If the system hands you something that did not exist as that exact output before you asked, it generated. If it hands you a pointer to something that did exist, it retrieved. Many products do both in one screen: a chat reply on top, and links underneath. Read them as two different results. The links are evidence you can open. The generated paragraph is a draft you still have to check.
+
+"AI" on a product page is not a type. Autocomplete that finishes a word you already started, a spam filter that labels a message, and a model that writes a whole function are different systems. This course uses generative AI for the systems that produce a new artifact, and LLM for the text models you will talk to in a chat or through an API.
+
+<GenerateVsRetrieveFigure />
+
+## Real example
+
+Open any search engine and any free chat, and send both the same sentence:
+
+```
+Three one-sentence pitches for a shop that sells used paperbacks.
+```
+
+The search results are URLs. The chat result is three sentences that were not sitting in a database under that query. Save both. On the next page you will look at how the chat result was built, one token at a time.
+
+<TryIt minutes={5}>
+
+Paste that prompt into a free chat. Then search the web for the first pitch, in quotes. If the exact sentence is nowhere, you just watched generation. If a page already contains it, the model may have reproduced training text. Either way, write one line in a note: "search returned links; the chat returned new sentences."
+
+</TryIt>
+
+<Mistake>
+
+Calling every feature with "AI" in the name generative. A filter that sorts your inbox did not write a new email. A search box that quotes a page did not write that page. Ask what new artifact you hold after the click. If the answer is "a link" or "a label," you are not looking at generation.
+
+</Mistake>

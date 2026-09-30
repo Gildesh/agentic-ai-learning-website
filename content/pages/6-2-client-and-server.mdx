@@ -1,0 +1,53 @@
+---
+part: 6
+number: 2
+slug: client-and-server
+title: "Client and server"
+summary: "You can say which program is the client and which is the server in a single click."
+minutes: 7
+terms:
+  - frontend
+  - backend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You click "show the tax." A number appears. Two programs were involved, even if you only saw one window. The browser asked. Something else answered. If you only look at the window, you will "fix" the number in the page and leave the answer wrong for the next person.
+
+</Hook>
+
+## The idea
+
+The client is the program that starts a request. On the web, that is usually the browser. The server is the program that accepts the request and sends a response. "Client" and "server" name roles in one exchange, not brands. Your laptop can run both: the browser is the client, and a program you started in a terminal is the server, reached at `http://localhost:3000`.
+
+The <Term id="frontend">frontend</Term> is the client side of your app: the pages the browser runs. The <Term id="backend">backend</Term> is the server side: the program that checks the request and talks to stored data. A static file with no server is a frontend only. A tax function that never leaves your terminal is a backend you have not connected to a page yet.
+
+The split matters because the two sides trust different people. The visitor controls the browser. They can change the HTML, skip a check written in JavaScript, and send a request you did not draw a button for. The server is the place you control. A price, a password check, and "is this person allowed" belong there. A check that exists only in the frontend is a convenience. It is not a boundary.
+
+When an agent says "the app," ask which role it means. A change to a button label is frontend. A change to what gets stored is backend. A task card that says "the app" will edit both and you will not know where the behavior lives.
+
+<ClientServerFigure />
+
+## Real example
+
+Two URLs for the same shop, two roles:
+
+```
+http://localhost:3000/        the browser loads the page
+http://localhost:3000/tax     the browser asks the server for a number
+```
+
+The first response can be a file of HTML. The second should be the server computing `tax_cents`. If both responses are files the agent wrote by hand, you do not have a server decision yet. You have two documents.
+
+<TryIt minutes={5}>
+
+Pick one click in any site you use. Write one sentence for what the browser must be doing, and one for what only a server could know, such as a row you did not type. If you cannot think of a server fact, the click may be frontend-only, and that is a useful answer.
+
+</TryIt>
+
+<Mistake>
+
+Hiding a secret in the frontend because the page "does not show it." The visitor can read the JavaScript. A key in the page is a key you published. Secrets stay on the server.
+
+</Mistake>

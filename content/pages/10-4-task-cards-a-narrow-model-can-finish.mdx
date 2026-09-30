@@ -1,0 +1,70 @@
+---
+part: 10
+number: 4
+slug: task-cards-a-narrow-model-can-finish
+title: "Task cards that a narrow model can finish"
+summary: "You can write a card with one job, the files allowed, and a check, small enough that a fast model does not have to invent the product."
+minutes: 7
+terms:
+  - agent
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You hand an <Term id="agent">agent</Term> "build checkout" and a fast, inexpensive model. It invents a card form, a second database, and a success page. A stronger model might have asked a question. The card was the problem. It described a product, not a job.
+
+</Hook>
+
+## The idea
+
+A task card is one job a model can finish without redesigning the app. Part 5 introduced the shape. This page is why the shape matters more when the model is the fast one you use for narrow edits. You are not required to pick a cheap model. You are required to write a card that does not depend on taste.
+
+Three lines:
+
+```
+Job: return 404 from POST /tax when bookId is unknown
+Files: app/api/tax/route.ts
+Check: curl.exe with bookId nope, status 404
+```
+
+The job is one behavior. The files are an allow-list. A diff outside the list fails the card even if the behavior works. The check is a command or a status you can read, not "make sure it works."
+
+Leave the product decisions in the spec. The card points at the spec. It does not restate a different design. If the card and the spec disagree, stop and fix the card. A fast model will follow the card in front of it.
+
+<Term id="git">Git</Term> is how you bound the damage. Commit, or at least know `git diff`, before the card. If the card goes wrong, you return to that snapshot instead of untangling a second feature the model added "while it was there."
+
+One card in flight. A second card starts after the commit, not in the same message.
+
+<SmallTaskFigure />
+
+## Real example
+
+Too big:
+
+```
+Add tax, checkout, and accounts.
+```
+
+Small enough:
+
+```
+Job: POST /tax for book 42 returns tax_cents 80
+Files: app/api/tax/route.ts
+Check: curl.exe, status 200, body contains 80
+```
+
+The checkout card comes after this one is committed. Accounts come after you have a spec for them.
+
+<TryIt minutes={5}>
+
+Rewrite a vague task you have into the three lines. If the job sentence has the word "and," split it into two cards and run only the first.
+
+</TryIt>
+
+<Mistake>
+
+Hiding extra work in "while you are there, clean up the folder." That is a second card with no check. The fast model will rewrite files you did not mean to open.
+
+</Mistake>

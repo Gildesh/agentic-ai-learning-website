@@ -1,0 +1,66 @@
+---
+part: 1
+number: 4
+slug: hallucination
+title: "Why it's confidently wrong (hallucination)"
+summary: "You can spot a hallucination: a specific claim with no source in the prompt or in a tool result."
+minutes: 8
+terms:
+  - hallucination
+  - LLM
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask for a Python function that counts the letter r in a word, and the reply includes `str.count_chars("r")`. There is no such method. The sentence around it is calm and complete. The method name is invented.
+
+</Hook>
+
+## The idea
+
+A <Term id="hallucination">hallucination</Term> is a fluent, specific claim that is not supported by the prompt or by a tool result you can check. An <Term id="llm">LLM</Term> produced it the same way it produces every other token: the claim was a likely continuation, not a lookup in a manual.
+
+The strawberry count on the previous pages is a small hallucination. The letter count was never computed. API names, package names, flags, and citations fail the same way, and they are harder to see because you may not have the manual open. The model will write `requests.get` correctly on one line and a method that does not exist on the next. Both lines have the same tone.
+
+Three kinds show up constantly when you direct a coding agent:
+
+- A symbol that is not in the language or library. `count_chars` is this kind.
+- A fact about your project that was not in any file the agent read. It invents a table named `orders` because bookstores often have one.
+- A citation: a paper title, a URL, or a doc section that sounds right and does not resolve.
+
+The fix is a source you can open, not a more confident prompt. Ask for the file and the line, the official doc URL, or a command whose output you will read. If the claim is "this function exists," the check is to run it or to find it in the library's own documentation. If the claim is "this table exists," the check is the schema file in the repository.
+
+"Do not hallucinate" is not a control. The model does not have a switch that turns prediction into retrieval. You change the job: paste the real page, point at the real file, or require a tool call whose result appears before the conclusion.
+
+<HallucinationCheckFigure />
+
+## Real example
+
+Send this to a chat:
+
+```
+Write a one-line Python call that uses str.count_chars to count the letter r in "strawberry".
+Do not explain. Do not correct me.
+```
+
+Many replies will obey and print the call you asked for, including the method that does not exist. Then send:
+
+```
+Run this and paste the traceback if it fails:
+print("strawberry".count("r"))
+```
+
+`str.count` is a real method. It returns `3`. The first reply followed your sentence. The second reply, if the tool actually runs, follows the interpreter. When you read an agent's code, the question is which of those two you are looking at.
+
+<TryIt minutes={5}>
+
+Send the first prompt and circle the method name. Then check it: in a Python prompt, type `"strawberry".count_chars("r")` if you have Python, or search the official Python docs for `str.count`. Write down whether the symbol exists. That is the check you will use on every agent diff later.
+
+</TryIt>
+
+<Mistake>
+
+Asking the same model "are you sure?" and treating the second yes as evidence. A second prediction can repeat the invention in cleaner prose. Evidence is the file, the doc, or the command output. A model agreeing with itself is not a source.
+
+</Mistake>

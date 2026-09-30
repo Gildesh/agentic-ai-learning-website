@@ -1,0 +1,66 @@
+---
+part: 3
+number: 4
+slug: cursor-tour
+title: "Cursor tour: chat, agent, tab, rules, hooks"
+summary: "You can point at Cursor rules, AGENTS.md, and hooks.json, and say what each one is allowed to do."
+minutes: 8
+terms:
+  - hook
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+Cursor looks like an editor because it is one. The part that matters for this course is not the theme. It is where instructions live, and where a script can stop the agent. Those two places are documented. The menu names move. The files are the contract.
+
+</Hook>
+
+## The idea
+
+Cursor's rules doc says rules are system-level instructions to <Term id="agent">Agent</Term>. They are included at the start of the model context. The model still does not remember you between requests. The rule text is how a project stays consistent.
+
+The same doc names four places rules come from.
+
+- **Project rules**, stored in `.cursor/rules`, version-controlled, scoped to the codebase. Each rule is a markdown file with frontmatter, and project rules use `.mdc` files. A rule can always apply, apply when the agent judges the description relevant, apply when a file matches a pattern, or apply only when you mention it.
+- **User rules**, global on your machine, used by Agent chat.
+- **Team rules**, from the dashboard, on Team and Enterprise plans.
+- **AGENTS.md**, plain markdown in the project, described as a simple alternative to `.cursor/rules`.
+
+Tab, in the hooks doc, is the inline-completion surface. Agent chat is the session where the agent loop runs. The hooks page separates them on purpose.
+
+A <Term id="hook">hook</Term> is a custom script. Cursor's hooks doc says hooks observe, control, and extend the agent loop. You define them in `hooks.json` at the project or user level. They are processes that talk JSON over stdio, and they run before or after stages of the loop. They can observe, block, or modify behavior. Agent hooks fire during an agent session. Tab hooks fire for inline completions. A hook is how you stop a tool call you do not want, such as a command that prints a secret. The rule file asks the model. The hook can refuse the tool.
+
+This page does not list Cursor's prices. The docs index is [cursor.com/docs](https://cursor.com/docs).
+
+<CursorRulesFigure />
+
+## Real example
+
+A project rule that always applies, in the shape the rules doc describes: frontmatter plus instructions.
+
+```
+---
+description: tax function rules
+alwaysApply: true
+---
+
+Edit only tax.py when the task is tax.
+Do not add a web framework.
+Show the command output before you say the check passed.
+```
+
+Save it under `.cursor/rules` as an `.mdc` file if you are following project rules. If you want one plain file instead, the docs say `AGENTS.md` is that alternative. Do not keep two copies of the same sentence. They will drift.
+
+<TryIt minutes={5}>
+
+Open [Cursor's rules doc](https://cursor.com/docs/rules) and [hooks doc](https://cursor.com/docs/hooks). Write four labels: project rules path, AGENTS.md, hooks file name, and which surface Tab hooks belong to. If the live page uses a different path, copy the live path. The page wins.
+
+</TryIt>
+
+<Mistake>
+
+Putting a secret or a one-off traceback in a project rule. Rules are sent often, and project rules are committed. A standing constraint belongs there. A key and today's error do not.
+
+</Mistake>

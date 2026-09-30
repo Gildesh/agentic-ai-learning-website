@@ -1,0 +1,77 @@
+---
+part: 7
+number: 3
+slug: json
+title: "JSON"
+summary: "You can write one valid JSON object and reject a trailing comma, a comment, and a single-quoted key."
+minutes: 7
+terms:
+  - JSON
+  - API
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The server returns 400 and the agent says the API is down. The body you sent was almost JSON. It had a comment, because that is legal in JavaScript. JSON is not JavaScript. The server was right to refuse it.
+
+</Hook>
+
+## The idea
+
+<Term id="json">JSON</Term> (JavaScript Object Notation) is a text format for structured data. [RFC 8259](https://www.rfc-editor.org/rfc/rfc8259.html) defines it. An <Term id="api">API</Term> uses it as the body of a request or a response so both sides agree on types without inventing a private layout.
+
+A JSON text is one value. There are six kinds:
+
+- An object: `{"title":"Dune","year":1965}`
+- An array: `["Dune","Circe"]`
+- A string, in double quotes: `"Dune"`
+- A number: `1965`
+- `true` or `false`
+- `null`
+
+Objects contain pairs. The key is a string. The value is any JSON value, so objects and arrays nest. That is the whole language.
+
+What people paste from JavaScript and what JSON refuses:
+
+- Single quotes. Keys and strings use double quotes.
+- Comments. There is no `//` and no `/* */`.
+- A trailing comma after the last pair or the last array element.
+- `undefined`. Missing means you omit the key, or you send `null` if the contract says the key is present and empty.
+
+Whitespace between tokens does not matter. Key order should not matter to a reader that follows the spec. Do not write a client that requires `"title"` to appear before `"year"`.
+
+When a handler returns JSON, set the content type to `application/json`. A 200 with an HTML page is not a JSON API that happened to mention a title.
+
+<JsonTypesFigure />
+
+## Real example
+
+This object is valid:
+
+```
+{"id":"42","title":"Dune","inPrint":true,"translator":null}
+```
+
+This text is not, for three separate reasons:
+
+```
+{
+  id: '42', // the book
+  "title": "Dune",
+}
+```
+
+The key is unquoted, the string uses single quotes, a comment sits in the middle, and a comma follows the last pair. A parser stops. Your frontend should show the 400. It should not guess which book you meant.
+
+<TryIt minutes={5}>
+
+Paste the valid object into a JSON checker in your editor, or into `JSON.parse` in a browser console. Then add a trailing comma and parse again. Keep the error text. That text is what a 400 is protecting you from.
+
+</TryIt>
+
+<Mistake>
+
+Hand-editing JSON in a prompt and calling it "basically valid." The comma you left in is a failed request. Generate the body with `JSON.stringify` or a library, and read the status the server returns.
+
+</Mistake>

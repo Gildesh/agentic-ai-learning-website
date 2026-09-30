@@ -1,0 +1,83 @@
+---
+part: 12
+number: 10
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can place a skipped rule on the missing command: lint, pre-commit, GitHub Actions, or the agent hook."
+minutes: 7
+terms:
+  - hook
+  - linter
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The rule was in the spec. The diff broke it. Somewhere a command should have exited 1. If you cannot name that command, the rule was still a request.
+
+</Hook>
+
+## The idea
+
+Enforcement is a failing command. A linter, this repo's `npm run lint` via ESLint, catches the rules you configured. A formatter only handles layout. Types catch impossible values. Tests catch behavior. `npm run check:course` catches the lesson rules.
+
+GitHub Actions runs those commands on push and on a pull request. Use `actions/checkout` v7 for a normal pull request. Do not check out a fork's code under `pull_request_target`. A pre-commit hook runs the fast command on the laptop before git writes the snapshot, and it is not cloned with the repo, so CI still has to run.
+
+An agent hook is the other hook: Cursor's `hooks.json`, Claude Code's `PreToolUse` and `Stop`. Fail closed. Leave the stop cap. Do not let the agent delete the hook.
+
+Locked files include the checker, the workflow, and the locked test. Secret scanning includes GitHub push protection, which blocks a detected secret before the push lands, and a local check because repository push protection is off until someone enables it. A checklist is four yes-or-no lines for what you have not automated. A new rule becomes a command you have seen fail, then a pre-commit hook and a workflow step.
+
+<Part12RecapFigure />
+
+<Quiz
+  questions={[
+    {
+      prompt: "A markdown rule says not to commit secrets, and the model commits one. What was missing?",
+      choices: [
+        "A command that fails when the secret is in the tree",
+        "A longer paragraph in the spec",
+        "A faster model",
+      ],
+      answer: 0,
+      why: "The sentence is a request. Enforcement is a command with a non-zero exit.",
+    },
+    {
+      prompt: "What does this repo's npm run lint run?",
+      choices: ["ESLint, a linter", "The production server", "A git push"],
+      answer: 0,
+      why: "The lint script runs ESLint. It does not start the app or prove the tax route.",
+    },
+    {
+      prompt: "A pre-commit hook exists only on your laptop. What still has to run on GitHub?",
+      choices: [
+        "The GitHub Actions workflow",
+        "Nothing. The hook covers every clone.",
+        "A React hook named useCommit",
+      ],
+      answer: 0,
+      why: "Git does not clone .git/hooks. The workflow is the check that travels with the repo.",
+    },
+    {
+      prompt: "The diff edits scripts/check-course.mjs so a short page passes. What do you do?",
+      choices: [
+        "Reject it. The checker is locked on a content card.",
+        "Merge it. Green is the goal.",
+        "Disable GitHub Actions so the argument stops.",
+      ],
+      answer: 0,
+      why: "Changing the judge is a different card. The content card does not get to weaken the check.",
+    },
+  ]}
+/>
+
+<TryIt minutes={5}>
+
+Answer the four questions, then name the command your next card will run and the file it must not edit. If either is blank, the card is not ready to hand to an agent.
+
+</TryIt>
+
+<Mistake>
+
+Calling the spec "enforced" because it is long. Length is not an exit code. Point at the command that fails, or admit the rule is still a request.
+
+</Mistake>

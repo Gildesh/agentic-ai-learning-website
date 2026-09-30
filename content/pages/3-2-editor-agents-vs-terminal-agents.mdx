@@ -1,0 +1,56 @@
+---
+part: 3
+number: 2
+slug: editor-agents-vs-terminal-agents
+title: "Editor agents vs terminal agents"
+summary: "You can choose an editor agent or a terminal agent from where the file and the command already live."
+minutes: 7
+terms:
+  - agent
+  - repository
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You are staring at `tax.py` with the cursor on the broken line. A terminal agent would make you describe the line. An editor agent is already in that file. Later you are in a shell, watching a test fail, and the editor is not the place the failure is printed. The agent should sit where the evidence is.
+
+</Hook>
+
+## The idea
+
+An editor <Term id="agent">agent</Term> runs inside the editor window. The file you are looking at can be attached with a click. Inline completions propose the next bit of the line you are typing. A focused edit can happen without leaving the function. The review surface is usually a diff next to the file.
+
+A terminal agent runs in a shell. You start it from the project directory. It reads the <Term id="repository">repository</Term>, edits files, and runs commands in that same shell, so the log you already use for tests is the transcript. Claude Code's own overview describes a tool that reads the codebase, edits files, and runs commands, and it lists the terminal as one of its surfaces. Antigravity's getting-started page lists a CLI whose job is a terminal interface for agents. Those are terminal agents even when the same vendor also ships an editor.
+
+The loop is the same: read, edit, run. The difference is what you can see without asking. In the editor you see the file. In the terminal you see the command output. Use the editor agent when the task is "this function, this line." Use the terminal agent when the task is "this command fails" or "apply this across the repo and show me the log."
+
+Many products do both. VS Code is an editor that can also open a terminal. Cursor is an editor with an agent. Claude Code can run in the terminal and in IDE extensions. You still pick one surface for the next ten minutes so you know where the diff and the log will appear.
+
+<EditorVsTerminalFigure />
+
+## Real example
+
+Two openings for the same bug.
+
+Editor: the file `tax.py` is focused, line 4 is the TypeError line, and you ask for a change only in `tax_cents`.
+
+Terminal, from the repository root:
+
+```
+python tax.py
+```
+
+The traceback is already on screen. You tell the terminal agent to repair `tax.py` and rerun that command. You do not paste the whole file if the agent can read it. You do paste the command you want rerun, so "done" is visible in the log.
+
+<TryIt minutes={5}>
+
+Write one sentence for a task you have: either "the file is open" or "the command is failing." That sentence picks the surface. If both are true, start in the terminal, because the command output is the check, and open the diff in the editor afterward.
+
+</TryIt>
+
+<Mistake>
+
+Running two agents on the same repository at once, one in the editor and one in a terminal, both allowed to write. They will overwrite each other. One writer. You can read in as many windows as you like.
+
+</Mistake>

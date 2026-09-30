@@ -1,0 +1,63 @@
+---
+part: 1
+number: 8
+slug: model-families-sept-2026
+title: "The model families as of Sept 2026: GPT, Claude, Gemini, Grok, Llama, Qwen"
+summary: "You can name the six model families tutorials mean, and you can find the current model id on the vendor's own page."
+minutes: 8
+terms:
+  - LLM
+  - open weights
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A tutorial says "use Claude" and a second tutorial says "use GPT." Both are family names. The request your program sends does not say Claude. It says a model id, such as `claude-sonnet-5-5` or `gpt-6.1-sol`. The id is what you are billed for, and it is what the docs mean by "which model."
+
+</Hook>
+
+## The idea
+
+An <Term id="llm">LLM</Term> you can call has a vendor, a family, and a model id. The family is the line: GPT, Claude, Gemini, Grok, Llama, Qwen. The model id is one member of that line. As of September 2026, these official pages are the ones to trust. A blog post from earlier in the year is not.
+
+**GPT** is OpenAI's family. The [OpenAI models page](https://developers.openai.com/api/docs/models) lists API model ids including `gpt-6-astra`, `gpt-6.1-sol`, and `gpt-6-luna` (GPT-6 Luna). Each has its own price and the same published context window of 1.05M tokens on that page.
+
+**Claude** is Anthropic's family. The [models overview](https://platform.claude.com/docs/en/models/overview) compares Claude Fable 5.1 (`claude-fable-5-1`), Claude Opus 5.5 (`claude-opus-5-5`), Claude Sonnet 5.5 (`claude-sonnet-5-5`), and Claude Haiku 4.5 (API id `claude-haiku-4-5-20251001`). The first three list a 1M-token context window. Haiku 4.5 lists 200K. Same family, different window.
+
+**Gemini** is Google's family. The [Gemini models index](https://ai.google.dev/gemini-api/docs/models) lists Gemini 3.8 Flash as Stable, with endpoint `gemini-3.8-flash`. The same index marks Gemini 3.1 Pro as Preview. Stable and Preview are different promises. Use the label on the card.
+
+**Grok** is xAI's family. The [Grok 4.7 model page](https://docs.x.ai/developers/models/grok-4.7) documents model id `grok-4.7` and a context window of 500,000 tokens.
+
+**Llama** is Meta's family. The [Llama 4 model card](https://www.llama.com/docs/model-cards-and-prompt-formats/llama4/) documents Llama 4 Scout and Llama 4 Maverick as weights you can download. The llama.com homepage also points developers at other Meta model names, including a hosted API. Read the card for the file you actually downloaded. Do not treat "Llama" as one model id.
+
+**Qwen** publishes <Term id="open-weights">open weights</Term>. The [Qwen3.8-27B model card](https://huggingface.co/Qwen/Qwen3.8-27B) says the repository contains weights, that this model has 27B parameters, and that its context length is 262,144 tokens natively, extensible up to 1,000,000. Open weights means you can download the files. A hosted API for the same family is a separate product, with its own context length and tools.
+
+Prices for the API families are on the next page. They are not a quality ranking.
+
+<ModelFamiliesFigure />
+
+## Real example
+
+A model id is a string in a request, not a mood. These four strings are copied from the pages above:
+
+```
+gpt-6.1-sol
+claude-sonnet-5-5
+gemini-3.8-flash
+grok-4.7
+```
+
+If a tool's model picker shows a friendly name, open the vendor page and match it to the id before you compare cost or context length. Friendly names move. The id on the invoice is the one that matters.
+
+<TryIt minutes={5}>
+
+Open the [Claude models overview](https://platform.claude.com/docs/en/models/overview). Find Claude Sonnet 5.5 and write down three fields: the API id, the context window, and the input price. You will check that price against the next page.
+
+</TryIt>
+
+<Mistake>
+
+Ranking families from a single chat reply. "It felt smarter" is not a model card. Context windows on this page already disagree inside one family: Haiku 4.5 is 200K tokens, Sonnet 5.5 is 1M. Compare the id, the window, and the price on the vendor's page.
+
+</Mistake>

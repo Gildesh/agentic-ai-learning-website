@@ -1,0 +1,62 @@
+---
+part: 8
+number: 4
+slug: validate-every-input
+title: "Validate every input"
+summary: "You can reject a body that has the wrong type, the wrong length, or a field you do not accept, and you can do it on the server."
+minutes: 7
+terms:
+  - JSON
+  - SQL
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The title field is marked required in HTML. Someone sends a request with no title, or with a title that is a number, or with an extra field named `price` set to zero. The page would have stopped the empty title. The request never used the page. The handler stored the row.
+
+</Hook>
+
+## The idea
+
+Every value that crosses into the server is input. The <Term id="json">JSON</Term> body, the query string, the path, and the headers you depend on. The browser can check some of this to help a person. The handler checks all of it, because the browser is not the only client.
+
+For a book, write the allowed shape and refuse the rest with 400:
+
+- `title` is a string, trimmed, 1 to 200 characters.
+- `author_id` is an id that exists. You do not create an author from a name stuffed into this field.
+- `price_cents` is an integer you compute, or an integer inside a range you chose. It is not a string, and it is not negative.
+- Unknown fields are ignored or rejected. They are not copied onto the row.
+
+Then the statement that writes the row uses parameters. The <Term id="sql">SQL</Term> text stays the statement you wrote. The title is a bound value. If you build the statement by gluing the title into the string, the title can change what the statement means. That is injection, which the next page names. The fix is the parameter, plus the shape check above.
+
+Validate again at the boundary even if an ORM "usually" checks. An agent will find a second path that skips the ORM. One function that parses the body, used by every handler that creates a book, is the point.
+
+<ValidateInputFigure />
+
+## Real example
+
+A spec the handler can implement without guessing:
+
+```
+POST /books
+body: { "title": string, "authorId": string }
+400 if title is empty or longer than 200
+400 if authorId is not an authors primary key
+201 and the new id otherwise
+price is not in the body
+```
+
+Send a body with `"title": 12` and expect 400. Send a body with `"priceCents": 0` and expect that field to change nothing.
+
+<TryIt minutes={5}>
+
+Take one endpoint you have specified and list the fields you accept, the type of each, and one reason you return 400. If a field is only checked in the component, move the check into this list.
+
+</TryIt>
+
+<Mistake>
+
+Trusting the client because "our app doesn't send bad data." `curl` is a client. So is the next agent. The handler is the place that notices.
+
+</Mistake>

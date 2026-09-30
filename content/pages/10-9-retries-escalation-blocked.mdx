@@ -1,0 +1,62 @@
+---
+part: 10
+number: 9
+slug: retries-escalation-blocked
+title: "Retries, escalation and blocked"
+summary: "You can stop after a small number of failures, write blocked, and hand the error to a person or a stronger model."
+minutes: 7
+terms:
+  - agent
+  - spec
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The gate has failed four times. Each <Term id="agent">agent</Term> message says it found the real cause. The diff is larger than the card. Nothing is blocked, because you never defined blocked. The loop is now a shovel.
+
+</Hook>
+
+## The idea
+
+A retry is the same card again, with the gate output pasted in. One retry is normal. A second is the last automatic one unless the spec says otherwise. The stop-hook caps you already met, five on a Cursor stop hook and eight consecutive Claude Code Stop blocks, are upper bounds, not targets. You can stop sooner.
+
+After the last retry, the status is **blocked**. Write it down in the task, not only in chat:
+
+```
+Blocked: POST /tax still returns 200 for an unknown book
+Last output: expected 404, received 200
+Files touched: app/api/tax/route.ts
+```
+
+Blocked means a person decides. The decision is one of three. Fix the card because it was unclear. Escalate to a stronger model with the blocked note and the <Term id="spec">spec</Term>, still forbidding edits to the locked test. Or change the spec, in its own commit, because the behavior you asked for is not what you want. Escalation is not "keep going until green."
+
+Do not clear blocked by deleting the test or by expanding the file list. That is a new card, and it should be honest about being a new card.
+
+A blocked item is a successful outcome of the loop. You learned the current approach does not meet the spec. Shipping a workaround that the spec forbids is the failure.
+
+<RetryBlockedFigure />
+
+## Real example
+
+A limit you can put at the top of a card:
+
+```
+Retries: 2
+Then: mark blocked and stop
+Escalate with: the spec path, the diff, the last gate output
+```
+
+The third automatic attempt does not start. You read the note first. If the cause is obvious, you may write a new card. The old card stays blocked until that new card passes.
+
+<TryIt minutes={5}>
+
+Set a retry count for the feature you are on, and write the blocked note you would file if the next run fails. Include the command output's shape, even if you do not have a failure yet.
+
+</TryIt>
+
+<Mistake>
+
+Calling a blocked task a model failure and immediately switching models with a blank prompt. The next model needs the spec, the diff, and the output. A blank prompt repeats the first mistake at a higher price.
+
+</Mistake>

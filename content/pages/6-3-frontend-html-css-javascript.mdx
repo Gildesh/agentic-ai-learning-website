@@ -1,0 +1,65 @@
+---
+part: 6
+number: 3
+slug: frontend-html-css-javascript
+title: "Frontend: HTML, CSS, JavaScript"
+summary: "You can tell HTML, CSS, and JavaScript apart, and you can say which file to open for a structure bug, a layout bug, or a click bug."
+minutes: 8
+terms:
+  - HTML
+  - CSS
+  - JavaScript
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The titles are on the page, in the wrong size, and the button does nothing. An agent that "fixes the frontend" may rewrite all three layers and still miss the dead button. The three layers have names. Use them.
+
+</Hook>
+
+## The idea
+
+The <Term id="frontend">frontend</Term> in the browser is three languages that do different jobs.
+
+<Term id="html">HTML</Term> (HyperText Markup Language) is the document. Tags name the parts: a heading, a paragraph, a form, a button. The browser builds a tree from those tags. If a title is missing, the HTML never included it, or a script removed it.
+
+<Term id="css">CSS</Term> (Cascading Style Sheets) is presentation. Selectors point at elements and set type, color, and layout. CSS does not add a book to a list. A title that exists and is the wrong size is a CSS problem, or a missing stylesheet the HTML never linked.
+
+<Term id="javascript">JavaScript</Term> is the language the browser runs. It can change the document, listen for a click, and send an HTTP request. It is not Java. A button that is visible and does nothing is usually a missing listener, or a listener that throws before it sends the request. The browser console prints that throw.
+
+Keep the three files, or three blocks, separate enough that a task card can name one. "Fix the CSS so the title is 16px" cannot honestly rewrite the server. "Make the button load the tax" is JavaScript plus a request. Say which.
+
+The visitor can edit all three in their own browser. That is why a discount "enforced" by hiding a field is not a discount. The next page's server is the enforcement.
+
+<HtmlCssJsFigure />
+
+## Real example
+
+Three tiny pieces that do one job each:
+
+```
+<p id="title">Dune</p>
+```
+
+```
+#title { font-size: 16px; }
+```
+
+```
+document.querySelector("#title").textContent = "Circe";
+```
+
+The paragraph is HTML. The size is CSS. The rename is JavaScript, and it runs after the paragraph exists. If the script runs first, the query finds nothing and the console shows an error. Order is part of the frontend, not a style preference.
+
+<TryIt minutes={5}>
+
+Save the paragraph as `page.html`, add a `<style>` block with the CSS, and a `<script>` block with the JavaScript at the end of the body. Open the file. You should see Circe at 16px. Then move the script above the paragraph, reload, and read the console. That error is a frontend failure with no server involved.
+
+</TryIt>
+
+<Mistake>
+
+Calling every visible problem CSS. Missing text is HTML or JavaScript. Wrong text after a click is JavaScript or the response it failed to read. CSS is the look of something that is already there.
+
+</Mistake>

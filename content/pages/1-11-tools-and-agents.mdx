@@ -1,0 +1,54 @@
+---
+part: 1
+number: 11
+slug: tools-and-agents
+title: "Tools and agents in one page"
+summary: "You can tell a tool call from a guess, and you can say what makes an agent more than a chat reply."
+minutes: 8
+terms:
+  - agent
+  - tool call
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask how many r's are in strawberry. One reply says "two" in a tidy sentence. Another reply shows a tool ran `print("strawberry".count("r"))` and the result was `3`, and only then answers three. The second reply has a source. The first reply is a guess that looks finished.
+
+</Hook>
+
+## The idea
+
+A <Term id="tool-call">tool call</Term> is the model asking the app to run a function. The model does not run Python by predicting the word "Python." It emits a request: the tool's name and the arguments. The app runs the tool. The result, which might be `3` or an error traceback, is pasted back into the context window. The model's next sentence can quote that result. If the transcript never shows a result, the sentence is still a prediction.
+
+Common tools in a coding product are: read a file, write a file, run a command, search the web, and fetch a URL. Each one returns an artifact you can look at. A file read returns the file's text. A command returns stdout and an exit code. A web search returns links or a page. The model can still misread the artifact. It cannot honestly claim a result that was never returned.
+
+An <Term id="agent">agent</Term> is a model in a loop with tools. It can read the project, edit a file, run a command, look at the output, and continue. A chat reply stops at the text. An agent stops when the app decides the loop is done, or when it hits a limit you set. The loop is still inference. The weights do not learn your repository. The files change because a tool wrote them.
+
+That is the whole job this course is training you for. You name the outcome. The agent calls tools. You read the artifacts: the diff, the test output, the status code. You do not grade the agent's confidence.
+
+When you write a prompt for an agent, ask it to show the tool result before the conclusion. "Run the count and paste the output" is a different task from "how many r's."
+
+<ToolCallFigure />
+
+## Real example
+
+A tool call, written as JSON so you can see it is data, not a mood. The field names differ by vendor. The shape is the idea: a name, arguments, then a result that comes back later.
+
+```
+{"name":"run_python","arguments":{"code":"print('strawberry'.count('r'))"}}
+```
+
+The app runs that code. The tool result is the text `3`. Only after that result is in the transcript should the reply say three. If you are reading an agent log, search for the command and its output. A paragraph that says "I checked" is not the check.
+
+<TryIt minutes={5}>
+
+In a chat that can run code, send: "Use code to count the r's in strawberry. Paste the command and its output before the number." If the product cannot run code, send the spell-then-count prompt from page 1.2 instead. Circle the artifact: either the command output, or the letter list. That circle is the tool result. The sentence after it is the model talking about the result.
+
+</TryIt>
+
+<Mistake>
+
+Trusting "I ran the tests and they passed" when the transcript has no command and no output. Ask for the command. If the agent cannot show it, the tests were not run in that turn. A later page will make this a habit: no green check without the log.
+
+</Mistake>

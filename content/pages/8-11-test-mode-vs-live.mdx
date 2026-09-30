@@ -1,0 +1,57 @@
+---
+part: 8
+number: 11
+slug: test-mode-vs-live
+title: "Test mode vs live mode, and going live"
+summary: "You can run a Stripe test payment with the documented test card, and you can list what has to change before a live key is allowed."
+minutes: 7
+terms:
+  - API key
+  - webhook
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The demo charges a real card because the secret in `.env` is a live key and the number typed into Checkout was a real one. Stripe's testing docs forbid that. Test mode exists so you can watch a payment fail and succeed without moving funds.
+
+</Hook>
+
+## The idea
+
+Stripe's testing guide describes a sandbox: an isolated environment where test values do not move funds. You use test <Term id="api-key">API key</Term>s for every call, including when the form is the real Checkout form. The guide says not to use real card details. The Stripe Services Agreement prohibits testing in live mode with real payment method details.
+
+The documented success test card on Stripe's Checkout quickstart is `4242424242424242`. Use any future expiry and any three-digit code the form asks for. Other numbers on that page simulate a decline or a challenge. Copy them from the current testing page when you need them. Do not put those numbers in server code. The testing guide says to prefer a test PaymentMethod id in code, because card numbers in server-side code can leave you outside PCI scope when you go live.
+
+A <Term id="webhook">webhook</Term> in test mode is a different endpoint secret from the live one. Stripe's docs say that if one URL receives both, the secrets still differ. Verify with the secret for the mode that sent the event.
+
+Going live, from the same testing guide, means replacing test publishable and secret keys with live ones. You cannot take live payments while the integration still uses test keys. Live keys stay in the host's environment, not in git. Switch the webhook endpoint to the live secret. Run one small real purchase you can refund, and read the event in the dashboard before you announce the shop.
+
+Razorpay's checkout docs also describe a test mode and test cards. Use that dashboard's test mode until the signature check works. Do not mix a Stripe test key with a Razorpay order.
+
+<TestLiveFigure />
+
+## Real example
+
+A go-live list that fits on a card:
+
+```
+Test key and 4242424242424242 succeed in test mode
+Webhook signature verifies with the test whsec_ secret
+A second delivery does not fulfill twice
+Then: live keys in the host environment, live webhook secret, one real purchase you can refund
+```
+
+Skip a line and you are guessing in production.
+
+<TryIt minutes={5}>
+
+Write which key prefix is in your current environment, test or live, without pasting the key. If you are not sure, treat it as live and stop testing with any real card until you know.
+
+</TryIt>
+
+<Mistake>
+
+Pointing the live webhook secret at events from `stripe listen`. Stripe's signature docs say the CLI secret and the Dashboard secret are different. Verification will fail, or you will "fix" it by skipping verification. Use the secret that matches the sender.
+
+</Mistake>

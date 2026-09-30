@@ -1,0 +1,56 @@
+---
+part: 4
+number: 8
+slug: reading-code-you-didnt-write
+title: "Reading code you didn't write"
+summary: "You can trace one click to a function and run one input, without reading every generated line."
+minutes: 7
+terms:
+  - agent
+  - diff
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+An agent has written two hundred lines you did not author. Reading all of it feels like starting over, so you read none of it. You do not need all of it. You need the path from the thing you can click to the function that runs, and one input you choose yourself.
+
+</Hook>
+
+## The idea
+
+Generated code is still code. The <Term id="agent">agent</Term> will not be in the room when a customer hits the page. A short reading procedure is enough to stop treating the screen as the whole program.
+
+1. **Find the entry.** The button, the form, or the command you run. In HTML that is an `action` or a script tag. In Python it is often the function named at the bottom, or the one the traceback already named.
+2. **List its inputs.** Arguments, form fields, query parameters. Anything a stranger can set.
+3. **Follow one hop.** What does that function call next? One hop, not the whole graph. If the hop is "render the words Paid," you have learned something important: the words may not be a result.
+4. **Run one input the demo did not use.** Empty, zero, a missing file, a second click. The output is yours. It is not the agent's summary.
+
+You are allowed to skip comments and skip code that the entry never reaches. You are not allowed to skip the entry. A <Term id="diff">diff</Term> review from Part 3 is this same procedure applied to a change: file, minus, plus. Here the "change" is the whole file, so you start at the entry instead of at every line.
+
+When a name means nothing, ask the agent to explain that function only, and then check the explanation against the source. "This charges a card" is false if the function never calls a payment URL. The explanation is a claim. The function body is the source.
+
+<ReadGeneratedCodeFigure />
+
+## Real example
+
+A generated handler:
+
+```
+def checkout(form):
+    return "<p>Paid</p>"
+```
+
+The entry is `checkout`. The input is `form`. The hop is a return of HTML. There is no second hop to a payment company. The screen can say Paid while nothing was paid. You found that by reading four lines, not two hundred. The other lines can wait until a click reaches them.
+
+<TryIt minutes={5}>
+
+Open one generated file, or the four-line example above. Write the entry name, the inputs, and what it returns. If you cannot find a return or a write, say "I cannot see the effect yet" and that is the next question for the agent: "Which function runs when I click Pay?"
+
+</TryIt>
+
+<Mistake>
+
+Asking the agent "is this code good?" and accepting the yes. Ask which function runs, then read that function. A quality verdict is a mood. The return line is a fact.
+
+</Mistake>

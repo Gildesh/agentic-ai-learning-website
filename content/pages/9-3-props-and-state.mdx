@@ -1,0 +1,67 @@
+---
+part: 9
+number: 3
+slug: props-and-state
+title: "Props and state"
+summary: "You can tell a value the parent passed in from a value this component owns and can change."
+minutes: 7
+terms:
+  - props
+  - state
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The tax button shows 80 cents, then a click sets it to 0, and every other book on the page also shows 0. The number lived in one shared place that the button was allowed to overwrite. That number was not the button's to keep.
+
+</Hook>
+
+## The idea
+
+<Term id="props">Props</Term> are the values a parent passes to a child. In React they are the function argument.
+
+```
+function BookTitle({ title }) {
+  return <h1>{title}</h1>;
+}
+```
+
+`title` is a prop. `BookPage` owns the string, or received it from the server. `BookTitle` displays it. Assigning `title = "Circe"` inside `BookTitle` does not change the parent, and it confuses the next reader. If the title must change, the owner changes it and passes the new prop down.
+
+<Term id="state">State</Term> is data this component owns. A text field's current contents, or whether a menu is open, are state. In a Client Component, `useState` gives you the value and a function that replaces it. Calling that function redraws the component. The next page is that function. This page is the ownership rule.
+
+Ask one question when a value appears in a diff: who owns it?
+
+- The server loaded the book. The title is a prop all the way down.
+- The visitor is typing a search box. That string is state in the search component until they submit.
+- The tax came back from `POST /tax`. It can be state in the button, set from the response. It must not be a prop the button overwrites, and it must not be the price the server stores.
+
+Props flow down. Events flow up: the child calls a function the parent passed. That function is also a prop. The child does not import the parent's state.
+
+<PropsStateFigure />
+
+## Real example
+
+A button that must not invent the rate:
+
+```
+function TaxButton({ bookId }) {
+  // bookId is a prop
+  // the returned cents, once the click finishes, are state
+}
+```
+
+`bookId` stays the one the parent passed. The cents start empty and become the response body. If the component also has a prop named `cents` and then ignores it, delete one of the two.
+
+<TryIt minutes={5}>
+
+Pick one value on a screen, such as the book title or the text in a search box. Write "prop" or "state," and the component that owns it. If two components both think they own it, pick the parent and pass it down.
+
+</TryIt>
+
+<Mistake>
+
+Copying a prop into state "so we can edit it" and never writing it back. The screen and the owner disagree. Either the parent owns the value and passes an update function, or the child owns it and the parent does not also keep a copy.
+
+</Mistake>

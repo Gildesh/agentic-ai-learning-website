@@ -1,0 +1,80 @@
+---
+part: 7
+number: 5
+slug: building-an-endpoint
+title: "Building an endpoint"
+summary: "You can put the same GET /books/42 behind a Next.js route handler and a FastAPI function, and you can say what 404 looks like in each."
+minutes: 8
+terms:
+  - endpoint
+  - status code
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask for one endpoint and receive two frameworks, a database, and a login page. The request was `GET /books/42`. One function that returns JSON, or a 404, is the whole task. The framework is how that function is attached to the path.
+
+</Hook>
+
+## The idea
+
+An <Term id="endpoint">endpoint</Term> is the function a method and a path call. This project's Next.js docs, in `route.md`, say a route handler is a file that exports functions named for HTTP methods and uses the Web Request and Response APIs. For a dynamic segment, `params` is a promise. You await it. The old habit of reading `params.id` without `await` does not match this version.
+
+```
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  if (id !== "42") {
+    return Response.json({ error: "not found" }, { status: 404 });
+  }
+  return Response.json({ id, title: "Dune" });
+}
+```
+
+That file lives at `app/api/books/[id]/route.ts`. `GET /api/books/42` hits it. The <Term id="status-code">status code</Term> is the second argument to `Response.json`, not a field you hope the client notices.
+
+FastAPI's own first steps and path-parameter tutorial attach the same idea with a decorator. The path parameter becomes the function argument:
+
+```
+from fastapi import FastAPI, HTTPException
+
+app = FastAPI()
+
+@app.get("/books/{book_id}")
+async def read_book(book_id: str):
+    if book_id != "42":
+        raise HTTPException(status_code=404, detail="not found")
+    return {"id": book_id, "title": "Dune"}
+```
+
+FastAPI's tutorial documents the interactive docs at `http://127.0.0.1:8000/docs`. Those docs are generated from the decorators. They are not a substitute for sending the request.
+
+Pick one server for the bookstore. Do not let an agent scaffold both "so you can choose later." Later never deletes the extra one.
+
+<TwoEndpointsFigure />
+
+## Real example
+
+The check is the same against either server:
+
+```
+curl.exe -i http://localhost:3000/api/books/42
+curl.exe -i http://localhost:3000/api/books/999
+```
+
+FastAPI's default port in its tutorial is 8000, and the path has no `/api` prefix unless you added one. You want 200 with a title, then 404. If both return 200, the id is ignored.
+
+<TryIt minutes={5}>
+
+Write the file path for the stack you will actually run, Next or FastAPI, and the two curl lines with the right port. If you cannot name the file, the endpoint is still a wish.
+
+</TryIt>
+
+<Mistake>
+
+Returning the error object with status 200. The body can say "not found" and the client will still treat the call as success if it only checks `response.ok`. Set the status.
+
+</Mistake>

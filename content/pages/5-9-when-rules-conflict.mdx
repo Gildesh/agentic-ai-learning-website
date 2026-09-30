@@ -1,0 +1,60 @@
+---
+part: 5
+number: 9
+slug: when-rules-conflict
+title: "When rules conflict"
+summary: "You can find two instruction lines that disagree and delete one of them before the next agent run."
+minutes: 7
+terms:
+  - agent
+  - system prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+`CLAUDE.md` says "do not add files." `AGENTS.md` says "create whatever files you need." You run an agent and get a new framework plus an apology that mentions both files. The model did not reconcile your project. It produced a paragraph that sounds like obedience to a contradiction.
+
+</Hook>
+
+## The idea
+
+An <Term id="agent">agent</Term> does not have a courtroom for instructions. Every line in the <Term id="system-prompt">system prompt</Term>, the rules files, the skill, and your message is more text. When two lines disagree, the reply can follow either, or neither, and still look confident.
+
+Conflicts that show up constantly:
+
+- **File boundary.** One file limits paths. Another says to scaffold freely.
+- **Spec versus chat.** The spec says "not connected." The message says "make Pay look finished."
+- **Always-on versus skill.** A rule says "never show a checklist." A skill is a checklist. If both load, the agent weaves them.
+- **Two tools, two copies.** You updated `CLAUDE.md` and forgot `AGENTS.md`.
+
+The fix is editorial. Decide which sentence is true. Delete or rewrite the other in the same commit. Do not add a third sentence that says "if they conflict, prefer the spec" unless you also delete the loser. A preference layer on top of a contradiction is another line to drift.
+
+Search for the topic before you add a rule. If "card" already appears, edit that line. A second line about cards is how the conflict is born.
+
+When you notice a conflict only after a bad diff, restore the bad files, then fix the instructions, then resend the task card. Fixing the code while leaving the contradiction in place means the next session rebuilds the bad diff.
+
+<RuleConflictFigure />
+
+## Real example
+
+Disagreeing pair:
+
+```
+CLAUDE.md: Edit tax.py only.
+AGENTS.md: Add any files the feature needs.
+```
+
+Pick one. For this course's demo, the first is true. Change `AGENTS.md` to "Edit only the files the task card names." Now both files can be true at once. If you do not use Claude Code, delete `CLAUDE.md` rather than maintaining a file nothing reads, or nothing you remember to update.
+
+<TryIt minutes={5}>
+
+Search your instruction files for one noun you care about, such as "card" or "tax." If it appears twice, read both sentences side by side. If they could both be followed, leave them. If following both is impossible, delete one before you run an agent again.
+
+</TryIt>
+
+<Mistake>
+
+Asking the agent which rule to trust. It will pick one in prose and may edit the files to match the pick. You choose. The files should already agree before the session starts.
+
+</Mistake>

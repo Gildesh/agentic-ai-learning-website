@@ -1,0 +1,59 @@
+---
+part: 5
+number: 2
+slug: rules-files
+title: "Rules files: .cursor/rules, CLAUDE.md, AGENTS.md"
+summary: "You can name the instruction file each tool documents, and you can avoid keeping two copies of the same rule."
+minutes: 8
+terms:
+  - system prompt
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You write the card-field rule in three places so "every tool" will see it. Next month one copy says "no card field" and another says "collect the card for the demo." The agent follows one of them. You will not know which until the form appears.
+
+</Hook>
+
+## The idea
+
+Vendors document different filenames. As of the docs checked for Part 3, in September 2026:
+
+**Cursor.** Project rules live in `.cursor/rules` as `.mdc` files and are version-controlled. The rules doc also names `AGENTS.md` as a plain-markdown alternative. Rule text is included at the start of the model context. A project rule can always apply, apply when a file matches a pattern, apply when the agent judges a description relevant, or apply only when you mention it.
+
+**Claude Code.** `CLAUDE.md` at the project root is read at the start of every session. That is the standing file for that tool. Skills and hooks exist beside it. They are not the same file.
+
+**AGENTS.md** is the simple markdown file Cursor's rules doc describes. Other agents may read it when their docs say they do. Do not assume every product loads it. If you use one agent, one file is enough. If you use two, pick a primary file and make the second file a short pointer, or accept that you will edit two copies on purpose.
+
+The contents are a <Term id="system-prompt">system prompt</Term> you committed. The <Term id="agent">agent</Term> sees them only if that tool actually reads that path. A file named hopefully is not a rule.
+
+Do not paste the same paragraph into `CLAUDE.md`, `AGENTS.md`, and `.cursor/rules` "to be safe." Drift is the bug. One copy. If a second tool needs the rule, a line that says "Follow AGENTS.md" is easier to keep true than a second full copy, and only if that tool will open the file. When it will not, duplicate the few lines and put a comment at the top of each file: "Also update the other file." Then do it in the same commit.
+
+<RulesFilesFigure />
+
+## Real example
+
+A single `AGENTS.md` for a shop demo:
+
+```
+The Pay control must show "not connected".
+Do not add a card field.
+Tax example: 1000 cents at rate 0.08 is 80 cents.
+Edit only the files the task names.
+```
+
+If you also use Claude Code, either tell the session to read `AGENTS.md`, or put those four lines in `CLAUDE.md` and delete them from the chat. Check the tool's docs for which file it loads without being asked. Cursor loads project rules and can use `AGENTS.md`. Claude Code loads `CLAUDE.md`.
+
+<TryIt minutes={5}>
+
+Open the rules doc for the tool you use: [Cursor rules](https://cursor.com/docs/rules) or the [Claude Code overview](https://code.claude.com/docs/en/overview). Write the filename it reads without an extra instruction. Create that one file with the four lines above in a scratch repo. Do not create the other filenames until a second tool is actually in use.
+
+</TryIt>
+
+<Mistake>
+
+Inventing a filename the product does not read, then wondering why the rule was ignored. The filename is part of the contract. Copy it from the current docs, not from a blog that renamed it.
+
+</Mistake>

@@ -1,0 +1,65 @@
+---
+part: 1
+number: 9
+slug: tokens-cost-money
+title: "Tokens cost money: pricing, limits, rate limits"
+summary: "You can read an input price, an output price, and a rate limit, and you can see why a long reply costs more than a short prompt."
+minutes: 8
+terms:
+  - token
+  - rate limit
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You send a 20-word question and get a 600-word essay you did not ask for. The essay is most of the bill. The question was cheap. Both are <Term id="token">tokens</Term>, and the vendor prices them on different lines.
+
+</Hook>
+
+## The idea
+
+API prices on these pages are quoted per million tokens. Input tokens are the text you send, including instructions the app prepended. Output tokens are the text the model writes back. As of September 2026, output is the more expensive line on every row below.
+
+Claude, from the [models overview](https://platform.claude.com/docs/en/models/overview). "MTok" means one million tokens.
+
+| Model id | Input | Output | Context window |
+| --- | --- | --- | --- |
+| claude-fable-5-1 | $10 | $50 | 1M |
+| claude-opus-5-5 | $4 | $20 | 1M |
+| claude-sonnet-5-5 | $2 | $10 | 1M |
+| claude-haiku-4-5-20251001 | $1 | $5 | 200K |
+
+OpenAI, from the [models page](https://developers.openai.com/api/docs/models). The page writes the window as 1.05M.
+
+| Model id | Input | Output | Context window |
+| --- | --- | --- | --- |
+| gpt-6-astra | $10 | $50 | 1.05M |
+| gpt-6.1-sol | $2 | $10 | 1.05M |
+| gpt-6-luna | $0.1 | $0.5 | 1.05M |
+
+Grok 4.7, from the [model page](https://docs.x.ai/developers/models/grok-4.7). Context window 500,000 tokens. Input is $2.00 per million tokens, cached tokens are $0.50 per million, and output is $6.00 per million. Cached tokens are a repeated prefix the vendor bills at a lower rate. They are not free, and they are not a second model.
+
+Gemini 3.8 Flash is the stable text id from the previous page. This course does not quote a Gemini price, because the models index checked for this page did not put one number next to that card. Open the card before you budget it.
+
+A <Term id="rate-limit">rate limit</Term> is a cap on how fast you may call, separate from the price. The usual units are requests per minute and tokens per minute. Hitting it returns an error instead of a reply. The number is on your account, not in this table. Read it in the vendor's dashboard when you have a key. Do not copy a limit from a forum.
+
+Two habits keep a beginner bill small. Ask for a short answer when you are testing. Put "reply in one sentence" in the prompt and you cut output tokens. And do not send a whole repository on every attempt. Input tokens include the files the tool pasted in.
+
+<TokenPriceFigure />
+
+## Real example
+
+Sonnet 5.5 at $2 per million input tokens and $10 per million output tokens. A prompt of about 500 tokens and a reply of about 500 tokens is a tiny fraction of a million: roughly a tenth of a cent of input and half a cent of output. A reply of 50,000 tokens is a dollar of output before you have done anything else. The trap is the long reply, not the question.
+
+<TryIt minutes={5}>
+
+Take the three numbers you wrote down for Claude Sonnet 5.5 on the previous page. They should match the row above: API id `claude-sonnet-5-5`, context window 1M, input $2 per million tokens. If the live page disagrees, the live page wins. Write the date you checked next to your note.
+
+</TryIt>
+
+<Mistake>
+
+Comparing a chat subscription to an API price as if they were the same meter. A monthly chat plan is a product with its own cap. An API bill is tokens in and tokens out, plus whatever the rate limit lets you send. Read the line you are actually paying.
+
+</Mistake>

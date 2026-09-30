@@ -1,0 +1,60 @@
+---
+part: 1
+number: 12
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can answer five checks about tokens, hallucination, memory, model ids, and tool calls."
+minutes: 8
+terms:
+  - LLM
+  - hallucination
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You can now read a claim about a model and take it apart. Is it predicting a token, quoting a window, or reporting a tool? Which model id, at what input price? Part 2 will ask you to write better prompts. These checks stay in force when the prompt is good.
+
+</Hook>
+
+## The idea
+
+An <Term id="llm">LLM</Term> predicts the next token. It does not count letters unless you force the letters into view or hand the count to code. A <Term id="hallucination">hallucination</Term> is a specific claim with no source in the prompt or in a tool result. Asking "are you sure?" produces another prediction.
+
+Training updates weights. A chat does not. A new chat knows a fact only if the app pastes it: the transcript, a saved note, or a retrieval hit. The context window is that one request. Text that fell out of the window is gone for that call.
+
+Text, image, and audio are different artifacts. Code is text. A code model does not execute. A tool does.
+
+As of September 2026, the model id is the string on the request. Prices on the previous page are per million tokens, and output costs more than input on every row quoted there. A chat app hides the HTTP request. An API key is a secret. An agent is a loop of tool calls. You grade the artifacts.
+
+<Part1RecapFigure />
+
+## Real example
+
+One page, five checks, before the quiz. Say each one out loud in a sentence of your own.
+
+1. Strawberry has three r's. A confident "two" was a token guess.
+2. Paper Lantern survives in a new chat only if some note was pasted in.
+3. `claude-sonnet-5-5` is not the same window as Haiku 4.5.
+4. A 600-word essay is output tokens.
+5. "Tests passed" needs the command output.
+
+<Quiz questions={[
+  { prompt: "What is an LLM doing when it writes a reply?", choices: ["Looking up your answer in a private database of facts", "Predicting the next token, then repeating", "Updating its weights from your message", "Running your code inside the model"], answer: 1, why: "Inference predicts the next token. Weights stay fixed unless a separate training job updates them." },
+  { prompt: "Why can a model say strawberry has two r's?", choices: ["It counted the letters and made an arithmetic error", "It sees tokens such as straw and berry, and it predicts a sentence that looks like an answer", "The word changed spelling in 2026", "Search engines disagree with dictionaries"], answer: 1, why: "The model is not looking at nine letters. Spell the word out, or count in code." },
+  { prompt: "A new chat knows your store name. What happened?", choices: ["The model remembered you in its weights", "The app pasted a transcript, a note, or a retrieval hit into the request", "Hallucination is impossible after the first week", "The context window includes every chat you have ever opened"], answer: 1, why: "Memory in a product is text the app sends. Delete the text and test again." },
+  { prompt: "As of September 2026, which Claude API id is priced at $2 per million input tokens on Anthropic's models overview?", choices: ["claude-fable-5-1", "claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-4-5-20251001"], answer: 2, why: "Sonnet 5.5 is the $2 input / $10 output row. Fable is $10 input, Opus is $4, Haiku is $1. Recheck the live page if you are about to spend money." },
+  { prompt: "An agent says the tests passed. What do you look for?", choices: ["A second message where the agent says it is sure", "The command and its output in the transcript", "A longer context window", "The family name on the picker"], answer: 1, why: "A tool result is the artifact. A sentence about the tests is another prediction." }
+]} />
+
+<TryIt minutes={5}>
+
+Answer the quiz, then open the [Claude models overview](https://platform.claude.com/docs/en/models/overview) and confirm the Sonnet input price with your own eyes. If it has changed since this page was checked, write the new number in your note and keep the date. The habit is the check, not the memorized dollar.
+
+</TryIt>
+
+<Mistake>
+
+Treating this recap as a ranking of vendors. The table is a price and a window, checked in September 2026. It does not say which model writes better code. Part 11 compares coding use with a procedure, not with a slogan.
+
+</Mistake>

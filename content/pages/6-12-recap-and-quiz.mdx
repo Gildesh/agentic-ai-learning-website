@@ -1,0 +1,85 @@
+---
+part: 6
+number: 12
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can place a bug in the frontend, the backend, or the path between them."
+minutes: 7
+terms:
+  - frontend
+  - backend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You have twelve pages of vocabulary and one test that matters: when the screen is wrong, can you say which machine lied? The rest of the course builds on that split.
+
+</Hook>
+
+## The idea
+
+The browser turns a URL into a request and draws the response. DNS finds the host. HTTP carries the request and the response. The status code is the server's report.
+
+The frontend is HTML for structure, CSS for presentation, and JavaScript for behavior, including the code that sends requests. The visitor controls it. A check that lives only there is not a boundary.
+
+The backend is the program that receives the request, decides, and answers. It reads stored data. It recomputes tax. It returns 200, 400, 404, or 500. You can replay it with curl and no button.
+
+Hosting is a process that stays up under a public name. Localhost is your machine. A git push is not a deploy. Local, staging, and production are three copies. Test writes do not belong on production.
+
+A full-stack map is frontend, backend, store, and, when money moves, a payment company beside the server. An agent fakes the backend when the button changes the page and the network panel stays empty. Debugging reads the request, the status, then the log on the side that failed.
+
+<Part6RecapFigure />
+
+<Quiz
+  questions={[
+    {
+      prompt: "You click Pay. The page says Paid. The network panel shows no request. Where is the bug?",
+      choices: [
+        "The frontend drew a result the backend never produced",
+        "DNS failed to find the host",
+        "CSS hid the real confirmation",
+      ],
+      answer: 0,
+      why: "No request means no server decision. The sentence was already in the page.",
+    },
+    {
+      prompt: "A title is in the HTML and the wrong size. Which layer do you open first?",
+      choices: ["CSS", "The database", "The status code"],
+      answer: 0,
+      why: "The element exists. Size is presentation. CSS is the layer that sets it.",
+    },
+    {
+      prompt: "POST /tax returns 500 and the browser console is empty. What do you read next?",
+      choices: [
+        "The server log for that request",
+        "A new stylesheet",
+        "The public marketing page",
+      ],
+      answer: 0,
+      why: "A 500 is the backend failing. The page can swallow it and leave the console quiet.",
+    },
+    {
+      prompt: "A friend cannot open http://localhost:3000. What is true?",
+      choices: [
+        "localhost is your machine, not a public host",
+        "Their CSS is blocking the site",
+        "You must change the HTML title",
+      ],
+      answer: 0,
+      why: "That URL asks their computer for a server. Yours is not running there.",
+    },
+  ]}
+/>
+
+<TryIt minutes={5}>
+
+Answer the four questions, then open the network panel on any site and name one request as frontend-started and server-answered. If you cannot see a status code, reload with the panel open.
+
+</TryIt>
+
+<Mistake>
+
+Calling the whole failure "the frontend" because that is the window you can see. The window draws a status. Read the status before you edit the window.
+
+</Mistake>

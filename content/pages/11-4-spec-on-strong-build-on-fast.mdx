@@ -1,0 +1,55 @@
+---
+part: 11
+number: 4
+slug: spec-on-strong-build-on-fast
+title: "A real split: spec and review on a strong model, build on a fast one"
+summary: "You can name published model ids for the spec and for the build, and you can keep the id that passes your gate."
+minutes: 7
+terms:
+  - spec
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You want a concrete split, not another sermon about roles. Here is one that uses ids this course has already checked, and that still refuses to declare a winner without your gate.
+
+</Hook>
+
+## The idea
+
+Use `claude-opus-5-5` for the <Term id="spec">spec</Term> and for review. The September 2026 Claude overview listed it at $4 per million input tokens and $20 per million output tokens, with a 1M-token context. That is the strong role in this example because the spec edit and the review are short, high-leverage, and you want the larger window when the diff is wide.
+
+For the build, run the same card twice, once on `claude-haiku-4-5-20251001` and once on `grok-4.7`, on two branches. Haiku 4.5 was listed at $1 and $5 per million, with a 200K window. Grok 4.7 was listed at $2.00 and $6.00, with 500,000 tokens of context. The <Term id="agent">agent</Term> on each branch gets the same card and the same spec path. Neither branch may edit the locked test.
+
+Keep the branch whose gate exits 0 and whose `git diff --name-only` matches the card. If both pass, keep the one that cost less on the tokens you actually used, or the one that finished inside the window without you splitting the card. If neither passes, the card is blocked. You escalate with the output. You do not average the two wrong diffs.
+
+This is a trial, not a permanent ranking of Claude against Grok. Next month the ids and the prices can change. The procedure stays: same card, same gate, written result.
+
+<ModelSplitFigure />
+
+## Real example
+
+A note you file after the trial:
+
+```
+Card: POST /tax unknown id returns 404
+claude-haiku-4-5-20251001: exit 0, files match
+grok-4.7: exit 1, expected 404 got 200
+Keep Haiku for this kind of card until a later card says otherwise
+```
+
+The note names ids and exit codes. It does not say "Grok cannot code." One card is one card.
+
+<TryIt minutes={5}>
+
+Write the two branch names and the one gate command you would use for this trial. If you only have access to one id today, write that, and write "second id not run" instead of inventing a result.
+
+</TryIt>
+
+<Mistake>
+
+Merging both branches because each "almost" worked. Almost is two red or muddy diffs. One green branch merges. The other is evidence, not a second implementation.
+
+</Mistake>

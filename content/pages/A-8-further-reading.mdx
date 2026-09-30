@@ -1,0 +1,64 @@
+---
+part: "A"
+number: 8
+slug: further-reading
+title: "Further reading"
+summary: "You can open the official page behind a claim in this course, and you can trust that page when it disagrees."
+minutes: 7
+terms:
+  - HTTP
+  - LLM
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A number in a lesson is a note about a page you can open. The page can change. The note should say when it was checked. September 2026 is that month for the prices and the model ids in Part 1. If the live page disagrees, follow the live page and write the new date.
+
+</Hook>
+
+## The idea
+
+These are official sources the lessons already used. They are not a reading list of blogs.
+
+**HTTP and the browser.** Method and status codes are in [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html). JSON is [RFC 8259](https://www.rfc-editor.org/rfc/rfc8259.html). `fetch` is documented on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
+
+**This stack.** Next.js route handlers, server and client components, and forms are in the docs shipped with the Next.js version in this repo. Read those files before you copy an older tutorial. The App Router's `params` is a promise here.
+
+**Models.** Claude's model list is the [models overview](https://platform.claude.com/docs/en/models/overview). Grok 4.7 is the [model page](https://docs.x.ai/developers/models/grok-4.7). An <Term id="llm">LLM</Term> id on an invoice should match one of those pages, not a family nickname.
+
+**Agents.** [Cursor's hooks docs](https://cursor.com/docs/hooks) cover the `stop` event and `loop_limit`. Claude Code's hook reference is the [hooks guide](https://code.claude.com/docs/en/hooks-guide). A hook that blocks is still their hook, not a React hook.
+
+**Data and money.** [Supabase's database overview](https://supabase.com/docs/guides/database/overview) says each project is a full Postgres database. The [checkout page](/part/8/checkout-and-card-data) follows Stripe's Checkout docs: payment details go to Stripe and not through your server. The [webhook page](/part/8/webhooks-and-idempotency) follows Stripe's webhook docs on the `Stripe-Signature` header. The [secret scanning page](/part/12/secret-scanning) follows GitHub's push protection docs.
+
+**Security lists.** The web risks are the [OWASP Top 10:2025](https://owasp.org/Top10/2025/). The 2021 numbers are the wrong year.
+
+**Interfaces.** Part 9 follows the vendors' own guides on [Angular](/part/9/angular-in-brief) and on [Vue and Svelte](/part/9/vue-and-svelte). <Term id="http">HTTP</Term> status codes do not change because you picked a different UI framework.
+
+When you learn a new command, prefer the vendor's own page over a summary, including this one.
+
+<FurtherReadingFigure />
+
+## Real example
+
+A note next to a price you copied:
+
+```
+claude-opus-5-5, $4 / $20 per million, 1M context
+Source: Claude models overview
+Checked: 2026-09
+```
+
+Open the overview before you send a billable loop. If the row moved, your note is stale. Update the note. Do not argue with the page from memory.
+
+<TryIt minutes={5}>
+
+Pick one URL from this page and open it. Write one sentence it still supports, and the date. If you cannot find the sentence, the lesson that quoted it needs a correction. The doc wins.
+
+</TryIt>
+
+<Mistake>
+
+Citing a leaderboard or a recap post as if it were the vendor. The further reading is the vendor and the RFC. A chart is a hypothesis until your gate says otherwise.
+
+</Mistake>

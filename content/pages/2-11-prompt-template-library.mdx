@@ -1,0 +1,65 @@
+---
+part: 2
+number: 11
+slug: prompt-template-library
+title: "A reusable prompt template library"
+summary: "You can keep three short prompt files and fill the blanks instead of rewriting the shape each time."
+minutes: 7
+terms:
+  - prompt
+  - few-shot
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You write a careful bug prompt on Monday. On Thursday you type "it's broken again" because finding Monday's message is slower than starting over. The careful version was a template. It should have been a file with blanks, not a chat you cannot search.
+
+</Hook>
+
+## The idea
+
+A template library is a folder of <Term id="prompt">prompts</Term> you reuse. Each file is one job. The shape stays. You fill the blanks: the error, the file, the expected output. This is the same idea as <Term id="few-shot">few-shot</Term> examples, stored outside the chat so the examples do not scroll away.
+
+Three files cover the work in this part.
+
+- `prompts/bug.md` for a failure: command, error, the function, what not to change, the command that defines done.
+- `prompts/task.md` for a change that is not a bug: file, signature, non-goals, done command.
+- `prompts/review.md` for reading a draft: what to keep, the line that is wrong, the shape of the replacement.
+
+Keep each file under a page. A template that includes every rule you have ever liked becomes a system prompt in disguise, and it will conflict with itself. Standing rules live in custom instructions. The template is the task shape.
+
+Name the blanks in braces so you can see one you forgot: `{command}`, `{error}`, `{file}`. Before you send, search the draft for `{`. A leftover brace means you did not fill a slot, and the model will invent it.
+
+When a template keeps producing a bad reply, fix the file once. The next bug gets the repair for free. That is the second-prompt lesson, saved.
+
+<TemplateLibraryFigure />
+
+## Real example
+
+`prompts/bug.md`:
+
+```
+Only edit {file}.
+Command: {command}
+Error:
+{error}
+
+Change: {change}
+Do not: {do_not}
+Done: rerun {command} and paste the output.
+```
+
+Filled in, `{file}` is `tax.py`, `{command}` is `python tax.py`, `{error}` is the TypeError line, `{change}` is "convert price_cents with int", and `{do_not}` is "add new files." You can paste that into a chat today. Later, an agent can read the same file from the project. The words do not have to change when the tool does.
+
+<TryIt minutes={5}>
+
+Create the three files in a note or a folder named `prompts`. Fill `bug.md` with the tax TypeError from earlier in this part. Send it. If the reply stays inside `tax.py`, the template held. If you had to add a sentence that was not in the file, add that sentence to the file before you close the chat.
+
+</TryIt>
+
+<Mistake>
+
+Keeping the good prompt only in a chat transcript. You will not find it on Thursday. A file you can open is the library. The chat is one use of the file.
+
+</Mistake>

@@ -1,0 +1,57 @@
+---
+part: 1
+number: 7
+slug: text-image-audio-code
+title: "Text, image, audio and code models"
+summary: "You can match a job to a text model, an image model, an audio model, or a multimodal model, and you can see that code is still text."
+minutes: 7
+terms:
+  - multimodal
+  - LLM
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask one chat to name a bookstore, draw a storefront, and read a voice note from a customer. Three different artifacts come back, or the product refuses one of them. "The AI" is not one machine that happens to be in a good mood. Each artifact has an input kind and an output kind.
+
+</Hook>
+
+## The idea
+
+An <Term id="llm">LLM</Term> takes text and produces text. A product pitch, a bug report, and a Python function are all text. A model people call a "code model" is still an LLM, trained with more source code in the mix. It does not run your program by being a code model. It writes text that a Python interpreter, a compiler, or a test runner can run. The run is a tool. The model wrote the file.
+
+An image model takes a prompt, and often an image, and produces or edits pixels. Asking an LLM to "draw" inside a text-only chat gets you a description, or a refusal, unless the product routes that request to an image model. When a chat app shows a picture, look for which model the picker says it used. The caption under the picture is text. The picture is the other model.
+
+Audio splits in two. Speech-to-text turns a recording into a transcript. Text-to-speech turns a transcript into a recording. A transcript is text, so an LLM can summarize it after the transcription model has done its job. The LLM did not hear the file.
+
+A <Term id="multimodal">multimodal</Term> model accepts more than one kind of input in the same request. You can attach a screenshot and ask "what status code is in this response?" The image and the question arrive together. That is different from an app that secretly calls one model for the image and pastes the caption into a second model. Both can answer. Only the first saw the pixels. When you need the model to point at a button in a screenshot, use a model the vendor documents as accepting images.
+
+Pick the model from the artifact you need, not from the brand name on the chat window.
+
+<ModalityMatrixFigure />
+
+## Real example
+
+Four one-line jobs. Each names the artifact:
+
+```
+Text: write a one-sentence return policy for used paperbacks.
+Image: a square storefront illustration, no text in the image.
+Audio: transcribe this clip, then stop.
+Code: a Python function count_r(word) that returns word.count("r").
+```
+
+The code job is done when the function is text you can run. The image job is done when you have a file of pixels. If a text model answers the image job with a paragraph that begins "Imagine a shop," it did the text job instead. Say so, and switch models, instead of asking it to try the paragraph again.
+
+<TryIt minutes={5}>
+
+Send the text job and the code job to the same chat. Run the function if you have Python: `print(count_r("strawberry"))` should be `3`. Then look at the model picker and note whether image input is offered. Write down the artifact type next to each job: sentence, function, and whether a picture was even available.
+
+</TryIt>
+
+<Mistake>
+
+Treating "code model" as a model that executes. It writes text. Tests, the interpreter, and the browser execute. If the reply says the tests passed, look for the command output in the transcript. A sentence that claims they passed is text, generated the same way as the function.
+
+</Mistake>

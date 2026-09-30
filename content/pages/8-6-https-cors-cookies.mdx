@@ -1,0 +1,53 @@
+---
+part: 8
+number: 6
+slug: https-cors-cookies
+title: "HTTPS, CORS and cookies"
+summary: "You can separate an encrypted connection from a browser rule about other sites, and you can set a session cookie so scripts cannot read it."
+minutes: 7
+terms:
+  - HTTP
+  - frontend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The API returns your orders to any website that asks, because a tutorial set the CORS header to `*`. The connection is HTTPS, so it looked safe. HTTPS stopped a stranger on the network from reading the bytes. It did not decide which website's JavaScript may ask your API to send those bytes along with the user's cookie.
+
+</Hook>
+
+## The idea
+
+HTTPS is <Term id="http">HTTP</Term> inside TLS. The lock icon means the connection is encrypted and the name matches a certificate. Stripe's security guide says you can test without HTTPS and turn it on before live charges, and that calls from your server to Stripe use HTTPS. Encryption is not authentication. A criminal site can have a certificate too.
+
+CORS (Cross-Origin Resource Sharing) is a browser rule. A page on `https://other.example` that calls your API is cross-origin. The browser asks your server, with an `Origin` header, whether that page may read the response. Your server answers with `Access-Control-Allow-Origin`. If you reflect every origin and allow credentials, any site can make a logged-in user's browser call you and read the result.
+
+`curl` does not enforce CORS. A locked-down CORS header does not stop a program that has the user's cookie or token. The owner check still runs. CORS is a seatbelt for the <Term id="frontend">frontend</Term>, not a lock on the server.
+
+Cookies are how a session rides along. For a session cookie, set `HttpOnly`, `Secure`, and `SameSite`. `HttpOnly` keeps page scripts from reading the id. `Secure` keeps it off plain HTTP. `SameSite` controls when the browser attaches it to a request that another site started. A cookie you can read from JavaScript is a cookie an injected script can steal. Do not put the session id where the page can print it.
+
+<HttpsCorsFigure />
+
+## Real example
+
+One honest CORS choice for a shop whose pages and API share a site:
+
+```
+Access-Control-Allow-Origin: https://shop.example
+Access-Control-Allow-Credentials: true
+```
+
+`shop.example` is a stand-in. Use the origin you actually serve. `*` together with credentials is not a configuration to copy from a snippet.
+
+<TryIt minutes={5}>
+
+Find the CORS header in the project, or write "none yet." If the value is `*`, write what a page on another site would be allowed to read. If the session cookie is missing `HttpOnly`, that is the next change, before any new feature.
+
+</TryIt>
+
+<Mistake>
+
+Treating CORS as the authorization layer. It tells browsers which pages may read a response. It does not check the owner of the order. The handler still does.
+
+</Mistake>

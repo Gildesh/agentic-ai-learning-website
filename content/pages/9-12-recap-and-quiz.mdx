@@ -1,0 +1,83 @@
+---
+part: 9
+number: 12
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can place a UI bug in props, state, the server-client split, or the framework the repo does not use."
+minutes: 7
+terms:
+  - component
+  - state
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The title is wrong, the click does nothing, or a second framework appeared in the diff. Those are three different fixes. The vocabulary in this part is how you tell them apart.
+
+</Hook>
+
+## The idea
+
+A framework exists so a named component is the one place a piece of UI lives. In React, a component is a function that returns elements. Props are what the parent passes in. State is what this component owns. A React hook such as `useState` or `useEffect` runs in a Client Component. It is not an agent hook.
+
+Next.js with the App Router maps `app/.../page.tsx` to a URL and `layout.tsx` to shared UI. In this version, `params` is a promise. Pages are Server Components unless the file starts with `'use client'`. The server file may hold a secret and a database read. The client file may hold a click. Pass props down. Do not pass the database client.
+
+`loading.tsx` shows while a page segment waits. A layout that reads cookies does not use that fallback. A Server Function behind a form is invoked with POST, including by someone who skips the button, so it checks the session first.
+
+Angular components are classes with `@Component`. You read a signal by calling it. Inputs are the props. Vue puts template, script, and style in a `.vue` file and compiles it. Svelte compiles a `.svelte` file to JavaScript, and SvelteKit is the app framework around it. Pick one. This course stays on Next.js.
+
+<Part9RecapFigure />
+
+<Quiz
+  questions={[
+    {
+      prompt: "A child component needs the book title. What is that value?",
+      choices: ["A prop the parent passes in", "State the child should copy and edit", "An agent hook"],
+      answer: 0,
+      why: "The parent owns the title. The child receives it as a prop and displays it.",
+    },
+    {
+      prompt: "Where do you call useState in this version of Next.js?",
+      choices: [
+        "In a file that starts with use client",
+        "In any Server Component",
+        "In hooks.json",
+      ],
+      answer: 0,
+      why: "useState is a React hook. The Next.js docs put state in Client Components. hooks.json is the agent feature from Part 3.",
+    },
+    {
+      prompt: "What is app/books/[id]/page.tsx?",
+      choices: [
+        "The App Router page for /books/42, and params is a promise",
+        "An Angular template",
+        "A Vue single-file component",
+      ],
+      answer: 0,
+      why: "A page file in the app directory is the route. This Next.js version awaits params.",
+    },
+    {
+      prompt: "A Server Action inserts a book. What is the first check?",
+      choices: [
+        "Who is calling, from the session",
+        "Whether the button is visible",
+        "The CSS class on the form",
+      ],
+      answer: 0,
+      why: "The docs say a direct POST can invoke the action. Authentication happens inside the function.",
+    },
+  ]}
+/>
+
+<TryIt minutes={5}>
+
+Answer the four questions, then write the path of one Server Component and one Client Component for a book page. If they are the same path, split the click into a second file.
+
+</TryIt>
+
+<Mistake>
+
+Quoting a framework you are not running. The review is about the files in the repo. A correct Angular answer does not fix a Next.js `params` bug.
+
+</Mistake>

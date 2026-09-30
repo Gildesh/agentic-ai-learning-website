@@ -1,0 +1,67 @@
+---
+part: 9
+number: 4
+slug: react-hooks
+title: "React hooks you'll see everywhere"
+summary: "You can call useState and useEffect from a Client Component, and you can tell a React hook from an agent hook."
+minutes: 7
+terms:
+  - React hook
+  - state
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The file imports `useState` and the build says you cannot use it there. The component was a Server Component. A <Term id="react-hook">React hook</Term> is a function React calls while rendering a client component. It is not the agent hook from Part 3. That one is a script in `hooks.json` or a shell command. Same English word. Different feature. This page is only the React one.
+
+</Hook>
+
+## The idea
+
+React hooks are functions whose names start with `use`. You call them at the top of the component, not inside a condition or a loop, so every render calls them in the same order. The two you will meet first are `useState` and `useEffect`.
+
+`useState` holds <Term id="state">state</Term>.
+
+```
+const [cents, setCents] = useState(null);
+```
+
+`cents` is the current value. `setCents` replaces it and causes a redraw. Do not set state during render. Set it in a click handler or after a response arrives.
+
+`useEffect` runs after the browser has painted. The Next.js docs in this project list it as lifecycle logic that belongs in a Client Component, along with state, event handlers, and browser APIs such as `localStorage`. Use it for work that must touch the browser. Do not use it to fetch the book on first paint if a Server Component can load the book before the page is sent. The effect will flash an empty title and then fill it.
+
+A custom hook is a function you write whose name starts with `use`, so you can share that stateful logic. It is still a React hook. It still cannot run in a Server Component.
+
+The file that calls any of these starts with `'use client'` as its first line. The next pages say why. If you add `useState` to `page.tsx` and the build fails, the fix is to move the interactive piece into a client file, not to disable the check.
+
+<ReactHooksFigure />
+
+## Real example
+
+A click that stores the response, in a client file:
+
+```
+'use client'
+const [cents, setCents] = useState(null);
+async function onClick() {
+  const response = await fetch("/api/tax", { method: "POST" });
+  if (!response.ok) return;
+  const body = await response.json();
+  setCents(body.tax_cents);
+}
+```
+
+No `useEffect` required. The click is the event. An effect that fetches on mount would run even when nobody asked for the tax.
+
+<TryIt minutes={5}>
+
+Search a React file for `useState` and `useEffect`. For each effect, write the browser API it needs. If the answer is "none, it only fetches," that fetch wants a server component or a click, not an effect.
+
+</TryIt>
+
+<Mistake>
+
+Calling the Part 3 agent hook a React hook, or the reverse. `useState` does not run at a tool boundary. `hooks.json` does not hold component state. Say which one you mean.
+
+</Mistake>

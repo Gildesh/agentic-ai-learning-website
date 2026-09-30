@@ -1,0 +1,60 @@
+---
+part: 5
+number: 4
+slug: skills-skill-md
+title: "Skills: packaged instructions (SKILL.md)"
+summary: "You can put one repeatable job in a SKILL.md file and say how Cursor and Claude Code find it."
+minutes: 8
+terms:
+  - skill
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+Every time you ask for a diff review you retype the same four checks: which files, any card field, whether the command output is pasted, whether the spec still matches. The retyping is a template from Part 2 that never became a file the agent can load by name.
+
+</Hook>
+
+## The idea
+
+A <Term id="skill">skill</Term> is that template, packaged so an <Term id="agent">agent</Term> can load it for one kind of job. Both Cursor and Claude Code document a `SKILL.md` file. The details differ. Do not invent a hybrid and expect both tools to accept it.
+
+**Cursor**, from the skills doc checked for this page. Each skill is a `SKILL.md` with YAML frontmatter. `name` is required, lowercase letters, numbers, and hyphens, and it must match the parent folder name. `description` is required and is how the agent decides the skill is relevant. Skills can live in `.cursor/skills/` and are discovered when Cursor starts. They can include scripts and templates. A skill is not the same as a rule with `alwaysApply: true`. Rules with an explicit trigger are a different mechanism. Set `disable-model-invocation: true` when you want the skill only if you type `/skill-name`, which the next page covers.
+
+**Claude Code**, from its skills doc. A skill needs a `SKILL.md` with frontmatter between `---` markers and markdown instructions after that. The description helps Claude decide when to load the skill. The directory name, or the frontmatter name when you set one, becomes the command. A personal skill can live under `~/.claude/skills/`, for example `~/.claude/skills/summarize-changes/SKILL.md`. Project skills are documented on that same page. Read the current section before you pick a directory.
+
+Use a skill for a job you repeat: review a diff, write a bug note, add a page that must not collect a card. Use a rules file for constraints on every job. If the review checklist is in the always-on rules, it crowds tasks that are not reviews.
+
+<SkillFileFigure />
+
+## Real example
+
+A Cursor-shaped skill. The folder name matches `name`.
+
+```
+---
+name: review-diff
+description: Review a git diff for extra files, card fields, and a missing command output. Use when the user asks for a review.
+---
+
+List files changed.
+Reject a card number field.
+Reject a claim that tests passed if the command output is absent.
+Quote the spec line the diff claims to satisfy.
+```
+
+Save it as `.cursor/skills/review-diff/SKILL.md` when you are following Cursor's layout. For Claude Code, follow that product's directory and keep `SKILL.md` plus a description. The checks in the body can stay.
+
+<TryIt minutes={5}>
+
+Create the folder and file for the tool you use. Open [Cursor's skills doc](https://cursor.com/docs/skills) or [Claude Code's skills doc](https://code.claude.com/docs/en/skills) and confirm the directory. If the live page names a different path, use the live path. Then ask the agent to review a one-line diff and see whether it mentions the card-field check without you pasting the checklist.
+
+</TryIt>
+
+<Mistake>
+
+Putting every project rule inside the skill, and every skill step inside the rules file. The rule is always present. The skill is for a job. Mixing them means the review checklist runs while you are trying to rename a heading.
+
+</Mistake>

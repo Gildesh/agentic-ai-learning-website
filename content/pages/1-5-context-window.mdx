@@ -1,0 +1,68 @@
+---
+part: 1
+number: 5
+slug: context-window
+title: "The context window: what the model can see right now"
+summary: "You can say what is inside the context window for one request, and what happens when the conversation no longer fits."
+minutes: 7
+terms:
+  - context window
+  - token
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You spend an hour in one chat describing a checkout flow. Near the end you ask "what did I say the tax rate was?" and the reply guesses, or it quotes a sentence from the first ten minutes and misses the correction you made later. The model did not get bored. Part of the chat is no longer in view.
+
+</Hook>
+
+## The idea
+
+The <Term id="context-window">context window</Term> is the set of <Term id="token">tokens</Term> the model can see in a single request. That set usually holds three kinds of text, stacked by the app before the model runs:
+
+- Instructions the app prepends, such as "you are a coding assistant."
+- Earlier turns the app still chooses to send.
+- The new message you just typed.
+
+Anything not in that set is invisible for this request. The model cannot reach back into a previous chat, a file you did not attach, or a turn the app dropped. Vendors publish a maximum size for each model, counted in tokens. This page does not list those numbers. They change with the model, and page 1.8 is where a published limit belongs, next to the model name, only after the vendor's own docs confirm it.
+
+When the conversation grows past the limit, the app has to shrink the request. Common ways, which the product docs will name if they do them:
+
+- Drop the oldest turns.
+- Replace a stretch of the chat with a shorter summary the model wrote earlier.
+- Refuse the request and show a limit error.
+
+A summary is new text. It can drop the tax rate you care about. Dropping old turns drops them for real. The model will then answer from what remains, and it will still sound sure.
+
+For an agent, the window also holds file contents the tool pasted in. A 2,000-line file can crowd out the spec you wrote at the top. If the agent "forgets" the constraint, check whether the constraint is still inside the request, not whether the model is trying hard enough.
+
+<ContextWindowFigure />
+
+## Real example
+
+Paste a short rule, then bury it.
+
+```
+Rule: the tax rate in this exercise is 8%. Reply "noted" only.
+```
+
+Then paste about a page of unrelated text, any paragraph you have handy, and end with:
+
+```
+What tax rate did I set? If you do not see it in this chat, say "not in view".
+```
+
+In a short chat the model can quote 8%, because the rule is still in the window. The useful habit is the second sentence you demanded: if the text is gone, say so, instead of inventing a rate.
+
+<TryIt minutes={5}>
+
+Run the three messages above in one chat. Then start a new chat and send only the question. The first chat can see the rule. The second cannot. Write one line: "the window is this request, not my afternoon."
+
+</TryIt>
+
+<Mistake>
+
+Assuming a long chat is a growing memory. Length on screen is not length in the request. If a fact matters, repeat it in the message you are sending now, or put it in a file the tool reads on every task. A fact that scrolled away may already be outside the window.
+
+</Mistake>

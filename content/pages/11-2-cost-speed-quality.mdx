@@ -1,0 +1,55 @@
+---
+part: 11
+number: 2
+slug: cost-speed-quality
+title: "The cost, speed and quality triangle"
+summary: "You can separate the published price, the time you measure, and the gate that defines quality."
+minutes: 7
+terms:
+  - token
+  - context window
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You pick a model because it is "smarter," then the bill arrives for a long reply that failed the test. Smarter was not a number. The invoice is. Quality, for this course, is the gate from Part 10. The other two corners are price and the clock.
+
+</Hook>
+
+## The idea
+
+Price is published per million <Term id="token">token</Term>s. As of the September 2026 pages this course already checked: `claude-opus-5-5` is $4 in and $20 out, `claude-haiku-4-5-20251001` is $1 in and $5 out, and `grok-4.7` is $2.00 in and $6.00 out, with cached input at $0.50. If the live page disagrees when you look, the live page wins. A loop that retries a red card on the expensive id spends the output price on every attempt.
+
+Speed is the clock on your card, not a slogan. Time the fast-role run from the message to the diff. Time the strong-role review separately. A model that is cheap per token and slow to a wrong diff is not a bargain. Write the times down. Do not invent them from a leaderboard.
+
+Quality is the exit code. A fluent wrong route is a failed gate. A terse diff that returns 404 for an unknown book is a pass. Claude and Grok do not get partial credit for tone.
+
+The <Term id="context-window">context window</Term> is the fourth fact people forget while staring at price. Haiku 4.5's listed window is 200K tokens. Opus 5.5's is 1M. Grok 4.7's is 500,000. A spec-and-repo packet that fits in Opus may not fit in Haiku. If the card's files do not fit, the cheap id is the wrong tool for that card. Split the card. Do not hope the model will notice what fell off the end.
+
+<CostTriangleFigure />
+
+## Real example
+
+Three cells for one card:
+
+```
+Id: grok-4.7
+Price used: the published $2 / $6 per million
+Gate: exit 0 or exit 1
+Clock: the minutes you observed
+```
+
+Leave the clock blank until you have observed it. A blank is honest. A copied "fast" is not.
+
+<TryIt minutes={5}>
+
+Copy the published input and output price for the two ids you chose on the previous page, and the context window for each. Circle the window that cannot hold your spec plus the files on the card.
+
+</TryIt>
+
+<Mistake>
+
+Calling the lower price the better model. Haiku's $1 and $5 is a smaller bill per token than Opus's $4 and $20. It is not a test result. The gate is the test result.
+
+</Mistake>

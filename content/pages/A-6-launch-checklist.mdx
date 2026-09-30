@@ -1,0 +1,59 @@
+---
+part: "A"
+number: 6
+slug: launch-checklist
+title: "Launch checklist"
+summary: "You can ship only after the gate is green, the test payment is real, and the live secret is not the test secret."
+minutes: 7
+terms:
+  - git
+  - webhook
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The page loads on your machine. A friend still cannot open it, the job on GitHub is red, and the key in the host is a test key. Launch is a list. "It works here" is one item, and it is not the last.
+
+</Hook>
+
+## The idea
+
+**The tree.** <Term id="git">Git</Term> status is clean, or you can name every dirty file. The branch you will deploy is the one whose gate exited 0. That means lint, the tests you locked, and `npm run check:course` if this repo is what you are shipping. A red GitHub Actions job is a stop.
+
+**The place.** The URL you send people is not `localhost`. The host runs the process. You know where its logs are. Staging got the change before production, if you have staging. You are not testing writes on the live database.
+
+**The payment.** Test mode used test keys and Stripe's documented test card `4242424242424242`, not a real card. The <Term id="webhook">webhook</Term> signature verified with the test secret. A second delivery did not ship twice. Then you switch to live keys and the live webhook secret, which is a different value. One small real purchase you can refund is the last check. The success URL alone is not that check.
+
+**The rollback.** You can return the host to the previous commit, or you know the host's control for that. A launch you cannot undo is a launch you should not start on a Friday night with no log access.
+
+**The note.** Write the commit id, the model ids you used, and the gate output you trusted. Tomorrow you will not remember which chat was the good one.
+
+Prices and plan limits stay on the vendor's page. This list does not include a dollar amount for hosting.
+
+<LaunchListFigure />
+
+## Real example
+
+A note that is allowed to say launched:
+
+```
+Commit: the id from git log
+Gate: lint and tests, exit 0, on the pull request
+Test card: 4242... succeeded, then a duplicate event did not
+Live: one charge, refunded, live webhook secret in the host env
+```
+
+Missing any line, you are still in rehearsal.
+
+<TryIt minutes={5}>
+
+Fill the four lines above with "done" or "not yet." The first "not yet" is the next card. Do not skip to the live key to see what happens.
+
+</TryIt>
+
+<Mistake>
+
+Treating a git push as the launch. Push stores commits. The host changes when its deploy runs. Read that host's deploy page, and watch the logs after it does.
+
+</Mistake>

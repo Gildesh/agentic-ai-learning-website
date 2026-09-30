@@ -1,0 +1,81 @@
+---
+part: 7
+number: 8
+slug: sql-in-15-minutes
+title: "SQL in 15 minutes"
+summary: "You can write SELECT, INSERT, UPDATE, and DELETE with a WHERE clause so the statement touches the rows you named."
+minutes: 8
+terms:
+  - SQL
+  - JSON
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The agent "cleans up the books" and the table is empty. The statement was `delete from books` with no WHERE. SQL did what it was told. It deleted every row. The missing clause is the whole bug.
+
+</Hook>
+
+## The idea
+
+<Term id="sql">SQL</Term> statements say which rows and what to do with them. Four cover the first afternoon. Names of tables and columns are usually unquoted. Strings use single quotes, which is the opposite of <Term id="json">JSON</Term>.
+
+**SELECT** reads.
+
+```
+select id, title from books where id = '42';
+```
+
+Without WHERE you get every book. That is sometimes what you want for a list, and it is never what you want when you meant one buyer.
+
+**INSERT** adds a row. Name the columns. Do not rely on column order in the table, because a later migration can insert a column in the middle.
+
+```
+insert into books (id, title, author_id) values ('43', 'Circe', '8');
+```
+
+**UPDATE** changes columns on matching rows.
+
+```
+update books set title = 'Circe' where id = '43';
+```
+
+**DELETE** removes matching rows.
+
+```
+delete from books where id = '43';
+```
+
+Read the statement from the verb to the WHERE before you run it. If WHERE is missing on UPDATE or DELETE, stop. Add it, or add a limit your database supports and you have read about. Postgres will happily update every row.
+
+The result of SELECT is a set of rows. Your endpoint maps those rows to JSON. The database does not speak JSON unless you ask it to build some. Keep that mapping in the server, in one place, so a column rename is a deliberate change.
+
+Quote identifiers only when you must. `"Title"` and `title` are different in Postgres if you quote one of them. Pick lowercase unquoted names and stay there.
+
+<SqlStatementsFigure />
+
+## Real example
+
+A safe sequence for a local database with nothing you need to keep:
+
+```
+insert into books (id, title, author_id) values ('42', 'Dune', '7');
+select title from books where id = '42';
+update books set title = 'Dune' where id = '42';
+delete from books where id = '999';
+```
+
+The last line deletes zero rows if 999 is absent. That is fine. `delete from books` is not fine. Run the SELECT after each change until the picture in your head matches the rows.
+
+<TryIt minutes={5}>
+
+Write the four statements for one table you specified on the previous page. Underline, in the margin, every WHERE. If UPDATE or DELETE has none, add one before you save the file where an agent might run it.
+
+</TryIt>
+
+<Mistake>
+
+Letting an agent run SQL against production because the local copy "does not have the row." Copy the row into local, or write a SELECT first and read it. A fix you have not read will be a wide UPDATE.
+
+</Mistake>

@@ -1,0 +1,62 @@
+---
+part: 4
+number: 11
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can answer five checks about vibe coding, small asks, git as undo, and a success screen that was only a sentence."
+minutes: 8
+terms:
+  - vibe coding
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You can move fast on a disposable folder and still refuse to call a painted sentence a payment. That split is the whole part. The quiz checks whether you can tell the two apart.
+
+</Hook>
+
+## The idea
+
+<Term id="vibe-coding">Vibe coding</Term> is describe, run, react, often without reading the code. Andrej Karpathy put the phrase on X on 2 February 2025. It fits a narrated demo, disposable data, and cheap failure. It does not fit a path you would be ashamed to delete.
+
+React to a thing you saw, in one quote, after a reload. Keep each ask to one visible change and one check. The "90% done" wall is the list of inputs you have not tried.
+
+<Term id="git">Git</Term> is the undo for a session you did not read. Commit before the experiment. Do not commit during it. `git restore` drops uncommitted files back to that snapshot.
+
+A bug note carries the command, the error, the expected result, and the files that may change. Reading code you did not write starts at the entry the click hits, then one hop, then one input you choose.
+
+The checkout case study is the warning. "Show Paid" produced a function that returned that word and sent no payment request. The honest ask was "show not connected, and do not add a card field." Promoting the folder means a written check, a diff on the dangerous path, and a commit message that admits what was not kept.
+
+<Part4RecapFigure />
+
+## Real example
+
+Five lines, then the quiz.
+
+1. Vibe coding skips reading, not running.
+2. One ask, one check.
+3. Commit before the careless session.
+4. The entry function is the first reading.
+5. The word Paid is not a charge.
+
+<Quiz questions={[
+  { prompt: "What does vibe coding, as Karpathy named it, deliberately skip?", choices: ["Running the program", "Reading the code and steering from what you see", "Using git at all", "Describing an outcome"], answer: 1, why: "The loop still runs. The skip is inspection. You react to the screen or the error." },
+  { prompt: "Which folder is a fit for a vibe-coding pass?", choices: ["The live shop, including checkout", "A scratch repository you will delete, with hard-coded titles and no cards", "A database of customer orders", "A shared repo where two agents are writing"], answer: 1, why: "Narrated audience, disposable data, cheap failure. Any one of those missing and you read the files." },
+  { prompt: "When do you commit during a vibe session you may throw away?", choices: ["After every agent reply", "Before the session, and again only for a diff you can explain", "Never, because git is for finished apps", "Only after the room applauds"], answer: 1, why: "The first commit is the undo. A commit during the unread middle freezes a state you may not want." },
+  { prompt: "A Pay click shows the word Paid and the handler only returns that HTML. What did you test?", choices: ["A card was charged", "The page can render a sentence you asked for", "The payment company returned 200", "Git history is clean"], answer: 1, why: "There was no payment request. The sentence is not a status code." },
+  { prompt: "What belongs in a bug note to an agent?", choices: ["The single word broken", "The command, the error text, the expected result, and the files it may edit", "The whole repository pasted twice", "A request to handle edge cases in general"], answer: 1, why: "The agent can rerun the command and you can see 80, or the titles, or the traceback again." }
+]} />
+
+<TryIt minutes={5}>
+
+Answer the quiz. Then write one ask you would be willing to vibe-code this week, and the check you will run before you call it kept. If the check is "it looks done," replace it with an input and an expected sentence.
+
+</TryIt>
+
+<Mistake>
+
+Using the quiz as permission to skip the restore drill. The drill on the git page is five commands. Knowing the idea and having no snapshot are different states.
+
+</Mistake>

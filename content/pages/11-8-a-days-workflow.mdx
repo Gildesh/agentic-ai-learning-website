@@ -1,0 +1,57 @@
+---
+part: 11
+number: 8
+slug: a-days-workflow
+title: "A day's workflow with two models"
+summary: "You can order a day so the spec is edited first, cards run on a cheaper id, and a commit happens only after the gate."
+minutes: 7
+terms:
+  - agent
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You open the laptop and start coding with whichever model the editor remembered. By lunch the spec, the diff, and the model id are tangled. A day has an order. The order is the loop from Part 10, with the roles from this part written on the steps.
+
+</Hook>
+
+## The idea
+
+Morning, strong role. One <Term id="agent">agent</Term> session on the id you reserved for the spec, such as `claude-opus-5-5`. It may edit `docs/SPEC.md` and write cards. It does not implement. You commit the spec if it changed, with a message that says the behavior changed. An empty spec commit is noise.
+
+Then the cards. Each card is a branch. The fast role, Haiku's id or `grok-4.7` if that is the one your notes still favor, gets one card per session. You run the gate. You read `git diff --name-only`. Green and in scope becomes a candidate to merge. Red becomes a retry or a blocked note.
+
+Review is the other family, on the diff, not on the summary. If the builder was Grok, the reviewer is Claude, or the reverse. A failing review is a new line on the card, not a silent edit.
+
+Merge one green branch. Rerun the gate on the combined tree. <Term id="git">Git</Term> commit that merge only when the rerun exits 0. Then the next branch. End of day you can say which ids ran, which cards passed, and which are blocked. You cannot say "we used AI." That sentence throws away the only facts the next morning needs.
+
+If you have only one model id today, run the same order with one id and label every step. The order still helps. The split is an upgrade when a second id exists, not a reason to skip the gate.
+
+<DayWorkflowFigure />
+
+## Real example
+
+A closing note:
+
+```
+Spec commit: docs/SPEC.md, tax 404
+Build: claude-haiku-4-5-20251001, exit 0, merged
+Reviewer: claude-opus-5-5 on the diff, pass
+Blocked: none
+```
+
+Tomorrow starts from that commit, not from the chat log.
+
+<TryIt minutes={5}>
+
+Write tomorrow's first session in one line: the model id and the only files it may touch. If the line says "continue where we left off" and names no id and no file, rewrite it.
+
+</TryIt>
+
+<Mistake>
+
+Leaving the editor's default model in the strong role all day because switching is a click. The default is a convenience. The note from the trial is the assignment. Look at the note.
+
+</Mistake>

@@ -1,0 +1,55 @@
+---
+part: 6
+number: 10
+slug: one-button-click
+title: "Walk-through: one button click, end to end"
+summary: "You can follow a tax button from the click to the stored rate and back to a number on the page."
+minutes: 8
+terms:
+  - HTTP
+  - frontend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The tax button is one control and four hops. If you cannot list them, a failure in the middle looks like "the button is broken," and the agent rewrites the button. The button was fine. The server never read the rate.
+
+</Hook>
+
+## The idea
+
+Use one feature and walk it in order. The feature is "show tax on a $10 book." The rate 0.08 is stored. The browser must not be the place that knows the rate, or the visitor can change it.
+
+1. **Frontend.** The page has a button. Its JavaScript listens for the click and sends an <Term id="http">HTTP</Term> request: `POST /tax` with a body that names the book, not the tax. The <Term id="frontend">frontend</Term> does not send `tax_cents: 0`.
+2. **Request.** You can see the method, the path, and the body in the network panel. If they are wrong, stop. The server has not failed yet.
+3. **Backend.** The server checks that the book id exists. It reads the rate from the store. It computes 80 cents on 1000 cents. It does not trust a tax field in the body.
+4. **Response.** Status 200 and a body such as `{"tax_cents":80}`. The frontend reads that field and writes "Tax $0.80" into the page. On 404 or 400 it writes the failure, not the tax.
+
+The store is hop three's data. If the rate row says 0.05, the honest tax is 50 cents. A page that still shows 80 cents is drawing a stale number, or ignoring the response.
+
+This is the walk you ask an agent to write into the spec before it writes files. Each hop is a sentence you can test. "Button sends POST /tax" is a network-panel check. "Server returns 80 for book 42" is a curl check. "Page shows $0.80" is what you see last, not first.
+
+<ButtonClickFigure />
+
+## Real example
+
+The replay, without the button:
+
+```
+curl.exe -i -X POST http://localhost:3000/tax -H "Content-Type: application/json" -d "{\"bookId\":\"42\"}"
+```
+
+On Windows, `curl` in PowerShell is an alias for a different command. `curl.exe` is the HTTP client. You are looking for a status line and a body. Then send a second request with `"bookId":"nope"` and expect a 404 or a 400, whichever the spec promised. If both return 200 and 80, the server is not reading the id.
+
+<TryIt minutes={5}>
+
+Write the four hops as four lines for a feature of your own, using the tax example if you do not have one. Circle the hop you cannot yet test. That hop is the next task card, not a rewrite of the whole app.
+
+</TryIt>
+
+<Mistake>
+
+Sending the computed tax from the browser and storing whatever comes back. The click is allowed to ask. It is not allowed to decide. The rate stays in the store.
+
+</Mistake>

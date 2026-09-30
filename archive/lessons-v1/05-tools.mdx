@@ -1,0 +1,102 @@
+---
+slug: tools
+number: 5
+title: Tools are how it touches the world
+minutes: 20
+outcome: You can tell a tool result from a sentence that only claims the tool ran.
+---
+
+Sam pastes a link and asks the chat to read the article. The reply describes a study on sleep and recall. It sounds specific. It names a number. Sam's stomach drops in the useful direction: we have already seen a sure sentence that was only a continuation. Sam looks at the desk. There is the link. There is the reply. There is no block of text that came back from the article itself.
+
+The chat cannot open the article. It can talk as if it had.
+
+## A tool is a card, not a verb in a sentence
+
+A tool is a named action with an input and a returned result. The result has to land on the desk, where you can point at it. The model's sentence is a different object. The model writes text. The tool, if it runs, does the action and brings something back.
+
+Write the first tool as a card.
+
+Name: open page.
+
+Input: a link.
+
+Result: the text of the page, or a failure that says the page did not open.
+
+If "open page" runs, the desk gains a new paper. That paper is the article, or it is the failure. Sam can scroll to it. A second person can read it. The model's next sentence is a continuation that now has the article in view. That is a different situation from a sentence that describes an article the desk has never held.
+
+Write the second card.
+
+Name: save note.
+
+Input: a file name, and the text to store.
+
+Result: the word saved, or a reason it failed.
+
+"I will save that" is not a result. "Saved" is a result. "Could not save, the folder is missing" is a result. A promise is more text. You believe the note exists when the result says so, and even then a careful person may look in the folder once while they are still learning the tool. The result is the evidence. The promise is the strawberry voice, dressed as a filing clerk.
+
+## What Sam should look for
+
+After any claim that the world was touched, ask to see the result paper. "I read the article" with no tool result means you cannot know. The claim is not the result. The model may be continuing from the title, from a familiar topic, or from nothing. You already know it can name a paper that was never real. It can also summarize an article it did not open.
+
+"I saved the brief" with no result is the same gap. Before you believe "save note" worked, something must come back that says saved, or that says why it failed. A sentence that promises to save is neither of those.
+
+Practice with two short transcripts. You do not need a product in front of you. Read them as if they were on the desk.
+
+Transcript A. Sam: open this link. Helper: I read it. The study found that sleep helps memory. There is no second paper on the desk.
+
+Transcript B. Sam: open this link. A block appears, labeled open page, containing three paragraphs that start with the article's title. Then the helper writes one sentence about those paragraphs.
+
+Transcript A is a claim. Transcript B has a result. You can still dislike the sentence in B. You can check it against the paragraphs. You could not check A, because the article never arrived.
+
+## Why the names stay boring
+
+"Open page" and "save note" are the only tools in Sam's digest. Boring names keep you from treating the tool as a personality. A tool does not want to help. It accepts an input and returns a result. If the input is a bad link, the honest result is a failure. A model wrapped around the tool may then apologize in prose. Read the result line first. The apology is optional text. The failure is the news.
+
+You will use these two cards in the next lesson, when Sam walks one beat by hand. Hold them as cards until then. If a product you meet later has fifty tools, the skill is unchanged: name, input, result, and the result on the desk. A long menu does not make a sentence into a result.
+
+One warning, kept small. A tool result can itself be wrong. A page can be an error message. A save can report success and write the wrong file if the wrapper is sloppy. You are not designing that wrapper yet. You are learning the first split, which is already enough to catch the common fib: the world was described, and the world was not touched.
+
+## Label three transcripts
+
+Write three short scenes on paper and label each claim or result.
+
+Scene one. The helper says the article mentions a number. No block of article text is on the desk. Label: claim. You cannot know whether the page was opened.
+
+Scene two. A block labeled open page contains the article's opening paragraph, and then a sentence quotes that paragraph. Label: result, then a sentence you can compare to the result.
+
+Scene three. The helper says the note is saved in the study folder. Nothing on the desk says saved, and nothing says the folder was missing. Label: promise. A promise is not saved, and it is not a failure reason.
+
+Add a fourth line for yourself: the tool's name, its input, and the result you would need to see. If you cannot write the result, you do not yet have a tool. You have a verb inside a paragraph. Verbs are cheap. Results are papers. Keep the two cards, open page and save note, until you can fill them without looking back at this lesson. Later beats will use the cards. They will not grow new tools in secret.
+
+<Misconception>
+
+It read the page because it described a page.
+
+</Misconception>
+
+Description is text. Reading, in this course, means an "open page" result landed on the desk. A vivid summary with no result is the citation problem again: the shape of "I read it" is easy to continue.
+
+<Check question="The reply says I read the article. The desk has no tool result. Did it read the article?">
+
+You cannot know. The claim is not the result. Without a returned page or a returned failure, the article was not shown to be opened.
+
+</Check>
+
+<Check question="What must come back before you believe save note worked?">
+
+A result that says saved, or a failure reason. A sentence that promises to save is neither.
+
+</Check>
+
+When you label a scene, say the label before you explain it. "Result." Then point at the block. "Claim." Then point at the sentence with no block under it. The order keeps you from talking yourself into the vivid summary. Vivid is a kind of sure tone. You already know sure tone is not a check. A tool does not become more real because the paragraph about it is vivid. The paper is either on the desk or it is not.
+
+Keep the two cards in your notes after you close this page. If a later story mentions a tool you cannot write as name, input, and result, treat the story as unfinished. You are allowed to say "that is not a tool yet." That sentence will save you from menus full of verbs. A menu is not a result. The result is still a paper you can point at, with saved or a failure written on it in words that are not a promise.
+
+<Recap>
+
+- The model writes text. A tool does a named action.
+- Open page takes a link and returns text or a failure.
+- Save note takes a name and text, and returns saved or a reason it failed.
+- A claim that the tool ran is not the result. Look for the paper on the desk.
+
+</Recap>

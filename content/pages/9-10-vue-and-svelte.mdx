@@ -1,0 +1,54 @@
+---
+part: 9
+number: 10
+slug: vue-and-svelte
+title: "Vue and Svelte in one page"
+summary: "You can say what a Vue single-file component contains, and you can say that Svelte compiles a .svelte file to JavaScript."
+minutes: 7
+terms:
+  - component
+  - JavaScript
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A starter kit drops in Vue, then Svelte, then a note that React is also fine. You now have three ways to write a button and no decision. This page is so you can recognize the files. It is not a suggestion to install them beside the framework you already have.
+
+</Hook>
+
+## The idea
+
+Vue's introduction describes a single-file <Term id="component">component</Term>, a `.vue` file, as the usual way to write a component when you have a build. The file holds the template, the <Term id="javascript">JavaScript</Term>, and the styles. Vue's SFC guide calls that a natural extension of HTML, CSS, and JavaScript, and says the file must be compiled by `@vue/compiler-sfc` into a JavaScript module. You import that module. The browser does not parse `.vue` by itself.
+
+Svelte's overview says Svelte is a framework for user interfaces that uses a compiler to turn components written in HTML, CSS, and JavaScript into optimized JavaScript. The tutorial says a component is a `.svelte` file that encapsulates the HTML, CSS, and JavaScript that belong together. SvelteKit's introduction calls SvelteKit the application framework around Svelte: Svelte draws the interface, and an app needs more than that, including routes. That split is the same idea as React and Next.js. The file extension and the compiler are the part that differs.
+
+In both, a parent still passes data into a child, and the child still owns the values that change under a click. You will see different syntax for those two ideas. Do not translate a Vue file into React by guesswork in a Next.js repo. If the team writes Vue, stay in `.vue` files. If the team writes Svelte, stay in `.svelte` files and use SvelteKit for the routes. If the team writes this course's stack, you already have `page.tsx`.
+
+None of these compilers check authorization. The server function or the endpoint still does.
+
+<VueSvelteFigure />
+
+## Real example
+
+Three file names, three decisions:
+
+```
+BookTitle.vue      Vue, if the repo is Vue
+BookTitle.svelte   Svelte, if the repo is Svelte
+tax-button.tsx     this course, a React client component
+```
+
+Opening a pull request that adds the other two "for later" is the mistake. Later is a second build.
+
+<TryIt minutes={5}>
+
+Look at the dependencies or the file extensions in a repo. Write Vue, Svelte, React, or Angular. If you see more than one, write which one the routes actually use. The other is a candidate to remove, not a feature.
+
+</TryIt>
+
+<Mistake>
+
+Learning four frameworks before shipping one screen. The screen needs one component model. The others can wait until a job that already uses them.
+
+</Mistake>

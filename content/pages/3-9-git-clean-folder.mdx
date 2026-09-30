@@ -1,0 +1,65 @@
+---
+part: 3
+number: 9
+slug: git-clean-folder
+title: "Before you start: git, a clean folder, one project per window"
+summary: "You can make a git commit before an agent edits, and you can keep one project in the window."
+minutes: 7
+terms:
+  - git
+  - repository
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+An agent rewrites `tax.py` badly. You want the previous file back. Without a snapshot, the previous file is whatever the editor's undo still remembers, and undo does not survive a closed window. Git remembers, if you made a commit before the agent started.
+
+</Hook>
+
+## The idea
+
+<Term id="git">Git</Term> records snapshots of a <Term id="repository">repository</Term>. A commit is one snapshot with a message. `git diff` shows what changed since that snapshot. `git checkout` or `git restore` on a file returns that file to the snapshot. You do not need a hosting account for this. Git on your machine is enough. GitHub is the place you push the snapshot later, from Part 0.
+
+Before you point an agent at a folder:
+
+1. The folder is a git repository. `git status` runs. If it says this is not a repository, run `git init` once, then make a first commit of the files you mean to keep.
+2. The status is clean, or you commit the work you want to keep. A clean status means the next diff is the agent's diff, not a mix of yesterday's edits and today's.
+3. One project is open in the window. A second folder in the same window is a second tree the agent may edit. Close it.
+
+The commands, from the project root:
+
+```
+git status
+git add tax.py
+git commit -m "Snapshot before the tax edit"
+```
+
+`git add` stages the file. `git commit` records it. The message is for you tomorrow. After the agent edits, `git diff` is the review on the next page. If the edit is bad, `git restore tax.py` drops the uncommitted change and the committed snapshot remains. Do not restore if you have not committed the version you want to keep. Restore throws away uncommitted work.
+
+One agent writes. If you use Cursor and Claude Code, only one of them has the folder open for edits.
+
+<CleanFolderFigure />
+
+## Real example
+
+A status you want to see before the agent starts:
+
+```
+On branch main
+nothing to commit, working tree clean
+```
+
+After the agent saves `tax.py`, `git status` lists `tax.py` as modified. That list is the boundary of the edit. If it lists a file you did not mention, the agent left the task. Do not commit that file until you have read it.
+
+<TryIt minutes={5}>
+
+In a practice folder, run `git init` if needed, create a file `tax.py` with one line `print("ok")`, and commit it with the message above. Change the line by hand to `print("no")`. Run `git diff`. You should see a minus line and a plus line. Then run `git restore tax.py` and confirm the file says `ok` again. You have just undone an edit. An agent's edit undoes the same way.
+
+</TryIt>
+
+<Mistake>
+
+Committing after every agent sentence, including edits you have not read. A commit is a snapshot you are willing to keep. Read the diff first. The next page is how.
+
+</Mistake>

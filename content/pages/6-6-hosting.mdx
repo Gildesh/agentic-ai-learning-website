@@ -1,0 +1,55 @@
+---
+part: 6
+number: 6
+slug: hosting
+title: "Where apps live: hosting"
+summary: "You can tell localhost from a public host, and you can say what has to stay running for a URL to keep working."
+minutes: 7
+terms:
+  - hosting
+  - URL
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The demo works on your laptop. You close the lid and send a friend the address `http://localhost:3000`. Their browser looks for a server on their own machine. Nothing of yours is there. The app lived in a process you stopped when you closed the lid.
+
+</Hook>
+
+## The idea
+
+`localhost` is the machine you are sitting at. A server bound to it answers requests from that machine. It is the right place to develop. It is not a <Term id="url">URL</Term> anyone else can open.
+
+<Term id="hosting">Hosting</Term> means running that server on a computer that stays on, with a public address, and a name DNS can point at that address. The computer might be rented. People rent it from hosts such as Vercel, Render, and Railway, or from a cloud provider that gives you a machine. This course does not copy a price or a plan. The fact you need is smaller: a process has to be running for the URL to answer, and that process is not your laptop unless you deliberately leave it reachable, which you should not do for a shop.
+
+Static hosting is the narrow case. If the site is only HTML, CSS, and JavaScript, with no server decisions, a host can serve the files. The Paid-button problem returns if you pretend a static file is a checkout. The moment the page must refuse a bad request or read a row, you are hosting a backend, not a folder of files.
+
+A deploy is the act of putting the current code on that host. It is not the same as a git commit. A commit is a snapshot in the repository. A deploy is a running process. You can commit and forget to deploy. You can deploy a commit you have not reviewed. The diff review happens before the deploy. The URL is how you check the deploy.
+
+Logs on the host are the backend's printout after you can no longer see your own terminal. Know where the host shows them before the first real user.
+
+<HostingFigure />
+
+## Real example
+
+Two addresses, two meanings:
+
+```
+http://localhost:3000/books     only your machine
+https://shop.example/books      a host, if DNS points the name there
+```
+
+`example` here is a stand-in. Your real name comes from the host's dashboard, and the dashboard is also where you see whether the process is up. If the public URL times out, the process is down or the name does not point at it. If it returns 404, the process is up and the path is missing. Same split as the first page of this part.
+
+<TryIt minutes={5}>
+
+Write the URL you would send a friend, and next to it "local" or "hosted." If it contains `localhost`, write "they cannot open this." If you do not yet have a host, that is an acceptable answer. Do not paste a tunnel URL from a tool you have not read about into a public chat.
+
+</TryIt>
+
+<Mistake>
+
+Treating a git push as a deploy. Pushing stores commits on a remote. The running server changes only if something on the host builds and restarts from those commits. Read the host's own deploy steps. Do not assume push is enough.
+
+</Mistake>

@@ -1,0 +1,58 @@
+---
+part: 5
+number: 1
+slug: why-written-instructions
+title: "Why agents need written instructions"
+summary: "You can explain why a rule in a file survives a new session and a rule in a finished chat does not."
+minutes: 7
+terms:
+  - agent
+  - system prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You spend a chat telling an agent not to add a card field. The next morning a new session adds one, because the new session never received yesterday's argument. The model did not forget out of spite. The request did not contain the rule.
+
+</Hook>
+
+## The idea
+
+An <Term id="agent">agent</Term> is inference plus tools. Inference does not update the weights from your corrections. A new session is a new request. Whatever the tool does not paste in is invisible, which is the context-window limit from Part 1.
+
+A <Term id="system-prompt">system prompt</Term> is text the product prepends. Custom instructions are that text when you can edit them. A file in the repository is better for a project rule, because it is committed, reviewable, and the same for the next person. Chat history is a bad place for a standing rule. It scrolls out, it mixes in abandoned experiments, and a new chat does not have it.
+
+Written instructions do three jobs.
+
+- They put the constraint in the request without you retyping it.
+- They give you a diff when the constraint changes. A sentence in a file can be reviewed. A sentence in a chat cannot.
+- They tell a second person, or a second agent, what "done" is not allowed to violate.
+
+They do not replace a test. An instruction that says "show command output" can be ignored. The command output is still the evidence. Instructions raise the chance the agent asks for the right artifact. You still read it.
+
+If you cannot point at the file that contains a rule, you do not have the rule. You have a memory of a conversation.
+
+<WhyInstructionsFigure />
+
+## Real example
+
+Two places the same sentence can live:
+
+```
+Do not add a card field. Show "not connected" until a payment status exists.
+```
+
+In a chat, it binds that chat. In a file the tool reads at session start, it binds the next session too. The rest of this part is which file, how short, and how a skill differs from a rule that applies every time.
+
+<TryIt minutes={5}>
+
+Write one rule you have already had to repeat to an agent. Put it in a note titled with a filename, not with "chat." If you cannot name the file, you have found the gap this part fills.
+
+</TryIt>
+
+<Mistake>
+
+Treating a long chat as the project's memory. The next session will not see it. If the rule matters tomorrow, it belongs in a file you can open when the chat is gone.
+
+</Mistake>

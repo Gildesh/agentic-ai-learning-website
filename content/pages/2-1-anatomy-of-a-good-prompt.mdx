@@ -1,0 +1,58 @@
+---
+part: 2
+number: 1
+slug: anatomy-of-a-good-prompt
+title: "Anatomy of a good prompt"
+summary: "You can write a prompt with a role, a task, context, constraints, and an output format."
+minutes: 7
+terms:
+  - prompt
+  - LLM
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You type "Write a product description for a used paperback shop" and get a cheerful paragraph that could belong to any shop. It invented a founding year. It never mentioned that you only sell books you have already read. The model did not ignore you. The prompt never contained the facts.
+
+</Hook>
+
+## The idea
+
+A <Term id="prompt">prompt</Term> is the text of one request to an <Term id="llm">LLM</Term>. A useful prompt has five slots. You can write them as labels so you can see which slot you skipped.
+
+- **Role.** One line on who is answering. "You write catalog copy for a used-book shop." This is not a personality. It sets the kind of artifact.
+- **Task.** The verb and the artifact. "Write one description of 40 to 60 words."
+- **Context.** Facts the reply must use and must not invent. The shop name, the rule about books you have read, the city.
+- **Constraints.** What to leave out. No founding year. No prices. No claim that a title is rare.
+- **Output format.** How the answer is shaped. One paragraph, a list, a table, or JSON. The next pages go deeper on examples and on JSON. This page only requires that the shape is named.
+
+Empty slots get filled with a likely default. "Write a product description" has a task and nothing else, so the reply looks like catalog copy in general. That is a successful prediction of a vague request.
+
+Write the five labels even when the message is short. A label you cannot fill is a fact you still need, not a sentence the model should guess.
+
+<PromptAnatomyFigure />
+
+## Real example
+
+```
+Role: catalog copy for a used-book shop.
+Task: one description, 40 to 60 words, of a paperback copy of a novel.
+Context: the shop is Paper Lantern in Pune. We sell books we have read. This copy has a name written on the flyleaf.
+Constraints: do not invent a year, a price, or a claim that the book is rare.
+Output: one paragraph, no title line.
+```
+
+The reply can still be dull. It cannot honestly invent a price, because the constraint forbids it and the context does not contain one. If a price appears, the model left the prompt. That is the check.
+
+<TryIt minutes={5}>
+
+Paste the example into a free chat. Count the words. Then delete the Context and Constraints blocks and send it again. Circle any year, price, or rarity claim that shows up only in the second reply. Those are the defaults the empty slots invited.
+
+</TryIt>
+
+<Mistake>
+
+Stuffing the role with adjectives. "You are a world-class, detail-obsessed expert" does not add a fact. The catalog copy gets better when the shop rules are in the context, not when the role is louder.
+
+</Mistake>

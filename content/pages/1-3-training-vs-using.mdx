@@ -1,0 +1,59 @@
+---
+part: 1
+number: 3
+slug: training-vs-using
+title: "Training vs using a model"
+summary: "You can tell a training run, which changes weights, from inference, which only predicts the next token."
+minutes: 7
+terms:
+  - training
+  - inference
+  - fine-tuning
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You correct a chat: "The store is called Paper Lantern, not Paper Lane." The next reply in that same chat uses the right name. Tomorrow you open a new chat and it has never heard of Paper Lantern. The correction felt like teaching. It was not.
+
+</Hook>
+
+## The idea
+
+<Term id="training">Training</Term> is the job that changes a model's weights. Weights are the numbers the model uses to pick the next token. A training run shows the model a huge number of examples and adjusts those numbers so the next-token guesses get better on that data. You do not do this when you type in a chat box. The company that built the model did it, on machines you do not see, before the model was offered to you.
+
+<Term id="inference">Inference</Term> is using the model. Your prompt goes in. The model predicts tokens. The weights stay where training left them. The reply can be long and specific, and the model is still the same model it was before you pressed send.
+
+A correction inside one chat works for a different reason. The app sends the earlier turns again with your new message. The model can see "Paper Lantern" because that text is in the request, not because a weight changed. Close the chat, and that text is gone, unless the app stored it and pasted it into a later request. That storage is the next page's subject. It is still not training.
+
+<Term id="fine-tuning">Fine-tuning</Term> is the exception that really does change weights. It is a smaller training run on a narrower set of examples, after the main training. A company might fine-tune a model on its support transcripts so the style matches the brand. That is a job you start on purpose, with a dataset and a bill. It is not what happens when you say "no, try again" in a chat.
+
+When an agent "learns" your project, read the claim the same way. If it read `README.md` and your last message, that is inference over text the tool put in the request. If a product offers fine-tuning, the docs will say that a training job updates a model, and you will see a dataset and a separate model name when it finishes.
+
+<TrainingVsUseFigure />
+
+## Real example
+
+Two lines you can paste, in order, in one chat:
+
+```
+The bookstore in this chat is called Paper Lantern. Reply with the name only.
+```
+
+```
+What is the bookstore called? Reply with the name only.
+```
+
+The second reply can say Paper Lantern. Then open a brand-new chat, send only the second line, and the name is gone. Nothing in the model was updated. The first chat still had the sentence in view.
+
+<TryIt minutes={5}>
+
+Run those two messages, then the fresh chat. In a note, write "same chat: name kept" and "new chat: name gone." That note is the difference between inference with the text still present, and a new request that never received it.
+
+</TryIt>
+
+<Mistake>
+
+Telling an agent "remember this for next time" and assuming the weights changed. Next time is a new request. If you need the fact later, put it in a file the tool will read, such as a spec or a rules file. A sentence in a finished chat is not a saved setting.
+
+</Mistake>

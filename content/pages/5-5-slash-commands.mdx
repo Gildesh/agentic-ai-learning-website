@@ -1,0 +1,58 @@
+---
+part: 5
+number: 5
+slug: slash-commands
+title: "Slash commands and reusable workflows"
+summary: "You can invoke a skill by name so it loads only when you ask, instead of on every turn."
+minutes: 7
+terms:
+  - skill
+  - prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You type a normal question about a heading, and the agent answers with a four-point diff review you did not ask for. The review skill loaded because its description looked relevant. You wanted a sentence. The skill spent the window on a checklist.
+
+</Hook>
+
+## The idea
+
+Some skills should load only when you name them. Cursor's skills doc calls this out. Set `disable-model-invocation: true` and the skill is included when you explicitly invoke it with `/skill-name` in chat. The agent will not pull it in from context alone. The description still matters for you, so you remember what the command does. It stops being an automatic trigger.
+
+Claude Code's skills doc says the directory name, or the frontmatter name when you set one, becomes the command you type. That is the same idea: a reusable workflow with a short name, instead of a <Term id="prompt">prompt</Term> you reconstruct from memory.
+
+A slash command is not magic syntax that all tools share. It is the product's way of putting one <Term id="skill">skill</Term> into this request. If the tool does not document a slash, you can still paste "Follow .cursor/skills/review-diff/SKILL.md" in the message. The file is the workflow. The slash is the handle.
+
+Good commands are jobs you can finish in one sitting: review the current diff, turn a traceback into a bug note, check the Pay page for a card field. Bad commands are "do the project." A command that wide will ignore the small-ask rule from Part 4.
+
+Keep the command's instructions in `SKILL.md`, not in a chat you cannot find. When the workflow changes, change the file. The next `/review-diff` picks up the edit because the tool reads the file, not your memory of the old steps.
+
+<SlashCommandFigure />
+
+## Real example
+
+Frontmatter that asks Cursor not to auto-load the skill:
+
+```
+---
+name: review-diff
+description: Review the current git diff. Use only when asked.
+disable-model-invocation: true
+---
+```
+
+You then type `/review-diff` in the agent chat when you want those steps. A heading tweak does not drag the checklist in. If you are on Claude Code, use the command name that product derives from the skill directory, and confirm the flag names on its page rather than assuming Cursor's field exists there.
+
+<TryIt minutes={5}>
+
+Add the disable flag if your tool is Cursor, or find the equivalent "only when invoked" note in the Claude skills doc. Invoke the skill once on a tiny diff. Then ask an unrelated question in a new message and check that the reply is not a review checklist. If it is, the skill is still auto-loading. The description or the flag is wrong.
+
+</TryIt>
+
+<Mistake>
+
+Naming a slash command after a mood, such as `/careful`. You will not remember what it checks. Name the artifact: `/review-diff`. The file lists the checks.
+
+</Mistake>

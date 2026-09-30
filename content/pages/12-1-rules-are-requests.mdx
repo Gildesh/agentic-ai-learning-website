@@ -1,0 +1,54 @@
+---
+part: 12
+number: 1
+slug: rules-are-requests
+title: "Rules are requests; enforcement is code"
+summary: "You can tell a sentence the model may ignore from a command that fails the step."
+minutes: 7
+terms:
+  - spec
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The rule says "never commit a secret." The <Term id="agent">agent</Term> commits one inside a file named `config.ts` and explains that the rule meant `.env` only. The sentence was a request. Nothing in the loop was able to say no.
+
+</Hook>
+
+## The idea
+
+A rule in `AGENTS.md`, a skill, or the <Term id="spec">spec</Term> is text in the prompt. The model can follow it, paraphrase it, or decide this case is special. Enforcement is a command that exits non-zero when the rule is broken, placed where the step cannot continue: a test, a linter, a git hook, or a workflow on the pull request.
+
+Write the rule anyway. People and models need the words. Then pick the check that makes the words true when the model is in a hurry. "Do not return 200 for a missing book" becomes a test you locked in Part 10. "Do not track `.env`" becomes a command that fails if `git ls-files` shows that path. "Do not weaken the course checker" becomes a review of `git diff --name-only` that rejects edits to `scripts/check-course.mjs`.
+
+If you cannot name the command, you do not have enforcement yet. You have a wish. Leave the wish in the spec, and do not tell yourself the agent "usually" obeys it. Usual is not a gate.
+
+The rest of this part is where those commands live. Locally before a commit. On GitHub after a push. Inside the agent loop, where a hook can block a tool. One rule can sit in more than one place. The laptop hook does not protect a teammate who never installed it. The remote workflow does.
+
+<RuleVsCheckFigure />
+
+## Real example
+
+A pair you can file next to a rule:
+
+```
+Rule: unknown bookId returns 404
+Enforcement: the locked test, npm test, exit 0 required
+Also: the pull request workflow runs npm test
+```
+
+The first line is the request. The next two are the code. Delete the next two and the first line is optional again.
+
+<TryIt minutes={5}>
+
+Take one rule you care about and write the command that should fail when it is broken. If the command is "ask the model," it is still a request. Find a command that does not need the model.
+
+</TryIt>
+
+<Mistake>
+
+Adding a longer rule when the short one was ignored. More text is a louder request. The model that skipped one paragraph can skip two. Add a failing command.
+
+</Mistake>

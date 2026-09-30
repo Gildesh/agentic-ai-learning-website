@@ -1,0 +1,69 @@
+---
+part: 11
+number: 5
+slug: cross-model-review
+title: "Cross-model review catches different mistakes"
+summary: "You can have Claude review a Grok diff, or the reverse, using the spec and the patch rather than the builder's story."
+minutes: 7
+terms:
+  - agent
+  - diff
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The builder's last paragraph says the status codes match the spec. You paste that paragraph into a second model and ask "is this right?" It says yes. It agreed with a story. It never saw the <Term id="diff">diff</Term>.
+
+</Hook>
+
+## The idea
+
+A cross-model review means the reviewer is a different model from the builder. If `grok-4.7` wrote the route, `claude-opus-5-5` reads the patch. If Claude wrote it, Grok reads the patch. The point is not that one family is the adult. The point is that the reviewer does not share the builder's context, where the excuses already live.
+
+What you send:
+
+```
+Read docs/SPEC.md.
+Read the diff below, and only the diff.
+Pass only if an unknown bookId returns 404 and no other files changed.
+Quote the failing line, or say pass.
+Do not edit.
+```
+
+What you do not send: "The agent says this is done because..." That sentence is how the second model inherits the first model's conclusion. An <Term id="agent">agent</Term> is good at agreeing with a confident paragraph. It is more useful when the only artifacts are the spec and the patch.
+
+Different models miss different things, which is a reason to try the review, not a guarantee. A reviewer can also invent a problem that the spec does not contain. Your reply to that is the spec, not an automatic rewrite. If the comment is not in the spec, either the comment is noise or the spec is incomplete. A person decides which.
+
+The gate still runs. A review that says pass while `npm test` exits 1 is wrong. The exit code outranks both models.
+
+<CrossReviewFigure />
+
+## Real example
+
+A review that is specific enough to act on:
+
+```
+Gap: app/api/tax/route.ts returns 200 when the book is missing.
+Spec line: 404 when bookId is unknown.
+```
+
+A review that is not:
+
+```
+Looks solid. Ship it.
+```
+
+The second one did not quote a line. Ask again, or ignore it. Do not commit on it.
+
+<TryIt minutes={5}>
+
+Take a diff you already have, even a small one, and write the review prompt above with your spec path filled in. Send it to a different model id than the one that wrote the diff, if you have one. If the answer does not quote a line or say pass, the prompt was ignored.
+
+</TryIt>
+
+<Mistake>
+
+Using the same model id in a second tab and calling it independent. It may still be a fresh context, which helps, but it is not the cross-model check. Name the other id.
+
+</Mistake>

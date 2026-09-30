@@ -1,0 +1,76 @@
+---
+part: 5
+number: 3
+slug: what-to-put-in-rules
+title: "What to put in a rules file (and what not)"
+summary: "You can sort a sentence into a standing rule or into a one-off task, and you can keep secrets out of the file."
+minutes: 7
+terms:
+  - prompt
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A rules file has grown to two pages. It includes last Tuesday's traceback, a key a teammate pasted "just for the agent," and the sentence "be helpful and thorough." The agent still adds files you did not name. The file is long, and almost none of it is a constraint.
+
+</Hook>
+
+## The idea
+
+A rules file is for sentences that should be true on every task in this repository. A <Term id="prompt">prompt</Term> is for this task. Mix them and the standing file becomes a diary the <Term id="agent">agent</Term> may follow at the wrong time.
+
+Put in:
+
+- Boundaries that rarely change. "Do not add a card field." "Do not add a dependency without being asked."
+- How to show work. "Paste the command and its output before you say a check passed."
+- A default check that is always valid. "The tax example is 1000 cents at 0.08, and the result is 80."
+- Where the spec lives, once you have one. "Read docs/SPEC.md before changing checkout."
+
+Leave out:
+
+- Secrets. A key in a committed file is a published key. Use an environment variable name, never the value.
+- Today's error. It will still be in the file after the bug is fixed, and the agent will "fix" it again.
+- One-off tasks. "Add the receipt page" is a prompt. After it ships, the line is a lie.
+- Praise and vagueness. "Be world-class" does not change a diff. "Do not edit payment files" does.
+
+Each line should be something you could fail a diff for. If you cannot imagine rejecting a change because of the line, delete the line.
+
+When a rule stops being true, delete it in the same commit as the code change. A stale rule is an instruction to rebuild the old bug.
+
+<RulesContentsFigure />
+
+## Real example
+
+Weak:
+
+```
+Be careful and high quality.
+Here is yesterday's TypeError paste.
+The API key is sk-live-...
+Please add a receipt page.
+```
+
+Strong:
+
+```
+Do not add a card field.
+Do not print secrets.
+Paste command output before claiming a check passed.
+Read docs/SPEC.md when the task mentions checkout.
+```
+
+The strong file does not build the receipt. You ask for the receipt in the task, and the file only stops the agent from collecting a card while it does that.
+
+<TryIt minutes={5}>
+
+Open a rules file you have, or the strong example. Mark each line keep or cut. Cut anything you could not use as a reason to reject a diff. If a key is present, remove it and rotate the key in the vendor dashboard. The file is not a safe hiding place.
+
+</TryIt>
+
+<Mistake>
+
+Using the rules file as a junk drawer for every prompt that once worked. The agent will treat an old task as a standing goal. Tasks live in the message or in a skill you invoke on purpose.
+
+</Mistake>

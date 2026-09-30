@@ -1,0 +1,56 @@
+---
+part: 5
+number: 7
+slug: task-cards
+title: "Task cards: one job, the files allowed, how to know it's done"
+summary: "You can write a task card with one job, the files it may touch, and a check that passes or fails."
+minutes: 7
+terms:
+  - spec
+  - prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You tell an agent "finish checkout." It edits the list page, adds a stylesheet, and inserts a card field. Checkout was not a job. It was a region of the product. The agent filled the region.
+
+</Hook>
+
+## The idea
+
+A task card is a <Term id="prompt">prompt</Term> with three fields and nothing else. It is how you hand an agent one slice of the <Term id="spec">spec</Term>.
+
+- **Job.** One behavior, copied from a spec line or written so it could become one. "Make Pay show not connected."
+- **Files.** The paths that may change. "Only the Pay handler. Do not edit the title list."
+- **Done.** The command or the click, and the result. "Load the page. The text not connected is visible. No input is labeled card."
+
+A card that needs "and also" is two cards. Send the second after the first check passes. This is the small-ask rule, written as a form so you notice when a field is empty. An empty Files field means the agent may touch anything. An empty Done field means you will accept a summary.
+
+You can keep cards in the chat. You can also keep a repeated card shape in a skill, with blanks. The spec holds the behaviors that stay. The card holds the one you are doing now. When the card is done, the spec should already describe it, or you add the line to the spec in the same commit as the code.
+
+If the agent changes a file outside the list, stop. That is not initiative you must praise. It is a missed boundary. Restore the extra file and resend the card with the path named again.
+
+<TaskCardFigure />
+
+## Real example
+
+```
+Job: show tax on 1000 cents at 0.08 as 80 cents.
+Files: tax.py only.
+Done: python -c "from tax import tax_cents; print(tax_cents(1000, 0.08))" prints 80.
+```
+
+The spec line and the Done line match. A diff that also changes a homepage fails the Files field even if the number is right. Accept the tax hunk only, or restore and ask again.
+
+<TryIt minutes={5}>
+
+Write a card for the next change you actually want. If Job contains "and," split it. If Done is "looks good," replace it with a sentence a second person could mark. Send the card only when all three fields are that concrete.
+
+</TryIt>
+
+<Mistake>
+
+Writing the card after the agent has already edited five files, as a story of what you wish you had said. The card is the request. A summary of a wide diff is not a card. Restore to the snapshot and send the card first.
+
+</Mistake>

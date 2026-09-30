@@ -1,0 +1,66 @@
+---
+part: 10
+number: 3
+slug: writing-the-spec-first
+title: "Writing the spec first"
+summary: "You can put the behavior in docs/SPEC.md and name that path in the task, because the agent will not open it on its own."
+minutes: 7
+terms:
+  - spec
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The <Term id="agent">agent</Term> builds a tax button that returns the word Paid. You had described the real status codes last week, in chat. This session never saw that chat. The <Term id="spec">spec</Term> was not a file, so it was not there.
+
+</Hook>
+
+## The idea
+
+Write the behavior before the code, in a file the repository keeps. This course uses `docs/SPEC.md`. That path is a convention of this course, not a file Cursor or Claude Code loads by itself. An agent reads it when a rule, a skill, or the message names the path. If you do not name it, you do not have a spec. You have a document nobody opened.
+
+A useful spec for one feature is short enough to check:
+
+```
+POST /tax
+body: { "bookId": string }
+200 and { "tax_cents": number } when the book exists
+404 when it does not
+The browser does not send the tax. The server computes it.
+```
+
+That is concrete. "Make tax work" is not. Include the failure, not only the happy path. Include what must not be stored, such as a card number, when the feature touches money.
+
+Change the spec in a commit of its own when the behavior changes. Do not let the implementation commit silently rewrite the spec so the check still passes. If the code and the spec disagree, the spec wins until a person edits the spec.
+
+Keep one spec for the product, not a new file per session with a date in the name. Two specs is how the agent follows the older one. Part 5 said to keep instructions short and true. A spec that repeats the whole textbook will be skipped. A spec that names the request will be tested.
+
+<SpecFirstFigure />
+
+## Real example
+
+The first lines of a bookstore spec, and the sentence that makes an agent open it:
+
+```
+# Bookstore
+POST /tax as above.
+GET /books/42 returns 200 or 404.
+```
+
+Task message: "Follow docs/SPEC.md. Do not invent a second status for a missing book."
+
+Without the path, the file is decoration.
+
+<TryIt minutes={5}>
+
+Create or open the spec and add one request with its success status and its failure status. Then write the sentence you will put in the next agent message so the file is actually read.
+
+</TryIt>
+
+<Mistake>
+
+Assuming the tool "remembers the spec" from a previous chat. It does not. Name the path every time, or put that name in a rule that is always applied.
+
+</Mistake>

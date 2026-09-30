@@ -1,0 +1,62 @@
+---
+part: 6
+number: 11
+slug: logs-and-debugging
+title: "Logs and debugging across the stack"
+summary: "You can choose the browser console or the server log based on which hop failed."
+minutes: 7
+terms:
+  - backend
+  - status code
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The tax button shows nothing. You ask the agent to "debug the app." It rewrites the frontend, the backend, and the rate. The failure was one line: the server threw because the book id was missing, and the page hid the 500. Two logs would have ended it. A full rewrite starts new bugs.
+
+</Hook>
+
+## The idea
+
+There are two logs because there are two programs.
+
+The browser console is the frontend's log. JavaScript errors land there. A listener that runs before the button exists, a typo in a field name, a failure to read the response: that is the console. The network panel sits beside it and shows the request and the <Term id="status-code">status code</Term>. Use the console when the request never left, or when a 200 arrived and the page still looks wrong.
+
+The server log is the <Term id="backend">backend</Term>'s log. It is the terminal where you started the process, or the host's log page after you deploy. A thrown error, a database complaint, a line you printed on purpose: that is the server. Use it when the status is 500, or when the status is 200 and the number is wrong. A 400 you wrote on purpose should also be visible there if you logged the reason.
+
+Debug in that order, and stop at the first broken hop.
+
+1. Did the browser send the request you expect?
+2. What status came back?
+3. If the status is 4xx or 5xx, read the server log for that request.
+4. If the status is 200 and the page is wrong, read the response body, then the code that draws it.
+
+Paste the status and the relevant log lines into the next agent message. "It doesn't work" produces a wide diff. "POST /tax returned 500, and the server log says bookId is undefined" produces a narrow one.
+
+<StackLogsFigure />
+
+## Real example
+
+A useful note, short enough to paste:
+
+```
+Sent POST /tax {"bookId":"42"}
+Status 500
+Server log: Cannot read rate of undefined
+Console: (no error; the page ignored the status)
+```
+
+The last line is a second bug: the frontend hid the failure. Fix the 500 first. Then make the page show a 500 as a 500, so the next one is visible without a treasure hunt.
+
+<TryIt minutes={5}>
+
+Cause one failure on purpose if you have a local server, or imagine the 500 above. Write the four lines in that shape: what you sent, the status, one server line, one console line. Leave a line blank if that side was silent. Silence is data.
+
+</TryIt>
+
+<Mistake>
+
+Reading only the browser console for a 500. The console may be empty because your page swallowed the error. The throw happened in the server process. Open that log.
+
+</Mistake>

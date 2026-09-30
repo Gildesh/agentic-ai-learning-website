@@ -1,0 +1,63 @@
+---
+part: 4
+number: 9
+slug: prototype-that-looked-finished
+title: "Case study: a prototype that looked finished but wasn't"
+summary: "You can walk a checkout demo that says Paid and show the request that never happened."
+minutes: 8
+terms:
+  - git
+  - hallucination
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The demo goes well. You click Pay and the page says Paid. A friend nods. The next morning you look at the only function behind the button. It returns a paragraph. It never calls a payment service. The prototype looked finished because the sentence on the screen was the sentence you asked to see.
+
+</Hook>
+
+## The idea
+
+Here is the session, compressed, with the checks that were skipped.
+
+You were <Term id="vibe-coding">vibe coding</Term> a checkout for Paper Lantern. The asks were small at first: three titles, then a tax line of 80 cents, then a Pay button. The third reaction was "when I click Pay, show Paid." The agent did exactly that. The <Term id="hallucination">hallucination</Term> was not a weird library name. It was a true-looking sentence with no source. You had requested the sentence. You had not requested a charge.
+
+The function was the four-line handler from the previous page. A reading pass would have stopped the demo from being described as a checkout. A network tab in the browser would have shown one request, to your own page, and none to a payment host. Either check takes a minute. Neither was in the loop, because the loop ended when the screen matched the ask.
+
+The data risk sits beside the fake success. If the form includes a card number field, the browser will send that number to your server, because that is what a form does. A prototype must not render that field. "Show Paid" is a safe ask. "Take the card and show Paid" is how a demo starts collecting real card numbers into a log you have not read.
+
+<Term id="git">Git</Term> is how you keep the titles and drop the button. If you committed after the tax line and left the Pay experiment uncommitted, `git restore` on the handler file returns you to the list and the tax, without the lying button. If you committed the button because the demo felt done, you now have a snapshot of a false checkout. Revert that on purpose before anyone copies the folder.
+
+Nothing here requires a villain. The agent obeyed. The screen was the spec you wrote. The spec was incomplete.
+
+<PrototypeGapFigure />
+
+## Real example
+
+The ask that created the gap:
+
+```
+When I click Pay, show the word Paid.
+```
+
+The ask that would have failed honestly:
+
+```
+When I click Pay, show Paid only if a payment request returns a success status.
+If you cannot call a payment service, show the words "not connected" and do not add a card field.
+```
+
+The second ask cannot be satisfied by returning a paragraph. That is why it is the better spec for anything you might keep.
+
+<TryIt minutes={5}>
+
+Write the Pay handler as those four lines in a file, open it, and say what a click does. Then write the honest ask above. You do not need a payment account. You need to see that "show Paid" and "a payment succeeded" are different sentences.
+
+</TryIt>
+
+<Mistake>
+
+Narrating the demo as "checkout works" because the room saw the word Paid. Say what you tested: "the page can render a sentence." If you tested a charge, you can point at the payment response. If you cannot, you did not test a charge.
+
+</Mistake>

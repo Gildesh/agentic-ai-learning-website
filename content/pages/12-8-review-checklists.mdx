@@ -1,0 +1,60 @@
+---
+part: 12
+number: 8
+slug: review-checklists
+title: "Review checklists"
+summary: "You can review a diff with a short list of yes or no questions instead of a paragraph of taste."
+minutes: 7
+terms:
+  - spec
+  - diff
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The review says "looks good" under a <Term id="diff">diff</Term> that changes the workflow, the spec, and the route. The sentence cannot be checked. A checklist can. Each line is yes or no, and a single no sends the card back.
+
+</Hook>
+
+## The idea
+
+A review checklist is enforcement you can do with your eyes when you have not automated that question yet. Keep it short enough that you will actually use it. Four lines cover this course:
+
+1. The gate command exited 0, and you saw the output. Lint, test, or `npm run check:course`, whichever the card named.
+2. `git diff --name-only` matches the allow-list. Locked files are absent. The <Term id="spec">spec</Term> changed only if this card was a spec card.
+3. The patch contains no secret, no `.env` file, and no live key prefix.
+4. The behavior in the diff still matches the spec line you can point at. A 200 where the spec says 404 is a no.
+
+Print the list on the card. The checker, human or model, answers each line. "Mostly" is a no. A model reviewer that skips a line has not finished the list. Ask for the missing line. Do not fill it in yourself with a guess.
+
+Add a fifth line only when a real miss keeps happening. A twenty-line checklist becomes a document people scroll past, which is a request again. If a line can be a command, make it a command and delete it from the prose list. The list is for what you have not automated yet.
+
+Taste is not a line. "I would have named it differently" can be a comment. It does not fail the card unless the spec required the name.
+
+<ReviewListFigure />
+
+## Real example
+
+A review that fails honestly:
+
+```
+1. npm run lint: exit 0. Yes.
+2. Files: route.ts and scripts/check-course.mjs. No. Checker is locked.
+3. Not reached.
+4. Not reached.
+```
+
+Stop at the first no. The author reverts the checker edit. You do not negotiate line 2 because line 1 was green.
+
+<TryIt minutes={5}>
+
+Write the four lines for the next diff you expect to review, in order. Leave a blank under each for yes or no. If you cannot imagine a no, the line is too vague to keep.
+
+</TryIt>
+
+<Mistake>
+
+Replacing the checklist with "use your judgment." Judgment is how the workflow edit slips through. The list is the judgment, written down before you see the diff.
+
+</Mistake>

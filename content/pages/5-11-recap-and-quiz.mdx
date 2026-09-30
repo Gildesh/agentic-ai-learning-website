@@ -1,0 +1,60 @@
+---
+part: 5
+number: 11
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can answer five checks about rules files, SKILL.md, a spec, and a task card."
+minutes: 8
+terms:
+  - spec
+  - skill
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You can now point at the file that holds a rule. If you cannot, the rule is still a chat. The quiz is that distinction, plus the filenames the tools actually read.
+
+</Hook>
+
+## The idea
+
+Agents do not keep your corrections in their weights. A written instruction is how the next request still contains the rule. Cursor documents project rules in `.cursor/rules` and names `AGENTS.md` as a plain-markdown alternative. Claude Code reads `CLAUDE.md` at the start of a session. One copy of a rule. A second copy will drift.
+
+Rules hold standing constraints and a pointer to the spec. They do not hold secrets, today's traceback, or one-off tasks. A line you could not use to reject a diff does not belong.
+
+A <Term id="skill">skill</Term> is one repeatable job in `SKILL.md`. Cursor requires `name` and `description`, and `name` must match the folder. `disable-model-invocation: true` loads that skill when you type `/skill-name`, not on every turn. Claude Code also uses `SKILL.md`, and the directory or the frontmatter name becomes the command. Check the live docs for the directory.
+
+A <Term id="spec">spec</Term> at `docs/SPEC.md` is this course's source of truth for behavior. Vendors do not load that path unless you tell them to. A task card is one spec line, the files allowed, and a check. When instructions conflict, delete the false line before you rerun the agent. The starter kit is `AGENTS.md`, `docs/SPEC.md`, and one `SKILL.md`.
+
+<Part5RecapFigure />
+
+## Real example
+
+Five lines that match the quiz.
+
+1. A finished chat is not a rules file.
+2. `CLAUDE.md` and `AGENTS.md` are different contracts.
+3. `SKILL.md` is one job, not every rule.
+4. The spec can fail a test a stranger could run.
+5. Two disagreeing lines get edited before the next run.
+
+<Quiz questions={[
+  { prompt: "Why put a project rule in a file instead of only in the chat?", choices: ["The file updates the model's weights", "A new session does not include the old chat unless the tool sends it", "Files are always loaded by every vendor automatically", "Chat cannot contain instructions"], answer: 1, why: "Inference does not store the correction. The tool has to paste the file into the next request." },
+  { prompt: "Which file does Claude Code's overview say it reads at session start?", choices: ["AGENTS.md only", "CLAUDE.md at the project root", ".cursor/rules only", "docs/SPEC.md, with no extra instruction"], answer: 1, why: "CLAUDE.md is the Claude Code file. SPEC.md is this course's convention, and you must point at it." },
+  { prompt: "What does Cursor require of a skill's name field?", choices: ["It can be any sentence", "It is required and must match the parent folder name", "It replaces AGENTS.md", "It stores the API key"], answer: 1, why: "name and description are required. name matches the folder. The body of SKILL.md holds the steps." },
+  { prompt: "What makes a spec line testable?", choices: ["It says the page should feel finished", "A second person could mark it pass or fail from an input and a result", "It is longer than the code", "It lives only in the latest chat"], answer: 1, why: "Input and result. A mood cannot fail." },
+  { prompt: "CLAUDE.md forbids new files and AGENTS.md tells the agent to add any files it needs. What do you do first?", choices: ["Ask the agent to pick a winner", "Edit one file so the two sentences can both be true, then rerun", "Add a third file that repeats both", "Ignore it if the demo looked fine"], answer: 1, why: "The contradiction is in the instructions. Fix the files before the next session rebuilds the bad diff." }
+]} />
+
+<TryIt minutes={5}>
+
+Answer the quiz. Then open one instruction file and find a line you could not use to reject a diff. Cut it or move it to the spec. If every line survives, write the task card for the next change with Job, Files, and Done filled in.
+
+</TryIt>
+
+<Mistake>
+
+Memorizing the three filenames and skipping the spec. `CLAUDE.md`, `AGENTS.md`, and `SKILL.md` only help if a testable sentence exists somewhere they point. A filename with vague advice is a labeled empty box.
+
+</Mistake>

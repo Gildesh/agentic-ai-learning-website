@@ -1,0 +1,57 @@
+---
+part: 11
+number: 9
+slug: failure-modes-of-mixing
+title: "Failure modes of mixing"
+summary: "You can recognize a second model that repeats a bad spec, reviews a summary, or cannot see the files."
+minutes: 7
+terms:
+  - agent
+  - spec
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You added a second model and the bug survived. Mixing was supposed to catch it. The second <Term id="agent">agent</Term> was given the same wrong <Term id="spec">spec</Term>, or it was given the first model's summary, or the files did not fit in its window. A second opinion only helps when the second opinion sees different evidence.
+
+</Hook>
+
+## The idea
+
+**The spec is wrong, so both models are wrong.** Claude and Grok will both implement a 200 for a missing book if that is what the spec says. Cross-review does not rescue a spec that names the bug as the behavior. Fix the spec. Then rerun the gate. Do not collect more agreeing diffs.
+
+**The reviewer saw the story.** "It returns 404" in the builder's paragraph is not the route. Send the diff. If you already sent the story, start the review again without it.
+
+**The window ate the card.** Haiku 4.5's listed context is 200K tokens. A packet of the whole repo can exceed that even when Grok 4.7's 500,000 or Opus's 1M would hold it. The model does not reliably announce the cut. If the build ignores a file you thought you attached, split the card until the named files fit. Do not blame "Grok" or "Claude" for a packet you did not measure.
+
+**Two diffs get merged.** Both trials changed the same route in incompatible ways and you kept both hunks. That is not mixing. That is a conflict you resolved by addition. One branch wins. The other stays as a note.
+
+**The expensive model types the card.** Then you have no fast role, and a red retry bills the strong price. Send ordinary cards back down after the escalation passes.
+
+**Secrets in both transcripts.** Two vendors now hold the key you pasted. Rotate it. The failure mode of mixing is also a copy of every mistake you made in one chat, stored twice.
+
+<MixFailuresFigure />
+
+## Real example
+
+A review you reject:
+
+```
+Builder says the route is correct.
+Reviewer: I agree.
+```
+
+There is no file path and no status code. The next review starts from `git diff` and the spec line. Agreement without those is the failure mode, not a pass.
+
+<TryIt minutes={5}>
+
+Look at the last time you asked a second model about a change. Write what it actually received: the spec, the diff, or a summary. If it was the summary, that review does not count. Plan the one you will send the diff.
+
+</TryIt>
+
+<Mistake>
+
+Adding a third model because two already agreed and the test is red. The test is the disagreement that matters. Read the output. Another family will not outvote an exit code.
+
+</Mistake>

@@ -1,0 +1,61 @@
+---
+part: 10
+number: 11
+slug: parallel-agents
+title: "Running several agents in parallel"
+summary: "You can give two agents two branches and disjoint files, and you can merge only a branch whose gate passed."
+minutes: 7
+terms:
+  - agent
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You start two <Term id="agent">agent</Term>s in the same folder. Both edit `page.tsx`. The second save wins. The first task's check was green on a tree that no longer exists. Parallel work without a boundary is just a race.
+
+</Hook>
+
+## The idea
+
+Parallel means two tasks at once, each with its own files and its own gate. <Term id="git">Git</Term> branches are the boundary. One branch for the tax route. One branch for the book list. Each agent works in that branch, or in a separate checkout of that branch. They do not share a working tree. A subagent with its own context still writes into the tree you gave it. Context is not a branch.
+
+The file lists must be disjoint. If both cards need `app/layout.tsx`, they are not parallel. Run them in order. Overlapping files are how merges become a second project.
+
+Each branch runs its own gate before you merge. Merge one branch at a time into the branch you trust, rerun the gate, then merge the next. A merge that conflicts is blocked, not a prompt to "take both." Read the conflict. It means the disjoint-file rule was wrong, or the spec changed under one of the cards.
+
+Do not parallelize a card that locks a test another card must edit. The lock is there so the implementation cannot move the test. A second agent editing the test on another branch undoes the lock at merge time.
+
+Two agents cost two contexts. Use them when the cards are already small and the files do not overlap. Do not split a vague "build the bookstore" into five parallel chats. You will merge five inventions.
+
+<ParallelAgentsFigure />
+
+## Real example
+
+Two cards that can run together:
+
+```
+Branch tax: only app/api/tax/route.ts
+Branch list: only app/books/page.tsx
+```
+
+Two cards that cannot:
+
+```
+Both want app/layout.tsx
+```
+
+Run the layout card first, commit, then start the others from that commit.
+
+<TryIt minutes={5}>
+
+Write two cards you wish were parallel, and the file list for each. If a path appears twice, mark them sequential. If the lists are disjoint, name the two branches.
+
+</TryIt>
+
+<Mistake>
+
+Pointing both agents at `main` in one checkout because it is faster to watch. One tree, two writers, one survivor. The speed shows up as lost work.
+
+</Mistake>

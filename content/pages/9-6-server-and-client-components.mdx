@@ -1,0 +1,61 @@
+---
+part: 9
+number: 6
+slug: server-and-client-components
+title: "Server components vs client components"
+summary: "You can put a secret and a database read in a Server Component, and a click handler in a file that starts with use client."
+minutes: 8
+terms:
+  - component
+  - props
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The tax rate is correct on the server and also sitting in the JavaScript the browser downloaded, because the <Term id="component">component</Term> that computed it was marked as client code. The visitor can read it. You wanted the rate on the server and a button in the browser. Those are two components.
+
+</Hook>
+
+## The idea
+
+This project's Next.js docs say layouts and pages are Server Components by default. A Server Component can fetch data, read a database, and use secrets without sending that code to the browser. It can be an `async` function. It cannot use `useState`, `useEffect`, or `onClick`.
+
+A Client Component is a file whose first line is `'use client'`. The docs say to use one when you need state, event handlers, lifecycle logic, browser APIs, or custom hooks. The button file from the hooks page is a Client Component. The page that loads the book is a Server Component. The page renders the button and passes <Term id="props">props</Term>.
+
+```
+export default async function Page({ params }) {
+  const { id } = await params;
+  const book = await getBook(id);
+  return <TaxButton bookId={book.id} />;
+}
+```
+
+`getBook` stays on the server. `bookId` is serialized and passed to the client. Do not pass a database client, a secret, or a function that closes over a secret. The docs describe the React Server Component payload as the rendered server tree, placeholders for client components, and the props passed across that boundary. If a prop cannot be serialized, it cannot cross.
+
+Add `'use client'` only on the interactive leaf. A client file that imports a server-only module pulls that module toward the browser or fails the build. Push the data down as props instead of pulling the database up.
+
+<ServerClientFigure />
+
+## Real example
+
+Two files, two jobs:
+
+```
+app/books/[id]/page.tsx          server, loads the book
+app/books/[id]/tax-button.tsx    'use client', the click
+```
+
+The page does not start with `'use client'`. The button does. If you mark the page as client so the button can live in the same file, the data load moves to the browser. Split the file instead.
+
+<TryIt minutes={5}>
+
+List one component that needs a click and one that needs a secret or a database. Write the file name for each, and which one starts with `'use client'`. If it is the same file, split it before you build.
+
+</TryIt>
+
+<Mistake>
+
+Putting `'use client'` on the root layout so hooks work everywhere. You have sent the whole tree to the browser and lost the place secrets were allowed to live. Keep the directive on the leaf that actually clicks.
+
+</Mistake>

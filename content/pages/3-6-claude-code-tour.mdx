@@ -1,0 +1,56 @@
+---
+part: 3
+number: 6
+slug: claude-code-tour
+title: "Claude Code tour"
+summary: "You can say what Claude Code reads at session start, and what a subagent is allowed to isolate."
+minutes: 8
+terms:
+  - subagent
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You start a coding session and the assistant already knows the project refuses new frameworks. You did not type that today. A file named `CLAUDE.md` in the repository root was read when the session started. That file is the standing prompt. The session is still an agent that can change files.
+
+</Hook>
+
+## The idea
+
+Claude Code's overview says it is an agentic coding tool that reads your codebase, edits files, runs commands, and integrates with your development tools. It lists four surfaces: the terminal, IDE extensions, a desktop app, and the web. The terminal is the one people mean when they say it lives in the shell. The others are the same product on a different screen. Check the overview before you assume a feature exists only in the terminal.
+
+`CLAUDE.md` is a markdown file you add at the project root. The overview says Claude Code reads it at the start of every session. Put standing rules there: which files are off limits, how to show command output, the test command. Do not put secrets in it. It is project text, and it enters the context window every time.
+
+A <Term id="subagent">subagent</Term> is a separate assistant for a kind of task you keep repeating. Claude Code's subagents doc says each one runs in its own context window, with a custom system prompt, specific tool access, and independent permissions. You can limit tools, for example to read-only tools, so a reviewer subagent cannot edit. If the tool list resolves to nothing, the doc says the subagent usually fails to launch. An empty tool list is a configuration error, not a safe default you should rely on without reading that page.
+
+Hooks, in Claude Code's hooks guide, are user-defined shell commands that run around the session. Skills are packaged instructions you can share. This page names them so you recognize the docs. Part 5 writes the files. The <Term id="agent">agent</Term> you talk to is still the parent session. A subagent does not replace your review of the diff.
+
+Docs: [overview](https://code.claude.com/docs/en/overview), [subagents](https://code.claude.com/docs/en/sub-agents), [hooks](https://code.claude.com/docs/en/hooks-guide).
+
+<ClaudeCodeSessionFigure />
+
+## Real example
+
+A short `CLAUDE.md`:
+
+```
+The tax task may edit tax.py only.
+Run python -c "from tax import tax_cents; print(tax_cents(1000, 0.08))" and paste the output.
+Do not add dependencies.
+```
+
+A subagent meant only to review would list read tools and would not list a write tool. The parent session can still edit. The reviewer cannot. That split is the point of a separate tool list.
+
+<TryIt minutes={5}>
+
+Open the Claude Code overview and find the sentence about `CLAUDE.md`. Write where the file goes and when it is read. Then open the subagents page and write the three things a subagent has of its own: context window, system prompt, and tool access. If the live wording differs, keep the live wording.
+
+</TryIt>
+
+<Mistake>
+
+Giving every subagent the full tool list, including shell and write, because the form was quicker that way. You have then created more agents with the same power as the parent. Restrict tools to the job, especially for anything that reads untrusted pages.
+
+</Mistake>

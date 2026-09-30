@@ -1,0 +1,80 @@
+---
+part: 2
+number: 9
+slug: three-bad-prompts
+title: "Three bad prompts, made good"
+summary: "You can repair a vague prompt, a prompt that omits the error, and a prompt that asks for two artifacts at once."
+minutes: 8
+terms:
+  - prompt
+  - JSON
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+Three messages fail in three different ways. "Make the shop sound better." "Fix the bug." "Give me the labels and also redesign the homepage." Each one gets a fluent reply. None of them can be checked, because none of them named one artifact.
+
+</Hook>
+
+## The idea
+
+A bad <Term id="prompt">prompt</Term> is not rude. It is missing a slot from the first page of this part, so the model fills it. Repair the slot. Do not add praise or threats.
+
+**Too vague.** "Make the shop sound better" has no artifact and no fact. The repair names the artifact, the fact, and the shape. "One sentence for the homepage. Fact: we sell paperbacks we have read. Do not mention price. 25 words or fewer."
+
+**Missing the evidence.** "Fix the bug" does not say what broke. The repair pastes the command, the error, and the function, as on the context page. The model should not have to guess which bug you mean. If you have two bugs, send two prompts.
+
+**Two jobs in one message.** Labels and a homepage redesign will be braided into one essay. Split them. First prompt: shelf labels as lines. Second prompt: the homepage sentence. If a program must consume the labels, ask for <Term id="json">JSON</Term> in the label prompt only. The homepage sentence stays prose.
+
+The repaired prompts are longer and more boring. That is the point. Boring means a later reply can be marked pass or fail against a line you wrote in advance.
+
+When you catch yourself typing "just quickly," stop and fill the five slots. The quick version is the one you will redo.
+
+<BadPromptsFigure />
+
+## Real example
+
+Bad:
+
+```
+Make the shop sound better.
+Fix the bug.
+Give me labels and a new homepage.
+```
+
+Good, as three separate messages:
+
+```
+One homepage sentence, 25 words or fewer.
+Fact: Paper Lantern sells paperbacks we have read.
+Do not mention price.
+```
+
+```
+Command: python tax.py
+Error: TypeError on tax.py line 4, price_cents is a str.
+Change only tax_cents. Convert price_cents with int.
+Show the function.
+```
+
+```
+JSON array, keys title and note only.
+Dune, name on flyleaf.
+Circe, clean pages.
+JSON only.
+```
+
+Send them one at a time. Three checks: word count on the sentence, `int` in the function, and a parser on the array.
+
+<TryIt minutes={5}>
+
+Pick a task you actually want done this week. Write the bad version in one line, then the repaired version with an artifact and a check. Send only the repaired version. If the reply still wanders, the check was missing. Add one line that says what a wrong answer looks like.
+
+</TryIt>
+
+<Mistake>
+
+Repairing a bad prompt by adding "important!!!" or "I will lose my job if you fail." The model does not have your job. It has your text. A constraint it can violate visibly, such as "no price key," changes the reply. Urgency does not.
+
+</Mistake>

@@ -1,0 +1,54 @@
+---
+part: 7
+number: 6
+slug: api-keys-and-auth-headers
+title: "API keys and auth headers"
+summary: "You can put a key in the header the vendor documents, and you can keep that key out of the browser."
+minutes: 7
+terms:
+  - API key
+  - HTTP
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The model call works on your machine and fails for everyone else, or worse, it works for everyone else because the key is in the JavaScript bundle. A key is a password for a program. The page is not a safe place to store one.
+
+</Hook>
+
+## The idea
+
+An <Term id="api-key">API key</Term> is a secret the server, or a vendor's server, checks before it does work. You send it on the <Term id="http">HTTP</Term> request, almost always in a header, not in the URL. Query strings end up in logs and in browser history. Headers can still be logged. Treat the log as sensitive once a key has touched it.
+
+The header name is part of that API's contract. Many APIs use `Authorization` with the scheme `Bearer` and then the secret. This course's Grok notes used that shape: `Authorization: Bearer` and the key. GitHub's API accepts a bearer token the same way. Another vendor may ask for a different header. Read the page for the product you are calling. Do not copy a header from a tutorial about a different company.
+
+The key belongs in the environment of the process that makes the outbound call. The browser calls your endpoint. Your endpoint calls the vendor. The visitor never receives the key, not in a response, not in an error string, not in a source map.
+
+A public read is the exception you already used. `GET https://api.github.com/repos/github/docs` needed no key when this course checked it. The moment the call spends money or reads private data, assume a key, and assume it is absent from the frontend.
+
+Part 8 is where `.env` files and the rule about not committing them live. This page only needs the split: header on the server-to-vendor request, nothing secret in the bundle.
+
+<AuthHeaderFigure />
+
+## Real example
+
+A server-side call, with the secret coming from the process environment:
+
+```
+curl.exe -i https://api.example.test/books -H "Authorization: Bearer $KEY"
+```
+
+`example.test` is a stand-in, not a host you should call. Replace the URL and the header with the vendor's documented pair. If the documented scheme is not Bearer, the curl line changes. The rule that does not change: `$KEY` is set in the terminal or the host's environment, and it is not pasted into a React file.
+
+<TryIt minutes={5}>
+
+Search the frontend source for the vendor's key prefix, or for the word `Bearer`. If you find a real secret, move the call to the server before you do anything else. Then rotate the key at the vendor, because it has already shipped.
+
+</TryIt>
+
+<Mistake>
+
+Putting the key in the URL "just for a demo." Demos get copied into tickets, analytics, and the agent transcript. Use a header, and use a key you can revoke.
+
+</Mistake>

@@ -1,0 +1,56 @@
+---
+part: 10
+number: 7
+slug: stop-hooks
+title: "Stop hooks: the harness decides what happens next"
+summary: "You can say what a Cursor stop hook and a Claude Code Stop hook are allowed to do, including when they must let the turn end."
+minutes: 8
+terms:
+  - hook
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The <Term id="agent">agent</Term> says it is done. The test is still red. You wanted something other than the model to notice. A <Term id="hook">hook</Term> is a script at a named point in the agent loop. This is the Part 3 hook, the one in Cursor's `hooks.json` or Claude Code's hook settings. It is not a React hook.
+
+</Hook>
+
+## The idea
+
+A stop hook runs when the agent finishes a turn, not when a person has accepted the work. Cursor's hooks docs call the event `stop`. A hook can return a `followup_message`, and Cursor submits that string as the next user message, which is how a loop continues without you typing. Claude Code's `Stop` event maps to that Cursor event. Claude Code's own docs say a Stop hook can block, which prevents Claude from stopping and continues the conversation. The same docs say Stop fires when Claude finishes responding, not only when a task is complete, and that it does not fire on a user interrupt.
+
+The harness, not the model, decides whether that continuation happens. That is the point of the hook. The script can run the gate and, on failure, send a follow-up that pastes the failure. On success, it allows the stop.
+
+Both tools cap the loop. Cursor's hook option `loop_limit` defaults to 5 automatic follow-ups for a Cursor stop hook. Claude Code's guide says it overrides a Stop hook after the hook blocks eight times in a row without progress. Leave the cap. A hook with no cap will spend the night repeating a red test. The follow-up should include the command output. "Try again" with no error is how the model wanders.
+
+Do not put a secret in the hook script's log. Do not let the hook weaken the test. The hook runs a command you already trust. It does not invent a new definition of done.
+
+A hook is optional. A person running the gate is the same loop, slower. Add the hook when you are tired of forgetting the command, not when you want the agent unsupervised on production.
+
+<StopHookFigure />
+
+## Real example
+
+What the follow-up is allowed to say:
+
+```
+npm test exited 1
+expected 404, received 200
+Stay on this card. Do not edit the test.
+```
+
+What it must not say: a new feature, a request to delete the test, or a blank "continue" with no failure text. Cursor's default of five follow-ups is the budget for that message. After the cap, a person reads the last output.
+
+<TryIt minutes={5}>
+
+Write the follow-up message you would want a stop hook to send when the gate fails, including the command name. If you cannot name the command, you do not have a hook yet. You have a slogan.
+
+</TryIt>
+
+<Mistake>
+
+Removing the loop cap so the agent "finishes no matter what." The cap is the safety. A red gate that continues all night is a bill and a worse diff, not a finished product.
+
+</Mistake>

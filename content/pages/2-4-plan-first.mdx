@@ -1,0 +1,65 @@
+---
+part: 2
+number: 4
+slug: plan-first
+title: "Plan first: ask it to think in steps"
+summary: "You can require a short plan in the reply before the artifact, and stop if a step is wrong."
+minutes: 7
+terms:
+  - prompt
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask an agent to add tax to a checkout. It edits three files, including a payment client you did not mention. The tax math might even be right. The extra file is the problem, and you are reading a diff before anyone listed the steps.
+
+</Hook>
+
+## The idea
+
+Ask for the steps as text you can read, before the artifact. This is not a claim that the model has a private inner monologue you can trust. The plan is more tokens in the reply. You read them. If a step names the wrong file, you stop and correct the <Term id="prompt">prompt</Term> before an <Term id="agent">agent</Term> writes anything.
+
+A usable plan is short and concrete.
+
+- The files it will touch.
+- The command that will show success.
+- What it will not change.
+
+"I will think carefully" is not a plan. There is nothing to reject.
+
+Some products hide a separate reasoning trace, or spend extra tokens before the visible answer. Treat that as a vendor feature with its own docs and its own price. This page only depends on text in the reply you can see. If the plan is not on screen, you do not have a plan.
+
+For a one-sentence catalog line, a plan is overhead. Use it when the cost of a wrong step is a file change, a command, or a public post. The pattern is: plan, your check, then the artifact. You can put that in one message: "First list the files and the check. Stop. Wait for me to say go." An agent that continues anyway is ignoring a stop line. That is a tool setting or a second message, not a sign that you needed a longer adjective.
+
+<PlanFirstFigure />
+
+## Real example
+
+```
+Task: add a function tax_cents(price_cents, rate) in tax.py.
+rate is a fraction, so 0.08 means 8 percent.
+Round half up to the nearest cent.
+
+First write a plan with three bullets only:
+- files you will change
+- the command I should run
+- what you will not change
+
+Then stop. Do not write the function until I reply "go".
+```
+
+A good plan names `tax.py`, a command such as `python -c "from tax import tax_cents; print(tax_cents(1000, 0.08))"`, and a non-goal such as "will not edit the payment client." If the plan lists a second file, say so before "go."
+
+<TryIt minutes={5}>
+
+Send the prompt to a chat. Do not reply "go" yet. Check the three bullets. If the command would not print a number, the plan is not a check. Rewrite the command yourself and send that as the correction.
+
+</TryIt>
+
+<Mistake>
+
+Asking the model to "think step by step" and then reading only the last paragraph. The steps were the point. If you do not read them, you paid for tokens you did not use, and the wrong file still gets edited.
+
+</Mistake>

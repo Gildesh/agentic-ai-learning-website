@@ -1,0 +1,57 @@
+---
+part: 8
+number: 2
+slug: authentication
+title: "Authentication: sessions, JWT, OAuth, magic links"
+summary: "You can say which of the four checks answers who is calling, and you can refuse a design that lets the browser pick the user id."
+minutes: 8
+terms:
+  - authentication
+  - HTTP
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The request body says `"userId": "1"`. The handler trusts it and returns that person's orders. Anyone can send `"userId": "2"`. That field is not <Term id="authentication">authentication</Term>. Authentication is evidence the server checks, not a number the caller chooses.
+
+</Hook>
+
+## The idea
+
+Authentication answers who is calling. Authorization, on the next page, answers what they may do. Four patterns cover almost every app you will be asked to build.
+
+A **session** is a random id in a cookie. The server stores the record: this id belongs to this user, until this time. The cookie should be `HttpOnly` so page scripts cannot read it, `Secure` so it rides only on HTTPS, and `SameSite` so other sites do not attach it to their requests. The [HTTP](https://www.rfc-editor.org/rfc/rfc9110.html) cookie is the carrier. The record on the server is the proof.
+
+A **JWT** (JSON Web Token, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)) is a signed token in three parts. The middle part is the payload, and it is encoded, not encrypted. Anyone who holds the token can read the claims. They cannot change them without breaking the signature, unless your server forgets to verify the signature. Do not put a secret in the payload. Do not accept a token whose algorithm you did not choose.
+
+**OAuth 2.0** ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)) lets the user sign in at another provider. In the authorization-code flow, the provider sends your server a code. Your server exchanges that code for a token, using a client secret that stays on the server. The browser does not perform that exchange.
+
+A **magic link** is a single-use URL you email. Store a hash of the token, not the token. Expire it. After it is used, it is dead.
+
+Pick one for the bookstore and write it in the spec. An agent that adds all four has not made login easier. It has made four ways to get the check wrong.
+
+<AuthMethodsFigure />
+
+## Real example
+
+A session check at the start of a handler:
+
+```
+cookie session id -> row in sessions -> user id 7
+no row, or the row is expired -> 401
+```
+
+The body does not contain the user id. The next page uses user id 7 to decide which order they may open.
+
+<TryIt minutes={5}>
+
+Write one sentence for the bookstore: session, JWT, OAuth, or magic link, and where the proof lives (server record, signature, or provider). If the sentence says the user id comes from the request body, rewrite it.
+
+</TryIt>
+
+<Mistake>
+
+Decoding a JWT and trusting the payload without checking the signature. The payload is public. The signature is the authentication.
+
+</Mistake>

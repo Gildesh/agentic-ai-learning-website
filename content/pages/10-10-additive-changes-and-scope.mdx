@@ -1,0 +1,55 @@
+---
+part: 10
+number: 10
+slug: additive-changes-and-scope
+title: "Additive-only changes and scope limits"
+summary: "You can reject a diff that deletes or rewrites files the card did not name."
+minutes: 7
+terms:
+  - diff
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The tax route is correct, and the <Term id="diff">diff</Term> also deletes a layout, renames a folder, and reformats a hundred files. The feature works. The card failed. Scope is the list of files, not the demo.
+
+</Hook>
+
+## The idea
+
+Additive-only means the change adds the behavior the card asked for and does not take unrelated behavior away. You may edit a file on the allow-list. You may add a file the card named. You do not delete a file the card did not mention, reorder unrelated code, or upgrade a framework "so the new file matches a style you prefer."
+
+<Term id="git">Git</Term> shows scope with `git diff --name-only`. Read that list before you read the feature. Every path is either on the card or a defect. A formatter that touches the whole repo is a separate card with its own check, not a passenger on the tax card.
+
+The same rule protects locks. The test file is not on the implementation card, so a diff that includes it is out of scope even if the assertion looks smarter. Generated files and lockfiles appear only when the card said to add a dependency. An agent that adds a dependency to make a one-line fix easier has expanded the product.
+
+If the correct fix truly requires a file outside the list, stop. Update the card, in a sentence a person agrees with, then continue. Do not discover the extra file in the commit message after the fact.
+
+Deletes are allowed when the card says "remove this unused file" and names it. "Clean up" is not a name. Additive-only is the default because surprise deletes are harder to notice than surprise additions.
+
+<ScopeLimitFigure />
+
+## Real example
+
+A review you can do in a minute:
+
+```
+Card files: app/api/tax/route.ts
+git diff --name-only: app/api/tax/route.ts
+```
+
+Those two lines match, so you read the patch. If the name-only list is longer, you stop before reading the patch. The extra path is the bug.
+
+<TryIt minutes={5}>
+
+Run `git diff --name-only` on your current work, or imagine the list. Write any path that a current card did not name. That path is the next decision: revert it, or amend the card before you commit.
+
+</TryIt>
+
+<Mistake>
+
+Accepting a large format diff because "the code is equivalent." Equivalent is a claim. The card did not ask for it, and a later blame will hide the real change inside the noise. Revert the noise.
+
+</Mistake>

@@ -1,0 +1,55 @@
+---
+part: 11
+number: 7
+slug: benchmarks-mislead
+title: "Why benchmarks mislead: test on your tasks"
+summary: "You can refuse a model choice that rests on a public score, and you can record the exit code of your own gate instead."
+minutes: 7
+terms:
+  - LLM
+  - token
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A chart says one <Term id="llm">LLM</Term> is ahead. The chart is not your repository. It is someone else's tasks, scored once, often on a date that is already older than the model id you will call tomorrow. Your bookstore does not care who won that chart.
+
+</Hook>
+
+## The idea
+
+A benchmark is a fixed set of problems with a published scoring rule. It can show that a vendor measured something. It cannot show that `POST /tax` returns 404 for an unknown book in your tree. The tasks differ. The harness differs. A model can be tuned toward a famous set and still miss the constraint you wrote in the spec.
+
+This course does not quote a leaderboard number for Claude or for Grok. A number I have not tied to a method and a date would be decoration. If you read one, write down the name of the benchmark, the date, and the model id, and then still run your gate. The chart is a hypothesis. The exit code is the result.
+
+Your tasks are the cards you already know how to write. Pick three that matter: one happy path, one failure status, one "do not touch this file." Run each candidate id. Record tokens if the tool shows them, because price is per million <Term id="token">token</Term>s and a chatty failure is expensive. Record the exit code. Three cards will not crown a champion. They will tell you which id to try next week. That is enough.
+
+When a new id ships, rerun the three cards before you move the strong or fast role. Do not rerun your identity. The procedure is the asset. The ranking is perishable.
+
+<BenchmarkTrapFigure />
+
+## Real example
+
+A row you can keep in the spec or a note beside it:
+
+```
+Date: 2026-09-30
+Card: unknown bookId returns 404
+claude-haiku-4-5-20251001: exit 0
+grok-4.7: not run
+```
+
+"Not run" is a finished note. A borrowed score in that cell is not.
+
+<TryIt minutes={5}>
+
+Write three cards that represent your project, each as one sentence plus the gate command. If you cannot name the command, you do not have a task a benchmark could replace. You have a wish.
+
+</TryIt>
+
+<Mistake>
+
+Switching the whole team to a model because one screenshot of a chart looked decisive. The screenshot does not include your locked test. Run the test.
+
+</Mistake>

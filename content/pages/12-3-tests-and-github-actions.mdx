@@ -1,0 +1,70 @@
+---
+part: 12
+number: 3
+slug: tests-and-github-actions
+title: "Tests and CI"
+summary: "You can run the locked test and the linter on GitHub Actions for every push and pull request."
+minutes: 8
+terms:
+  - git
+  - linter
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The tests passed on your laptop. A teammate's branch never ran them. The merge is green in conversation and red the night someone clones it. Continuous integration is the gate on the server, not on the machine that happens to be open.
+
+</Hook>
+
+## The idea
+
+GitHub Actions runs commands on a runner when something happens in the repository, such as a push or a pull request. A workflow file in `.github/workflows/` is that command list. It is ordinary YAML in <Term id="git">git</Term>. It is not a setting hidden in a chat.
+
+Use the `push` and `pull_request` events. Do not use `pull_request_target` to check out and run a fork's code. That event runs with the base repository's token and secrets. The June 2026 changelog for `actions/checkout` says version 7 refuses to check out fork pull request code in that situation unless you set `allow-unsafe-pr-checkout` to true. Leave that flag unset. You do not need it for "run the tests on a normal pull request."
+
+A small workflow for this course:
+
+```
+name: check
+on:
+  push:
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run check:course
+```
+
+`npm ci` needs Node. Add GitHub's setup-node action from its own docs, pinned to the Node version you develop with, before `npm ci`. The <Term id="linter">linter</Term> and the course checker are the gates. A project with tests adds `npm test` as another step. A red step fails the job. The pull request shows the failure. Do not merge on a red job because the author said their laptop was fine.
+
+The workflow is a locked file in the same sense as a locked test. An agent that edits it to delete `npm run lint` has removed enforcement. Review that path on every diff.
+
+<ActionsGateFigure />
+
+## Real example
+
+The question on a pull request:
+
+```
+Is the GitHub Actions job green?
+Which command failed, if not?
+```
+
+If there is no workflow file, the answer is "nothing ran." Add the file before you add another feature.
+
+<TryIt minutes={5}>
+
+Look for `.github/workflows` in a repo you work on. If it is missing, write the `on:` events you would use. If a workflow mentions `pull_request_target`, stop and read why before you copy it.
+
+</TryIt>
+
+<Mistake>
+
+Pointing the workflow at `npm start` and waiting. A server that starts is not a test. The step should exit. Lint and the course check exit. A hanging server does not.
+
+</Mistake>

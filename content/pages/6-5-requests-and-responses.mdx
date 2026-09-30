@@ -1,0 +1,58 @@
+---
+part: 6
+number: 5
+slug: requests-and-responses
+title: "Requests and responses"
+summary: "You can point at the method, the path, the status code, and the body of one HTTP exchange."
+minutes: 7
+terms:
+  - HTTP
+  - status code
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The tax button spins and then shows nothing. The frontend looks idle. The network panel shows a finished exchange: a request went out, and a response came back with a status you have not read. The bug is in that pair, not in the spinner.
+
+</Hook>
+
+## The idea
+
+An <Term id="http">HTTP</Term> exchange is one request and one response. The request has a start line: the method, the path, and the protocol version. Headers follow, then an optional body. GET usually has no body. POST often has one, such as JSON.
+
+The response has a <Term id="status-code">status code</Term>, headers, and an optional body. The codes you need first are the ones from the REST page: 200 means the request succeeded, 201 means something was created, 404 means that path or id is not there. 400 means the server refused the body as bad input. 500 means the server failed while handling a request it might otherwise have accepted. The browser does not turn a 500 into a friendly sentence unless your frontend does.
+
+Read the pair in order. Method and path tell you what you asked. Status tells you what the server claims happened. Body tells you the payload. A 200 with an empty body is a success that carried nothing. A 404 with a body that says "Paid" is a confused server, and you should not show Paid. The status wins over a hopeful sentence in the body. Agree that in the spec.
+
+Part 7 expands methods and URLs. This page is the habit of opening the exchange. The frontend's job is to send a specific request and to render the status you actually got, including the failure.
+
+<RequestResponseFigure />
+
+## Real example
+
+A minimal exchange, the kind a network panel or `curl -i` shows:
+
+```
+GET /books/42 HTTP/1.1
+Host: localhost:3000
+
+HTTP/1.1 200
+Content-Type: application/json
+
+{"title":"Dune"}
+```
+
+Change the path to `/books/999` and a bookstore that does not have that id should answer 404, not 200 with a guessed title. If you see 200 and a title you did not store, the server invented a row. That is the hallucination problem, now in a response body.
+
+<TryIt minutes={5}>
+
+Using the network panel, trigger one action on any site and write four words: method, path, status, and whether a body was present. You do not need to understand the body. You need to see that the spinner was waiting on this exchange.
+
+</TryIt>
+
+<Mistake>
+
+Showing a success message when the status is not a success. If the code is 404 or 500, the UI should say so. A frontend that only has a happy path will paint Paid on top of an error.
+
+</Mistake>

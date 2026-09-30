@@ -1,0 +1,87 @@
+---
+part: 11
+number: 10
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can assign Claude and Grok ids to roles, and you can say the gate outranks both of them."
+minutes: 7
+terms:
+  - LLM
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+Two model ids are in the notes, the gate is red, and the chat says the feature is ready. The notes are the assignment. The gate is the result. The chat is neither.
+
+</Hook>
+
+## The idea
+
+Strong and fast are roles. The strong role edits the spec and reviews. The fast role takes one card. Claude and Grok are family names. The billable choice is an id such as `claude-opus-5-5`, `claude-haiku-4-5-20251001`, or `grok-4.7`, with the prices and context windows Part 1 recorded for September 2026. A live vendor page that disagrees wins.
+
+Price, the clock you measure, and the exit code are the triangle. A public benchmark is a hypothesis. Your three cards are the test. Plan, build, and review are separate sessions. The reviewer from the other family sees the diff and the spec, not the builder's summary.
+
+A blocked card escalates with that packet. It does not escalate as "fix the app" on a more expensive <Term id="llm">LLM</Term>. A day ends with commits that passed the gate, or with an honest blocked note. Mixing fails when the spec is wrong, the window is too small, or two diffs are mashed together.
+
+An <Term id="agent">agent</Term> does not outrank the spec because you paid more for it.
+
+<Part11RecapFigure />
+
+<Quiz
+  questions={[
+    {
+      prompt: "What should a cross-model review read?",
+      choices: [
+        "The spec and the diff, not the builder's summary",
+        "Only the builder's last paragraph",
+        "A public benchmark chart",
+      ],
+      answer: 0,
+      why: "The summary is the claim. The diff is the change. The second model should see the change.",
+    },
+    {
+      prompt: "Haiku 4.5 was listed with a 200K context window and Opus 5.5 with 1M. What follows?",
+      choices: [
+        "A packet that fits in Opus may not fit in Haiku, so split the card",
+        "Haiku is always the better builder",
+        "The window does not matter if the family is Claude",
+      ],
+      answer: 0,
+      why: "The published window is a limit. Dropping files off the end is a silent failure.",
+    },
+    {
+      prompt: "Both a Claude id and a Grok id fail the same card. What do you do?",
+      choices: [
+        "Mark it blocked and send the spec, the diff, and the output",
+        "Merge both diffs",
+        "Quote a leaderboard and pick the higher score",
+      ],
+      answer: 0,
+      why: "Two failures are a blocked card. A ranking does not replace the gate output.",
+    },
+    {
+      prompt: "When do you commit in a two-model day?",
+      choices: [
+        "After the gate exits 0 on the tree you are keeping",
+        "When the strong model says the summary looks done",
+        "As soon as either model edits a file",
+      ],
+      answer: 0,
+      why: "The commit records a green check. A model's closing sentence does not.",
+    },
+  ]}
+/>
+
+<TryIt minutes={5}>
+
+Answer the four questions, then write the model id for your next build card and the command that will decide it. If the id is a family name, replace it before you start the session.
+
+</TryIt>
+
+<Mistake>
+
+Ending the day with "we mixed Claude and Grok" and no exit code. The mix is the method. The exit code is the only result worth filing.
+
+</Mistake>

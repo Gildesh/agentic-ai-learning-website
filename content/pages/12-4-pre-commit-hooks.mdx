@@ -1,0 +1,62 @@
+---
+part: 12
+number: 4
+slug: pre-commit-hooks
+title: "Pre-commit hooks"
+summary: "You can run a check in a pre-commit hook so git refuses the snapshot when the command fails."
+minutes: 7
+terms:
+  - hook
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You remember the linter after the commit, when the bad snapshot is already the latest one. A pre-commit hook runs the command as part of `git commit`. Exit 1 and <Term id="git">git</Term> does not create the commit. This <Term id="hook">hook</Term> is git's, not the agent hook and not a React hook.
+
+</Hook>
+
+## The idea
+
+Git looks for an executable file at `.git/hooks/pre-commit`. If it exists, git runs it before it writes the commit. A non-zero exit cancels the commit. The script can be as small as:
+
+```
+#!/bin/sh
+npm run lint || exit 1
+```
+
+That file lives inside `.git`. Clone does not copy it. A new teammate, and a CI runner, will not have your hook unless you also put the script in the repository and document how to install it. The GitHub Actions workflow from the previous page is the copy that does travel. The pre-commit hook is the copy that saves you from committing a lint failure you were about to push.
+
+Keep the hook fast. A ten-minute build on every commit will be skipped. Lint, a secret grep, and the course checker when you are editing lessons are the right weight. The full build stays on the pull request.
+
+Do not pass `--no-verify` to skip the hook because you are late. That flag is git's escape hatch. Using it means the snapshot was not checked. If the hook is wrong, fix the hook in its own commit. If the code is wrong, fix the code.
+
+An agent that commits for you must not be told to skip hooks. Put that in the card: "do not use --no-verify." The hook is enforcement only when the commit goes through it.
+
+<PreCommitFigure />
+
+## Real example
+
+Install note you can keep in the spec:
+
+```
+Copy scripts/pre-commit to .git/hooks/pre-commit
+Make it executable
+git commit then runs npm run lint
+CI runs the same lint even if the hook was never installed
+```
+
+The second path is why the hook is not the only lock.
+
+<TryIt minutes={5}>
+
+Check whether `.git/hooks/pre-commit` exists in a repo you use. If it does, write the command it runs. If it does not, write the one command you would put in it. Do not skip CI because the hook exists on one laptop.
+
+</TryIt>
+
+<Mistake>
+
+Believing a pre-commit hook protects GitHub. It protects commits made on machines where it is installed. A push from a machine without it, or a commit made in the GitHub editor, never ran your laptop's file. The workflow still has to run.
+
+</Mistake>

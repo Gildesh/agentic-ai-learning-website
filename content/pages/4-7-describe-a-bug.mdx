@@ -1,0 +1,62 @@
+---
+part: 4
+number: 7
+slug: describe-a-bug
+title: "How to describe a bug so an agent can fix it"
+summary: "You can write a bug note with the command, the error, and the result you expect."
+minutes: 7
+terms:
+  - prompt
+  - diff
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The page breaks. You type "it's broken, fix it." The agent rewrites the layout. The traceback is still in the terminal, unread, and the layout was not the bug. The agent followed the only fact you gave it, which was your irritation.
+
+</Hook>
+
+## The idea
+
+A bug <Term id="prompt">prompt</Term> is a small ask with the evidence attached. Four lines are enough. They match the template from Part 2, aimed at a failure you can see.
+
+- **Command.** What you ran. `python tax.py`.
+- **Error.** The line the terminal printed, including the file and the line number. Paste it. Do not summarize it into "a type error" unless you also paste the type error.
+- **Expected.** What a good run prints or shows. `80`, or "three titles and no traceback."
+- **Boundary.** The file it may edit, and the files it may not.
+
+Then ask for a <Term id="diff">diff</Term> you can read, and for the command to be run again. "Fixed" without a second run is the ninety-percent wall in miniature.
+
+If you do not know the expected result, say what you know: "It should not throw. I have not decided the number yet." An agent that invents `80` when you did not ask for a number has left the prompt. Quote that invention in the next message and remove it.
+
+Screenshots help when the bug is visual, and they still need a sentence about what is wrong: "the three titles are in one paragraph." A picture without that sentence is another mood.
+
+Keep the note shorter than the code. If the prompt is longer than the function, you have pasted the whole project again. Paste the traceback and the function it names.
+
+<BugReportFigure />
+
+## Real example
+
+```
+Command: python tax.py
+Error: TypeError: can't multiply sequence by non-int of type 'float'
+File tax.py, line 4, in tax_cents
+Expected: tax_cents(1000, 0.08) prints 80
+Only edit tax.py.
+Rerun the command and paste the output.
+```
+
+A good reply changes the multiply, shows a short diff, and pastes `80`. A reply that adds a web form has ignored the boundary. Restore that file if it appeared, and resend the boundary line.
+
+<TryIt minutes={5}>
+
+Break `tax.py` on purpose, or use the TypeError from Part 2. Write the four lines before you ask an agent, or before you fix it yourself. If you cannot fill in Expected, stop and decide the number. The fix is not ready to request until that line exists.
+
+</TryIt>
+
+<Mistake>
+
+Sending "fix the bug" plus the entire chat history. The history contains abandoned experiments. The agent will repair an old theory. A new message with the command and the current traceback is cleaner than a long thread.
+
+</Mistake>

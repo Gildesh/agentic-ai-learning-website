@@ -1,0 +1,55 @@
+---
+part: 7
+number: 11
+slug: sql-vs-nosql
+title: "SQL vs NoSQL"
+summary: "You can choose a table with a foreign key or a document that copies data, and you can say what a rename costs in each."
+minutes: 7
+terms:
+  - SQL
+  - JSON
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+Someone says the bookstore is "more like documents than tables," and the agent adds a second database before the first table exists. The books are rows. The author is another row. You do not need a new kind of database to store a title.
+
+</Hook>
+
+## The idea
+
+<Term id="sql">SQL</Term> databases store tables. A book row holds an `author_id`. The name lives on the author row. A rename is one update. A join is how you read the book and the name in one query. The cost is that you design the tables first, and a migration is how you change them.
+
+Document databases, often filed under NoSQL, store a document per item. The document is usually <Term id="json">JSON</Term>, or a format that looks like it. One book document can contain the title and the author's name together. Reads of that one book are simple. A rename of the author is a write to every document that copied the name. There is no foreign key forcing the copy to match.
+
+Postgres can also store JSON inside a column. "We have nested data" is not, by itself, a reason to leave Postgres. Use a JSON column for a payload you truly will not query as rows, such as a raw vendor event you keep for debugging. Use columns for facts you filter on: id, title, author.
+
+MongoDB is one document database people mean when they say NoSQL. This page does not copy a version, a price, or a hosting plan. The decision is the shape of the data. If the spec already says `books.author_id` points at `authors.id`, you want SQL. If each event is a self-contained blob you never join, a document is a reasonable fit, and you should say what a correction costs.
+
+Add a database when the shape demands it. Do not add one because a starter kit had two.
+
+<SqlVsDocumentFigure />
+
+## Real example
+
+The same fact, two shapes:
+
+```
+SQL: authors (7, Herbert); books (42, Dune, author_id 7)
+Document: { "id": "42", "title": "Dune", "author": "Herbert" }
+```
+
+Change the spelling of the name. The SQL update touches the authors row. The document update touches every book that embedded the old spelling, including ones you forgot. That is the whole comparison for this shop.
+
+<TryIt minutes={5}>
+
+Take one nested blob you are tempted to store as JSON. List the fields you will filter on in a year, such as author or year. Those fields want columns. The rest can stay nested. Write that split in two lines.
+
+</TryIt>
+
+<Mistake>
+
+Starting a second database "so we are ready for scale." You have no rows yet. A second system is a second way for the title to be wrong. Fill the Postgres tables first.
+
+</Mistake>

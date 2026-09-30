@@ -1,0 +1,57 @@
+---
+part: 8
+number: 9
+slug: checkout-and-card-data
+title: "Checkout, subscriptions, and why card data never touches your server"
+summary: "You can point at who collects the card number, and you can list what your database is allowed to store afterward."
+minutes: 7
+terms:
+  - API key
+  - frontend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The agent adds an input labeled Card number and posts it to `/orders`. The form is on your <Term id="frontend">frontend</Term>. The number is now in your logs, your database, and the request recorder. You did not become a card processor on purpose. You built a text field.
+
+</Hook>
+
+## The idea
+
+Stripe's Checkout docs say to stay within PCI rules by sending payment details directly to Stripe so they never reach your server. The same pages say to load Stripe.js from `https://js.stripe.com` and not to bundle that script or host it yourself. The Checkout Session is still created on your server, because it needs the secret <Term id="api-key">API key</Term>.
+
+A session can be a one-time purchase or a subscription. Stripe's description of a Checkout Session says that after a successful payment it references the Customer and either the PaymentIntent or an active Subscription. You store your order id and Stripe's id. You do not store a card number in order to "support subscriptions." The subscription id is how you refer to the recurring charge.
+
+Stripe's security guide says these low-risk integrations keep payment information off your servers, and that Stripe can return non-sensitive card information: the brand, the last four digits, and the expiration date. Those are storable. The full number and the security code are not. Do not log the request body of a payment form you should not have built.
+
+Razorpay's Standard Checkout guide puts card handling on Razorpay's side as well: you pass an `order_id`, and they handle card data security. The same rule applies if you chose Razorpay on the previous page. Their checkout script is theirs. Your server verifies the signature.
+
+The success page on your site can say "we are confirming payment." It should read your order row, which flips to paid only after the verified event in the next page.
+
+<CardBoundaryFigure />
+
+## Real example
+
+Columns the bookstore may add, and the one it must not:
+
+```
+orders.gateway_id
+orders.status  unpaid | paid
+orders.card_last4   optional, from the gateway
+not a column: the full card number
+```
+
+Search the diff for an `<input>` whose name looks like a card. That input is the bug.
+
+<TryIt minutes={5}>
+
+Read the diff of any payment task and write where the card number is typed. If the answer is your HTML, stop. The field belongs on the gateway's page or in the gateway's frame, loaded from their host.
+
+</TryIt>
+
+<Mistake>
+
+Saving the card "only in test" so you can replay payments. Stripe's testing docs say not to put card numbers in server-side code, including tests. Use the test numbers in the browser, or the test PaymentMethod ids their docs name.
+
+</Mistake>

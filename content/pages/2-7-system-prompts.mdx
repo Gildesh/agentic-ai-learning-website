@@ -1,0 +1,60 @@
+---
+part: 2
+number: 7
+slug: system-prompts
+title: "System prompts and custom instructions"
+summary: "You can tell a system prompt from the message you just typed, and you can put standing rules in the system prompt."
+minutes: 7
+terms:
+  - system prompt
+  - prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+Every chat in one product starts by refusing to invent a price, even when you never said that today. Another product, same model family, invents a price on the first try. The difference is text the app adds before your message. You did not type it. It is still in the request.
+
+</Hook>
+
+## The idea
+
+A <Term id="system-prompt">system prompt</Term> is instructions the app prepends to every request, ahead of the <Term id="prompt">prompt</Term> you just wrote. APIs often have a separate field for it, named something like `system` or `instructions` in that vendor's docs. Chat products hide the field and expose a settings page: custom instructions, a project rule, or a saved note. The mechanism is the same. The text is in the window for this request. It is not a change to the weights.
+
+Use a system prompt for rules that should survive from task to task.
+
+- The shop never states a price unless the user message includes one.
+- Replies that claim a command ran must quote the output.
+- The catalog voice is one paragraph, not a slogan list.
+
+Use the user message for this task only: which book, which file, which error. If you put today's traceback in the system prompt, tomorrow's chat still talks about that traceback.
+
+When a reply follows a rule you did not type, open the settings and read the system text. When a reply ignores a rule you thought was standing, the rule is probably only in an old chat, not in the system prompt. Paste the rule into the user message once to confirm the model can follow it. Then move it to the place the app sends every time.
+
+Two system prompts can conflict. A product rule says "be brief." Your custom instructions say "always show a plan, then wait." The model will satisfy one of them in prose and drop the other. Read both texts. Delete the sentence you do not want. Page 5.9 is about conflicts between rule files. The fix starts here: there should be one copy of a rule.
+
+<SystemPromptFigure />
+
+## Real example
+
+A standing rule you can put in custom instructions:
+
+```
+You write for Paper Lantern, a used-book shop.
+Never state a price, a year founded, or that a book is rare unless the user message includes that fact.
+If a fact is missing, omit it. Do not guess.
+```
+
+Then a user message that only says "Describe our copy of Dune. There is a name on the flyleaf." The description should not contain a price. If it does, the system prompt is not actually being sent, or a later sentence in it contradicts the rule. Check the settings page, not the model's enthusiasm.
+
+<TryIt minutes={5}>
+
+If your chat product has custom instructions, paste the three-line rule, start a new chat, and ask for a Dune description with no price in your message. If you cannot find the setting, paste the rule at the top of a normal message instead and label it "standing rule for this chat." Either way, circle whether a price appeared. The label tells you which door you used.
+
+</TryIt>
+
+<Mistake>
+
+Hiding a one-off task in custom instructions. Tomorrow you ask for a tax function and the model writes catalog copy, because the standing text still says you write for the shop and you never said "this message wins." Keep standing rules short. Put the task in the user message.
+
+</Mistake>

@@ -1,0 +1,65 @@
+---
+part: 9
+number: 5
+slug: nextjs-app-router
+title: "Next.js: routes and the App Router"
+summary: "You can map a URL to a page.tsx file in the app directory, and you can await params in this version of Next.js."
+minutes: 7
+terms:
+  - Next.js
+  - App Router
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You add `pages/books.tsx` because an older tutorial did, and the URL 404s. This site is <Term id="nextjs">Next.js</Term> with the <Term id="app-router">App Router</Term>. The route is a `page` file inside the `app` directory. A `pages` directory is a different router. Mixing them is how an agent builds a page you cannot open.
+
+</Hook>
+
+## The idea
+
+This project's Next.js docs say routing is based on the file system. A page is UI for one route. You create it by adding a `page` file in `app` and default-exporting a React component. `app/page.tsx` is `/`. `app/books/page.tsx` is `/books`.
+
+A layout is UI shared by the pages under that folder. The docs say that on navigation, layouts preserve state, stay interactive, and do not rerender. You default-export a component from `layout.tsx` that accepts a `children` prop and renders `{children}` where the page should appear. The root layout renders `<html>` and `<body>`.
+
+A dynamic segment is a folder in brackets. `app/books/[id]/page.tsx` matches `/books/42`. In this version, `params` is a promise. The getting-started page awaits it:
+
+```
+export default async function Page({ params }) {
+  const { id } = await params;
+}
+```
+
+Reading `params.id` without `await` is the old shape. The route handler page in Part 7 used the same promise. Keep that habit in pages too.
+
+Link between pages with the `Link` component the docs point at, so the app navigates without a full browser reload. A plain `<a>` still works. It reloads the document.
+
+This course's checker and reader are themselves App Router routes under `app/part/...`. When you ask an agent to add a screen, name the file path. "Add a books page" is not a path. `app/books/page.tsx` is.
+
+<AppRouterFilesFigure />
+
+## Real example
+
+The bookstore routes as files:
+
+```
+app/layout.tsx
+app/page.tsx
+app/books/page.tsx
+app/books/[id]/page.tsx
+```
+
+`/books/42` renders the last file with `id` equal to `"42"` after you await `params`. If the agent also creates `pages/books/[id].js`, delete that file. One router.
+
+<TryIt minutes={5}>
+
+Write the file path for a route you want, starting with `app/` and ending with `page.tsx`. If the path contains `pages/` at the top, rewrite it until it matches this version.
+
+</TryIt>
+
+<Mistake>
+
+Copying a snippet that reads `params.id` as a plain object. In this Next.js, that value is a promise. Await it, then read `id`.
+
+</Mistake>

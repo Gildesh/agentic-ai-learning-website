@@ -1,0 +1,57 @@
+---
+part: 9
+number: 11
+slug: which-to-pick
+title: "Which to pick"
+summary: "You can pick one framework for a repo and write the file type the choice implies."
+minutes: 7
+terms:
+  - Angular
+  - Next.js
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The agent asks which framework you prefer, then installs three and wires a demo in each. You wanted a book page. Preference is not the question. The question is which framework already owns the repository, and, if none does, which one you will maintain.
+
+</Hook>
+
+## The idea
+
+Use this order.
+
+1. **The repo has a choice.** This course is <Term id="nextjs">Next.js</Term> with the App Router. `app/**/page.tsx` is the route. Adding <Term id="angular">Angular</Term>, Vue, or Svelte here means two builds and two names for a component. Do not do that for practice. Practice inside the files the dev server already runs.
+
+2. **The team has a choice.** If the people who will maintain the app write Angular, the bookstore is Angular: `@Component`, a template, signals, `input()` for props. If they write Vue, you get `.vue` files. If they write Svelte, you get `.svelte` files and SvelteKit for the app. Their tests and their hiring are the cost of a switch. A blog post is not.
+
+3. **Nothing exists yet, and there is no team habit.** Pick one and write it in the spec in a sentence: "UI: Next.js App Router. Interactive leaves are Client Components. Server Components load the rows." You can pick Angular or Vue or Svelte with the same honesty. You cannot pick "whichever the model suggests in the moment."
+
+The comparison that matters is not speed and not a download chart. It is whether the owner check, the loading state, and the form action have a place in that framework. All four can do that. None of them do it if you skip the server check.
+
+Write the pick where an agent will see it, in `docs/SPEC.md` or the task card. A pick that lives only in chat will be re-litigated on the next session.
+
+<PickFrameworkFigure />
+
+## Real example
+
+A spec line for this site, and a spec line for an Angular shop:
+
+```
+This course: Next.js App Router, React components, page.tsx
+An Angular team: Angular, @Component, signal, no React
+```
+
+Both are complete. "Modern frontend" is not.
+
+<TryIt minutes={5}>
+
+Write the one-line pick for the project you are actually in. Include the file extension the components will use. If you cannot, you are not ready to ask an agent to scaffold a UI.
+
+</TryIt>
+
+<Mistake>
+
+Choosing a framework to match a tutorial's aesthetic, then abandoning it when the first error appears. The error is the work. Switching stacks deletes the page you were about to understand.
+
+</Mistake>

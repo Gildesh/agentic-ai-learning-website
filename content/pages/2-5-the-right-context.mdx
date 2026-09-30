@@ -1,0 +1,67 @@
+---
+part: 2
+number: 5
+slug: the-right-context
+title: "Give it the right context"
+summary: "You can choose the error, the function, and the command for a prompt, and leave the rest of the project out."
+minutes: 7
+terms:
+  - context window
+  - prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A function crashes. You paste the entire project into the chat "for context" and ask what is wrong. The reply discusses a README badge. The last line of the traceback, the one that names the bug, was crowded out of the useful part of the request.
+
+</Hook>
+
+## The idea
+
+Context means the text this task needs, placed in the <Term id="prompt">prompt</Term>. The <Term id="context-window">context window</Term> is finite. A long paste is not automatically better. The model attends to what is in the request, and a 2,000-line dump makes the 4-line error a small fraction of the tokens.
+
+For a bug, three pieces are usually enough.
+
+- The error text, copied from the terminal, including the file and line the traceback names.
+- The function that contains that line, not the whole file, unless the bug is in how the file is organized.
+- The command you ran, so the reply can tell you to run the same command.
+
+Docs belong in the prompt when the question is about the library's contract. Paste the relevant section, or the URL and the paragraph you mean. "See the docs" with no excerpt leaves the model to recall a page it may invent.
+
+Files an agent can read do not all have to be pasted by you. Point at the path: "Read tax.py and the traceback below. Do not open other files." The tool result is then the context, and you can see it in the transcript.
+
+If you do not know which file matters, ask for a plan that only lists files to read. That is smaller than pasting everything.
+
+<RightContextFigure />
+
+## Real example
+
+```
+Command: python tax.py
+Error:
+TypeError: can't multiply sequence by non-int of type 'float'
+File "tax.py", line 4, in tax_cents
+    return price_cents * rate
+
+Function:
+def tax_cents(price_cents, rate):
+    return price_cents * rate
+
+Task: price_cents is a string from a form. Convert it to int before multiplying.
+Reply with the new function only.
+```
+
+The bug is the type, and the prompt says the type. A reply that rewrites the function to call a payment API did not use this context. It imported a default story about checkout.
+
+<TryIt minutes={5}>
+
+Send the example. The repair should convert `price_cents` with `int` before the multiply. Then send a second chat with only "my tax function is broken, here is the repo" and no traceback. Compare how specific the two replies are. Keep the first prompt. It is the one with a checkable repair.
+
+</TryIt>
+
+<Mistake>
+
+Pasting a secret into the context because it was next to the error in the terminal. An API key in a traceback does not belong in the chat. Delete the key from the paste. The stack frame is the context. The secret is not.
+
+</Mistake>

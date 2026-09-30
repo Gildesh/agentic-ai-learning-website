@@ -1,0 +1,89 @@
+---
+part: 10
+number: 12
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can put a loop failure on the spec, the card, the gate, the hook, or the commit."
+minutes: 7
+terms:
+  - spec
+  - hook
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The feature is "done" in a sentence, and the tree is red, dirty, or wider than the card. The loop has a name for each of those. Use the name, then do the step you skipped.
+
+</Hook>
+
+## The idea
+
+One prompt can draft a product. It cannot remember the spec, the check, or the commit. The lap is spec, task, build, check, commit. The spec lives in a file you name, such as `docs/SPEC.md`. The tool does not open that path unless a rule or a message names it.
+
+A card has one job, an allow-list of files, and a check. A fast model can finish a small card. It cannot invent the product safely. Lock the test in an earlier commit. The implementation diff that touches the test has failed.
+
+A gate is a command and an exit code. Run it. A stop hook, the agent hook from Part 3, can run it when a turn ends. Cursor's `stop` event can send a follow-up, with a default cap of five. Claude Code's `Stop` hook can refuse to stop, and the guide caps consecutive blocks at eight. Leave the cap. The hook is not a React hook.
+
+The maker edits. The checker reads the diff and the spec, or you run a command. After a couple of failures, mark the card blocked and escalate with the output, not with a blank prompt. Scope is `git diff --name-only` against the card. Parallel agents get disjoint files and separate branches. Merge a green branch, then the next.
+
+Commit only a tree the gate accepted. A commit message does not make a red check green.
+
+<Part10RecapFigure />
+
+<Quiz
+  questions={[
+    {
+      prompt: "The agent says the tests passed. The command exits 1. What is true?",
+      choices: [
+        "The gate failed. The summary does not override the exit code.",
+        "The hook already committed, so the exit code is stale.",
+        "You should delete the test and rerun.",
+      ],
+      answer: 0,
+      why: "A gate is the command. Exit 1 is a failure no matter what the reply claims.",
+    },
+    {
+      prompt: "What is a Cursor stop hook?",
+      choices: [
+        "A script that can send a follow-up when the agent turn finishes",
+        "A React useState call",
+        "A git commit message",
+      ],
+      answer: 0,
+      why: "It is the agent hook on the stop event. The default cap is five follow-ups. It is not a React hook.",
+    },
+    {
+      prompt: "The implementation diff edits the test you committed first. What failed?",
+      choices: [
+        "The lock. That file was not on the card.",
+        "Nothing. Green is green.",
+        "The layout, because pages must be client components.",
+      ],
+      answer: 0,
+      why: "A locked test is out of scope for the implementation card. Changing it redefines done.",
+    },
+    {
+      prompt: "Two agents need to edit the same file. What should you do?",
+      choices: [
+        "Run the cards one after another, from a commit",
+        "Let them share one working tree and merge later",
+        "Turn off the gate so the merge is quiet",
+      ],
+      answer: 0,
+      why: "Overlapping files are sequential work. One tree with two writers drops a task.",
+    },
+  ]}
+/>
+
+<TryIt minutes={5}>
+
+Answer the four questions, then write the check command and the file allow-list for the card you would run next. If the command is missing, the card is not ready.
+
+</TryIt>
+
+<Mistake>
+
+Committing the recap in your head. The next session sees the repository, not this page. The spec path, the last gate output, and the commit are what carry the loop forward.
+
+</Mistake>

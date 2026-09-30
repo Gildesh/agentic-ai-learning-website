@@ -1,0 +1,57 @@
+---
+part: "A"
+number: 4
+slug: http-status-cheat-sheet
+title: "HTTP status codes cheat sheet"
+summary: "You can read 200, 201, 204, 400, 401, 403, 404, and 500 the way Part 7 defined them."
+minutes: 7
+terms:
+  - HTTP
+  - status code
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The body says "not found" and the status is 200. The client treats the call as success. The cheat sheet is the reminder: the <Term id="status-code">status code</Term> is the report. The sentence in the body does not outrank it.
+
+</Hook>
+
+## The idea
+
+These are the codes [REST: methods, URLs and status codes](/part/7/rest-methods-and-status-codes) took from RFC 9110, plus the empty-body success that page already named. <Term id="http">HTTP</Term> methods still decide what you asked. The code decides what the server claims happened.
+
+**2xx, the request worked.** `200` means OK, and a body may carry the book. `201` means created. The new URL belongs in a `Location` header when you have one. `204` means success with an empty body. Do not parse JSON from a 204.
+
+**4xx, the request was the problem.** `400` means the body or the query is nonsense, such as a title that is a number when the spec wants a string. `401` means not authenticated. The reason phrase in the spec is still "Unauthorized." It does not mean "logged in but forbidden." `403` means authenticated and still refused, which is the owner check. `404` means nothing at that URL, or you chose 404 so a stranger cannot learn that someone else's order exists.
+
+**5xx, the server failed.** `500` is the generic one. Read the server log. Do not show a success panel on top of it.
+
+A webhook handler returns 200 only after the signature checks and the event id is stored, including when the event was a duplicate you are ignoring. It returns 400 when the signature fails. It returns 500 when you want the sender to retry because you failed before fulfilling.
+
+The browser should show the code you got. A frontend that only has a happy path will paint Paid on a 404.
+
+<StatusSheetFigure />
+
+## Real example
+
+Two curls, two codes:
+
+```
+curl.exe -i http://localhost:3000/api/books/42
+curl.exe -i http://localhost:3000/api/books/999
+```
+
+You want 200, then 404. If both are 200, the id is ignored. If the missing book is 500, the handler threw. Those are different bugs.
+
+<TryIt minutes={5}>
+
+Write the status you will return for a missing book, a missing session, and a session that does not own the row. If two of them share a code, say why, in the spec, so the client can tell them apart or so you admit it cannot.
+
+</TryIt>
+
+<Mistake>
+
+Putting the code only inside the JSON and leaving the status line at 200. Clients and `response.ok` read the status line. A field named `status` is not a substitute.
+
+</Mistake>

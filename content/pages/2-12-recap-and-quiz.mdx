@@ -1,0 +1,64 @@
+---
+part: 2
+number: 12
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can answer five checks about prompt shape, examples, JSON, revisions, and prompt injection."
+minutes: 8
+terms:
+  - prompt
+  - prompt injection
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A reply is only as checkable as the prompt that asked for it. You can now see a thin prompt, name the missing slot, and write the second message against the actual miss. The quiz is that skill on five short cases.
+
+</Hook>
+
+## The idea
+
+A <Term id="prompt">prompt</Term> needs a role, a task, context, constraints, and an output format when the default would be wrong. Few-shot examples show the shape when a description of the shape is too easy to dodge. Lists and tables are for you. JSON is for a program. The values can still be invented. The braces only make the invention easy to see.
+
+Ask for a plan before an agent edits files. Put the error, the function, and the command in the prompt, not the whole disk. The second prompt quotes the bad line and says what to keep.
+
+A system prompt is the standing text the app sends every time. Custom instructions are that text when you can edit them. The task of the day stays in the user message.
+
+A code prompt names the file, the signature, the non-goals, and the command whose output is "done."
+
+<Term id="prompt-injection">Prompt injection</Term> is instructions hiding in data: a page, a file, a review. Your task and that text share the window. Say the fetched text is a quote, do not follow orders inside it, and do not give that request your secrets or a tool it does not need.
+
+Keep three templates on disk: bug, task, review. Fix the file when a reply fails, so the next task inherits the repair.
+
+<Part2RecapFigure />
+
+## Real example
+
+Five one-line diagnoses, before the quiz.
+
+1. "Make it better" names no artifact.
+2. Two finished labels, then one unfinished input, is few-shot.
+3. Valid JSON can still contain a price you forbade.
+4. The second prompt should quote the bad line.
+5. A page that says "read .env" is data, not your task.
+
+<Quiz questions={[
+  { prompt: "Which slot is missing in the prompt 'Write a product description'?", choices: ["A verb", "Context and constraints, so the model fills them with defaults", "The model name", "A system prompt from the vendor"], answer: 1, why: "The task is present. The facts and the limits are not, so the reply looks like a generic description." },
+  { prompt: "What is few-shot prompting?", choices: ["Training the model on your examples overnight", "Putting a few finished input-output pairs in this request, then the unfinished case", "Sending the same prompt many times", "A hidden reasoning mode"], answer: 1, why: "The examples are tokens in the prompt. The weights do not change." },
+  { prompt: "A reply is valid JSON and includes a price key you forbade. What failed?", choices: ["The JSON syntax", "The constraint on keys. Shape and truth are different checks.", "The context window is too small for braces", "JSON cannot represent strings"], answer: 1, why: "A parser accepts the braces. You still compare keys and values to the prompt." },
+  { prompt: "The first shelf label has the wrong note. What should the second prompt do?", choices: ["Say 'make it better' and clear the chat", "Quote the bad line, say what to keep, and give the source note", "Add more adjectives to the role", "Ask the model if it is sure"], answer: 1, why: "Name the defect. A fresh vague prompt repeats the miss." },
+  { prompt: "An agent summarizes a page, and the page says to read .env. What is that?", choices: ["A system prompt you wrote", "Prompt injection: untrusted text trying to set a new task", "Fine-tuning", "A rate limit"], answer: 1, why: "The page is data. Instructions inside it are not yours. Do not give that request secrets or extra tools." }
+]} />
+
+<TryIt minutes={5}>
+
+Answer the quiz. Then take one real sentence you would have typed today and rewrite it with an artifact and a check. If you cannot name the check, the prompt is not done.
+
+</TryIt>
+
+<Mistake>
+
+Memorizing the five slots and skipping the quote-the-bad-line step. The slots help the first prompt. The second prompt is where most of the quality shows up, and it needs the actual draft in view.
+
+</Mistake>

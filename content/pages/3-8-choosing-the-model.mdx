@@ -1,0 +1,57 @@
+---
+part: 3
+number: 8
+slug: choosing-the-model
+title: "Choosing the model inside the tool"
+summary: "You can match a tool's model picker to a model id, and you can see that the picker does not change the review."
+minutes: 7
+terms:
+  - LLM
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The picker says "fast" and "thinking" and a brand name. The invoice and the context window do not use those words. They use a model id. The tool is a client. The model is still the one from Part 1.
+
+</Hook>
+
+## The idea
+
+An <Term id="agent">agent</Term> in Cursor, VS Code, Antigravity, or Claude Code calls an <Term id="llm">LLM</Term>. The product chooses a default and offers a picker. VS Code's agents overview says you can choose among models and providers and bring your own API key. Other tools document their own lists. Those lists change. This page does not copy them.
+
+When you pick a model, write down the id if the tool shows one, and match it to the vendor page from Part 1. `claude-sonnet-5-5` and a friendly name in a menu are the same model only if the docs say so. A shorter context window, such as Haiku 4.5 at 200K tokens against Sonnet 5.5 at 1M, will drop project rules and file text sooner. A cheaper id is the right default for a one-line edit. A larger id is a choice you make when the diff is wide, not a badge.
+
+Bringing your own key means the token bill from Part 1 applies, plus the tool's own plan if it has one. The next page separates those meters. Do not assume the picker is free because the editor is open.
+
+The review does not change with the model. You still read the diff and the command output. A stronger model that edits the wrong file is still a wrong edit. Rules files exist so the model id is not the only thing carrying the constraint.
+
+If the tool hides the id, open its models doc before you compare two sessions. Two chats with different hidden defaults are not a fair test of your prompt.
+
+<ModelPickerFigure />
+
+## Real example
+
+A line you keep next to a session:
+
+```
+Tool: VS Code chat
+Model id: (copy from the picker or the docs)
+Task: one function in tax.py
+Check: python prints 80
+```
+
+Run the same prompt once on the default model. If the diff is wrong, fix the prompt or the rule before you switch models. Switching first teaches you nothing about which change mattered.
+
+<TryIt minutes={5}>
+
+Open the model control in whatever coding tool you have, or open the VS Code agents page if you do not have one installed. Write the name you see and, if shown, the id. Then open the matching vendor models page from Part 1 and find that id's context window. If you cannot find the id, the picker is using a label you have not mapped yet. Leave the price blank until the vendor page shows it.
+
+</TryIt>
+
+<Mistake>
+
+Judging a tool by one reply from a model you cannot name. The tool, the id, and the prompt are three variables. Change one of them when you compare.
+
+</Mistake>

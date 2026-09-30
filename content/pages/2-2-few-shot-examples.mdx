@@ -1,0 +1,59 @@
+---
+part: 2
+number: 2
+slug: few-shot-examples
+title: "Give examples (few-shot)"
+summary: "You can put two finished examples in a prompt so the reply matches their shape."
+minutes: 7
+terms:
+  - few-shot
+  - prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask for shelf labels. The reply is a paragraph. You wanted one line per book: title, then a comma, then four words on the condition. You described that in a sentence. The model wrote the sentence's neighbor, which is a paragraph. An example would have been the label itself.
+
+</Hook>
+
+## The idea
+
+<Term id="few-shot">Few-shot</Term> prompting means the <Term id="prompt">prompt</Term> contains a few finished examples of the task, then the case you actually want done. "Shot" here is an example pair, not a picture. Two or three pairs are enough for a format. You are not training the model. The examples are tokens in this request, the same way any other text is.
+
+Each pair has an input and the output you want the shape of. Keep the outputs short and consistent. If one example uses a comma and the next uses a colon, the model has two legal shapes and will pick one.
+
+Zero examples is sometimes called zero-shot. The model then follows only your description. Descriptions of format are easy to satisfy halfway: you said "one line" and received one long line. An example is harder to misunderstand because the shape is visible.
+
+Examples are also a trap when they contain a fact you do not want repeated. If every sample label says "good condition," the next label may say "good condition" even when you wrote "water stain." Put the varying fact in the input, and keep the output's pattern stable.
+
+<FewShotFigure />
+
+## Real example
+
+```
+Write the next shelf label in the same shape as the examples.
+
+Input: title Dune, note: name on flyleaf
+Output: Dune, name on flyleaf
+
+Input: title Circe, note: clean pages
+Output: Circe, clean pages
+
+Input: title Piranesi, note: water stain on page 12
+Output:
+```
+
+The reply should be one line: `Piranesi, water stain on page 12`. If you get a sentence that starts "This beloved novel," the examples were ignored or crowded out. Resend with the examples closer to the end of the message. The last pattern in the window is the one the model is most likely to continue.
+
+<TryIt minutes={5}>
+
+Paste the example. If the line matches, change the third note to "missing last chapter" and send only the new input under the same two examples. You are checking that the note changes and the comma shape stays.
+
+</TryIt>
+
+<Mistake>
+
+Giving one example that already is the answer you want for a different book, then feeling surprised when the title is copied. The model continues the pattern, including the title, if the new input is easy to skip. Make the new title impossible to confuse with the samples.
+
+</Mistake>

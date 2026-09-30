@@ -1,0 +1,56 @@
+---
+part: 7
+number: 4
+slug: calling-an-api-with-fetch
+title: "Calling an API from code (fetch)"
+summary: "You can call fetch, read the status, and parse JSON only after the status says the call worked."
+minutes: 8
+terms:
+  - HTTP
+  - JSON
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The button's code calls `fetch` and then reads `title` from the result. The console says `title` is undefined. The request did return. It returned 404, the body was an error object, and the code never looked at the status. `fetch` finishing is not the same as the book existing.
+
+</Hook>
+
+## The idea
+
+`fetch` is the function browsers, and recent Node versions, use to send an <Term id="http">HTTP</Term> request. It returns a promise of a response. The promise rejects when the network fails: no host, no connection. It does not reject when the server answers 404 or 500. Those are successful deliveries of a failure. You read `response.status` or `response.ok`. `ok` is true for 200 through 299.
+
+The body is a stream you consume once. `response.json()` parses it as <Term id="json">JSON</Term> and returns another promise. Call it after you know you want that body. A 204 has no body. Parsing it throws. An error body may still be JSON, with a different shape than a book. Agree on that shape in the spec so the page can show it.
+
+Pass method, headers, and body in the second argument. A GET needs no body. A POST that sends JSON needs the header `Content-Type: application/json` and a string body, usually from `JSON.stringify`.
+
+The [Fetch article on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) is the reference for the return value and the options. Vendor wrappers change the defaults. If an agent imports one, ask what it throws on, because many throw on a bad status and hide the number you needed.
+
+<FetchStepsFigure />
+
+## Real example
+
+A public GitHub URL this course already saw return 200:
+
+```
+const response = await fetch("https://api.github.com/repos/github/docs");
+if (!response.ok) {
+  throw new Error(String(response.status));
+}
+const repo = await response.json();
+```
+
+Change `docs` to a name that does not exist and `response.ok` becomes false. The status is what you throw. You do not read `repo.full_name` on that path, because you never parsed a success body. For your own API, use `http://localhost:3000/books/42` the same way. The host changes. The status check does not.
+
+<TryIt minutes={5}>
+
+Run the snippet in a browser console against the GitHub URL, then against a path you expect to 404. Write down both statuses. If the second one still shows a title on your page, the page is ignoring `response.ok`.
+
+</TryIt>
+
+<Mistake>
+
+Awaiting `response.json()` and treating any object as the book. An error object can parse cleanly and still mean the request failed. The status decides which shape you are holding.
+
+</Mistake>

@@ -1,0 +1,65 @@
+---
+part: 8
+number: 3
+slug: authorization
+title: "Authorization: can this user see this row?"
+summary: "You can require that the order's owner matches the caller, and you can return 403 when it does not."
+minutes: 7
+terms:
+  - authorization
+  - primary key
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You are logged in as user 7. You change the URL to `/orders/100` and the page shows someone else's books. Login worked. The handler never asked whether user 7 owns order 100. That question is <Term id="authorization">authorization</Term>.
+
+</Hook>
+
+## The idea
+
+Authentication said who is calling. Authorization says whether this caller may read or change this row. OWASP's 2025 list puts broken access control first, because this check is the one apps forget.
+
+The order table needs an owner column. The <Term id="primary-key">primary key</Term> finds the order. The owner column finds the person. The handler loads the row and compares.
+
+```
+caller is user 7
+order 100 has owner 7 -> 200 and the order
+order 100 has owner 8 -> 403
+order 100 does not exist -> 404
+```
+
+Use 404 when you must not reveal that the id exists. Use 403 when the caller is allowed to know the row is there and still cannot have it. Pick one in the spec and keep it. Do not return the row either way.
+
+A role is a coarser check. "Admin" may list every order. "Customer" may list only their own. The role does not replace the owner check for a customer. An admin flag in the browser, or a query like `?admin=1`, is not a role. The role is a column on the user, read on the server.
+
+Row Level Security in Supabase, mentioned on the Postgres page, is this same rule inside the database: a policy that compares the caller to the row. A policy you have not written is not a policy. If the server uses a key that bypasses those policies, the check has to live in the handler instead. One of the two must be real.
+
+<AuthzCheckFigure />
+
+## Real example
+
+A task card that an agent can finish without inventing a second login system:
+
+```
+GET /orders/100
+Load the order by primary key.
+If there is no row, 404.
+If owner is not the session user, 403.
+Do not take the owner from the query string.
+```
+
+The test is two sessions. Yours sees the order. A second test user, requesting the same URL, does not.
+
+<TryIt minutes={5}>
+
+Write the owner column for one table you already specified. Then write the 200, 403, and 404 cases in three lines. If you cannot name the column, the list endpoint is not safe to build yet.
+
+</TryIt>
+
+<Mistake>
+
+Hiding the button for another user's order and leaving the URL open. The button is frontend. The URL is a request anyone can send. The handler is the check.
+
+</Mistake>

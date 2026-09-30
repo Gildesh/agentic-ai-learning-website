@@ -1,0 +1,84 @@
+---
+part: 5
+number: 10
+slug: starter-kit
+title: "A starter instruction kit you can copy"
+summary: "You can copy a three-file kit: a standing rule file, a spec, and one skill."
+minutes: 7
+terms:
+  - spec
+  - skill
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A new repository has no rules, so the first agent session invents a card field and a second folder of config. You have written the right constraints before, in another project, and they are not here. A kit is those files, copied, then edited to match this repo.
+
+</Hook>
+
+## The idea
+
+Start with three files, not thirty. The <Term id="spec">spec</Term> says what done means. One standing file tells the agent to read the spec and names the boundaries. One <Term id="skill">skill</Term> is the review you run before you commit. Add `CLAUDE.md` only if Claude Code is the tool that will open the repo. Add `.cursor/rules` only if you want Cursor's always-apply rules instead of, or in addition to, `AGENTS.md`. One of those standing files is enough at the start.
+
+`AGENTS.md`:
+
+```
+Read docs/SPEC.md before changing the page or the tax function.
+Do not add a card field.
+Paste the command output before saying a check passed.
+Edit only files named in the task.
+```
+
+`docs/SPEC.md`:
+
+```
+- Three titles, one paragraph each: Dune, Circe, Piranesi.
+- Tax on 1000 cents at 0.08 is 80 cents.
+- Pay shows "not connected" and there is no card field.
+```
+
+`.cursor/skills/review-diff/SKILL.md`:
+
+```
+---
+name: review-diff
+description: Review the git diff against docs/SPEC.md.
+disable-model-invocation: true
+---
+
+Compare the diff to docs/SPEC.md.
+Name any file outside the task.
+Name any card field.
+Require pasted command output for any check the diff claims.
+```
+
+The `disable-model-invocation` line is Cursor's. Drop it or replace it if your tool's skills doc says something else. Keep `SKILL.md`. If the folder name and the `name` field differ, Cursor will reject the skill. Make them both `review-diff`.
+
+Commit the kit before the first agent session, so a bad run can be restored away from these files as well as from the code. Then change the spec when the product changes. Do not grow a second spec in the chat.
+
+<StarterKitFigure />
+
+## Real example
+
+The first task card after the kit is in place:
+
+```
+Job: add the three titles from docs/SPEC.md.
+Files: the page file only.
+Done: open the page and see three paragraphs.
+```
+
+The agent that ignores the spec will fail a review you can now run with `/review-diff` or by asking it to follow `SKILL.md`. The kit does not make the agent honest. It makes the disagreement visible.
+
+<TryIt minutes={5}>
+
+Create the three files in a scratch repo, with the directory your tool's docs require for the skill. Commit them. If you only have a notes app, save the three blocks under those filenames anyway. The next project starts from the copies, not from a blank chat.
+
+</TryIt>
+
+<Mistake>
+
+Copying the kit and then pasting a contradictory "be creative and add files" line into the first prompt. You have reintroduced the conflict from the previous page on minute one. The task card is enough. The kit already says how to behave.
+
+</Mistake>

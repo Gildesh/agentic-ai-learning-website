@@ -1,0 +1,59 @@
+---
+part: 7
+number: 9
+slug: orms-and-migrations
+title: "ORMs and migrations"
+summary: "You can say what an ORM generates, and you can name the migration command for Prisma, Drizzle, or Alembic without applying it blind."
+minutes: 8
+terms:
+  - migration
+  - ORM
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The app works on your laptop and crashes on staging. The code expects a column, `author_id`, that staging's database has never heard of. You changed a file. You did not change the database. Those are two histories, and only a migration keeps them together.
+
+</Hook>
+
+## The idea
+
+An <Term id="orm">ORM</Term> (object-relational mapper) maps tables to code. You describe `books` as a model. The library builds SQL for the common reads and writes. You still need to know SQL, because the log shows SQL when a query is wrong, and because the generated statement can update more rows than you think.
+
+A <Term id="migration">migration</Term> is a saved change to the schema, applied in order. "Add `author_id`." "Create `books`." Each copy of the database, local and staging and production, runs the same files. Editing the model without a migration changes only the copy you happen to push by hand.
+
+Three tools, from their own docs, as checked for this page:
+
+- **Prisma.** `prisma migrate dev` creates a migration from changes in the Prisma schema and applies it to the development database. The Prisma docs say this command is not supported on MongoDB. Read the generated SQL before you treat it as done. Do not assume the command also regenerates the client. The current migrate docs say that, as of Prisma v7, you run generate yourself.
+- **Drizzle.** `drizzle-kit generate` writes SQL migration files from the TypeScript schema. `drizzle-kit migrate` applies them. The dialect includes `postgresql`. The files are the review.
+- **SQLAlchemy with Alembic.** Alembic's docs show `alembic revision --autogenerate -m "Added account table"` to write a candidate migration by comparing models to the database. The migration has not run yet. `alembic upgrade head` applies migrations through the latest revision. Autogenerate is a draft. Open the file.
+
+Pick one stack. Commit the migration files. Apply them on purpose to each environment. A task card that says "update the schema" is unfinished until it names the command and the file you will read.
+
+<MigrationFileFigure />
+
+## Real example
+
+A review note that is specific enough to block a bad migration:
+
+```
+Tool: Prisma
+Command: prisma migrate dev
+File: the new folder under prisma/migrations
+I will read the SQL for drop table before it runs
+```
+
+If the SQL drops `books`, that is a different task from adding a column. Stop. Drizzle's generated `migration.sql` and Alembic's new revision file get the same reading. The folder name differs. The duty does not.
+
+<TryIt minutes={5}>
+
+Choose Prisma, Drizzle, or Alembic for a project, real or imagined. Write the generate command and the apply command from this page, and one sentence about which file you will open. If you cannot name the file, you are not ready to let an agent run the command.
+
+</TryIt>
+
+<Mistake>
+
+Using a "push the schema" shortcut against production because it is faster than a file. You get a database nobody can rebuild. Migrations are how the next environment becomes the same database.
+
+</Mistake>

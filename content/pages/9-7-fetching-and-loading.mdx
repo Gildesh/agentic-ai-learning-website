@@ -1,0 +1,53 @@
+---
+part: 9
+number: 7
+slug: fetching-and-loading
+title: "Fetching data and loading states"
+summary: "You can await a book in a Server Component and show loading.tsx while that segment is still waiting."
+minutes: 7
+terms:
+  - state
+  - HTTP
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The book page is blank for a second, then the title appears, and there is no message in between. The request was in flight. The screen said nothing. A loading state is the component you show on purpose while the data is not here yet.
+
+</Hook>
+
+## The idea
+
+This project's fetching docs say a Server Component can load data with `fetch` or with a database call. The page function is `async`. You `await` the call, then return the elements. Identical `fetch` calls in one render are memoized. In this version, `fetch` is not cached by default, and the page waits until the request finishes unless you stream it.
+
+`loading.tsx` next to `page.tsx` streams that segment. The docs say Next.js nests it in the layout and wraps the page in `Suspense`, so the visitor sees the loading file while the page waits. A layout that itself reads cookies, headers, or an uncached fetch does not fall back to that same-segment `loading.tsx`. It blocks until the layout finishes. The docs' fix is to wrap the slow read in its own `Suspense`, or move the fetch into the page where `loading.tsx` can cover it.
+
+On the client, a loading <Term id="state">state</Term> is a value you own: empty, loading, ready, or failed. Set it from the click that started the <Term id="http">HTTP</Term> request, and set the failure from `response.ok`. Do not leave the button looking idle on a 500.
+
+Do not fetch the same book in an effect if the server page can await it. The effect is a second request and a flash. Fetch in the client when the visitor just asked, as the tax button does, or when the data depends on something only the browser knows.
+
+<LoadingFetchFigure />
+
+## Real example
+
+A page and its loading file:
+
+```
+app/books/[id]/page.tsx      awaits the book, returns the title
+app/books/[id]/loading.tsx   returns a short "Loading book" line
+```
+
+The loading file is a component, not a comment in the page. If the title never appears, the page threw. Read the server log from Part 6. The loading line is not the bug.
+
+<TryIt minutes={5}>
+
+Name the file that should appear while a book loads, and the file that returns the title. If both are the same file and the screen is blank until the title exists, add the loading file.
+
+</TryIt>
+
+<Mistake>
+
+Showing a spinner by setting state to loading and forgetting the failure branch. A 404 is not loading. The status code picks the branch, including the one that says the book is not there.
+
+</Mistake>

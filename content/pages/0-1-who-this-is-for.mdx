@@ -1,0 +1,55 @@
+---
+part: 0
+number: 1
+slug: who-this-is-for
+title: "Who this is for and what you'll be able to do"
+summary: "You can say who this course is for, and name the outcome you will be able to direct an agent toward."
+minutes: 7
+terms:
+  - agent
+  - full-stack
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You have a laptop and a browser. You have not written software, and you want a real app, not a tour of slogans. This course gets you from "what is generative AI?" to directing an AI coding tool that builds, checks, and ships a small full-stack app.
+
+</Hook>
+
+## The idea
+
+An <Term id="agent">agent</Term> is a model running inside a tool that can read a project, edit files, and run commands, then look at the result and continue. A chat box only writes the next reply. An agent can change the files. That is the skill this course trains: you decide the outcome, the agent does the edits, and you can tell a good change from a plausible one.
+
+A <Term id="full-stack">full-stack</Term> app has three places work happens. The browser shows the screen. A server answers the browser. A database stores the rows the server reads and writes. Payments sit beside that path: the card number goes to a payment company, not to your server. You do not need to type the whole app by hand. You do need to recognize each place, because agents invent the middle when you do not name it.
+
+After the later parts you will be able to:
+
+- Write a short spec a second person could test.
+- Point an agent at one task, with the files it may touch.
+- Read a diff and accept or reject it.
+- Keep secrets out of Git, and keep one user from reading another user's row.
+- Turn a rule you care about into a check that runs without asking the model.
+
+You will see real files along the way: HTML, a request, JSON, SQL, a `.env` file, a test. You will not train a model, rent a GPU cluster, or memorize a flag sheet. The first pages are readable on a phone. Later pages ask you to type.
+
+<WhoThisIsForFigure />
+
+## A sentence you can test
+
+Here is an outcome, not a mood:
+
+"A visitor types an email and an amount. A test payment succeeds. The server stores the email. The card number never reaches our server."
+
+That sentence already names the screen, the payment company, and the database. An agent can start from it. A sentence like "make it pop" cannot be checked. If you cannot tell whether the agent finished, the agent will tell you it finished.
+
+<TryIt>
+
+Open a note on your laptop. Write one sentence for an app you actually want, in the same shape: who does what, what gets stored, and what must never happen. Keep it. Page 5.6 turns that sentence into a spec.
+
+</TryIt>
+
+<Mistake>
+
+Collecting tool names instead of outcomes. Cursor, Claude Code, and the model behind them will change. The split between the browser, the server, the database, and a check you can run will not. If a page names a button, learn the job of the button. The icon is the least stable part.
+</Mistake>

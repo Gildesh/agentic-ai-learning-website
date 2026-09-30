@@ -1,0 +1,54 @@
+---
+part: 6
+number: 1
+slug: open-a-website
+title: "What happens when you open a website"
+summary: "You can name the steps from a URL you type to a page you see."
+minutes: 7
+terms:
+  - URL
+  - HTTP
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You type a name into the address bar and a shop appears. The name is not the shop. It is a label the browser resolves, then a request the browser sends, then bytes it draws. If any step fails, the screen is an error, not a mystery.
+
+</Hook>
+
+## The idea
+
+A <Term id="url">URL</Term> (Uniform Resource Locator) is the address. `https://example.com/books` names a scheme (`https`), a host (`example.com`), and a path (`/books`). The browser does not already know which machine answers for that host. It asks the Domain Name System, DNS, for an IP address, which is the number of a machine on the network. DNS is a lookup, not the page.
+
+Then the browser opens a connection and sends an <Term id="http">HTTP</Term> request. HTTP is the request-and-response protocol from Part 7's methods page. For a normal page load the method is GET and the path is the one in the URL. The host answers with a status code and a body. The body of a first page is usually HTML. The HTML often names other URLs for CSS and JavaScript. The browser requests those too. Only then do you see a styled page that can react to a click.
+
+`https` means the connection is encrypted with TLS. You can read the host name. A person on the cafe network should not be able to read the body. The lock icon is that property, not a review of the shop.
+
+None of this requires you to run a server yet. It requires you to stop treating the address bar as a search box. A URL asks one host for one path. Search sends a query to a search engine, which returns links.
+
+<OpenWebsiteFigure />
+
+## Real example
+
+Open a browser, then the developer tools, then the network panel. Visit any public page and click the first request. You should be able to find:
+
+```
+Request URL
+Status, such as 200
+Content type, such as text/html
+```
+
+Those three fields are the whole story of the first hop. Later files in the same list are the CSS and scripts the HTML asked for. If the first request is red and the status is 404, the host answered and said that path is not there. If the request never finishes, the host was not reached. Those are different failures.
+
+<TryIt minutes={5}>
+
+Load one page with the network panel open. Write the request URL, the status, and whether the type is HTML. If the panel is empty, reload with the panel already open. Browsers often hide requests that finished before you looked.
+
+</TryIt>
+
+<Mistake>
+
+Refreshing and calling every failure "the wifi." A 404 is a completed HTTP response. The name resolved and the host spoke. The path is wrong, or the server has nothing there. Read the status before you restart the machine.
+
+</Mistake>

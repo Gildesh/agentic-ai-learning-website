@@ -1,0 +1,57 @@
+---
+part: 12
+number: 5
+slug: agent-hooks-cursor-claude
+title: "Agent hooks in Cursor and Claude Code"
+summary: "You can point a Cursor or Claude Code hook at the same gate, and you can leave the loop cap in place."
+minutes: 7
+terms:
+  - hook
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The pre-commit hook never ran, because the <Term id="agent">agent</Term> edited the files and reported success without committing. The gate has to sit on the agent loop itself. That is an agent <Term id="hook">hook</Term>, the kind Part 3 introduced and Part 10 used for stop.
+
+</Hook>
+
+## The idea
+
+Cursor reads `hooks.json` at the project or user level. Claude Code runs hook commands on named events. Two events matter for enforcement.
+
+**Before a tool runs.** Claude Code's `PreToolUse` can block the tool call. Cursor maps that event to `preToolUse`. Use it to refuse a command you do not want, such as a commit that skips hooks, or a write outside the card's directory. Cursor's hooks docs include `failClosed`: when true, a hook that crashes, times out, or prints nothing blocks the action instead of allowing it. For a security check, fail closed. A broken hook that lets the tool through is not enforcement.
+
+**When the turn finishes.** Cursor's `stop` hook can return a follow-up message, with a default cap of five. Claude Code's `Stop` hook can block so the turn continues, and the guide stops that after eight blocks in a row. Point the follow-up at the gate output: lint failed, here are the lines, stay on the card. Do not raise the cap so the agent works all night. Part 10 already said why.
+
+The hook script should call the same command CI calls. A second, softer script is how the laptop stays green and GitHub goes red. Print the command's output. Do not print secrets from the environment.
+
+A hook is not a substitute for the locked test. It is another place the locked test's command can run when the model would otherwise stop and declare victory.
+
+<AgentHookPlaceFigure />
+
+## Real example
+
+A follow-up you want from a stop hook:
+
+```
+npm run lint exited 1
+Stay on this card
+Do not weaken the lint rule
+Do not commit
+```
+
+If the script cannot see the exit code, it is not ready to be a hook. Run the command in a terminal first.
+
+<TryIt minutes={5}>
+
+Name the event you would use, `preToolUse` or `stop`, and the command it should run. If the command is "ask the model to be careful," it is a request again. Pick lint or the course checker.
+
+</TryIt>
+
+<Mistake>
+
+Letting the agent edit `hooks.json` to delete the gate. The hook file is a locked file. A diff that disables `failClosed` or removes the command has removed the enforcement. Reject that diff.
+
+</Mistake>

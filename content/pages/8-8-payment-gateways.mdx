@@ -1,0 +1,59 @@
+---
+part: 8
+number: 8
+slug: payment-gateways
+title: "How payment gateways work"
+summary: "You can say what your server does and what Stripe or Razorpay does, and you can refuse a Pay button that never calls either."
+minutes: 7
+terms:
+  - API
+  - backend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The Pay button sets the page text to Paid. No request leaves the browser. Part 4 called that a fake. A payment gateway is the other party that was missing: a company whose <Term id="api">API</Term> actually moves money, and whose response is the only reason your order becomes paid.
+
+</Hook>
+
+## The idea
+
+A gateway is the service that collects the payment method and talks to the card networks. Your <Term id="backend">backend</Term> does not. It creates an order or a checkout session, using a secret key, and later it hears the result. The browser may show the gateway's form. It does not post the card number to you.
+
+Two gateways this course will name, from their own docs, with no prices.
+
+**Stripe.** A Checkout Session is created on your server because that call needs your secret key, which Stripe's Checkout docs say you cannot safely expose in client-side code. The session can be a one-time purchase or a subscription. After payment, it references a Customer and either a PaymentIntent or a Subscription. The card entry is Stripe's, which the next page is about.
+
+**Razorpay.** The Standard Checkout guide says you create the Order on the server and verify the signature there. The browser loads Razorpay's `checkout.js` and passes the `order_id`. Razorpay's guide says Razorpay handles the payment UI and PCI-DSS compliance and card data security. You still verify the signature on the server. A browser callback is not the proof.
+
+Both designs share the split from Part 6. Your server decides the amount and the order id. The gateway decides whether the payment happened. The HTML word Paid decides nothing.
+
+Pick one gateway for the bookstore. Do not integrate both "to compare" in the first task. Write the amount in the smallest currency unit the docs use, on the server, from the price you store.
+
+<GatewayFigure />
+
+## Real example
+
+A spec that names the gateway and the proof:
+
+```
+Gateway: Stripe Checkout, or Razorpay Standard Checkout
+Server creates the session or order with the secret key
+Browser never posts the card number to our API
+Order stays unpaid until the server verifies the gateway's result
+```
+
+If the last line is missing, you have the Part 4 bug with a logo next to it.
+
+<TryIt minutes={5}>
+
+Write the gateway name and the request your server sends before the customer sees a card form. If you cannot name that request, the button is still a picture.
+
+</TryIt>
+
+<Mistake>
+
+Marking the order paid when the browser returns to your success URL. The success URL means the customer came back. The gateway's signed result means they paid. Wait for the second one.
+
+</Mistake>

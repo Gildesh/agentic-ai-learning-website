@@ -1,0 +1,62 @@
+---
+part: 3
+number: 7
+slug: which-tool-when
+title: "Comparison table: which to use when"
+summary: "You can pick Cursor, VS Code, Antigravity, or Claude Code from the surface and the instruction file, not from a ranking."
+minutes: 7
+terms:
+  - agent
+  - diff
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+Someone asks which AI coding tool is best. The honest answer is a question back: where is the file, where is the command, and which instruction file will you commit? A ranking from a blog does not know your folder.
+
+</Hook>
+
+## The idea
+
+Use the docs this part already opened. As of September 2026, the split that matters is the surface and the instruction file, not a score.
+
+| Tool | Surface the docs emphasize | Instruction file you can commit | You still review |
+| --- | --- | --- | --- |
+| VS Code | Editor: chat, inline chat, inline suggestions | Whatever the extension documents | The diff |
+| Cursor | Editor agent, plus Tab completions | `.cursor/rules` or `AGENTS.md` | The diff |
+| Antigravity | IDE, CLI, and the 2.0 desktop app | Read the getting-started page for that surface | The artifact or the diff |
+| Claude Code | Terminal, IDE, desktop, and web | `CLAUDE.md` | The diff and the command log |
+
+VS Code is the editor you extend. Cursor is an editor whose rules and hooks are specified as project files. Antigravity is the set of surfaces Google lists under that name. Claude Code is the agent that reads `CLAUDE.md` at session start and can run in the terminal.
+
+An <Term id="agent">agent</Term> in any of them can be wrong. The <Term id="diff">diff</Term> is the same idea everywhere: lines removed, lines added. If a tool hides the diff and offers only "accept all," turn that off or open the file yourself.
+
+Pick one tool for the next project and learn its instruction file. Switching every day means you never commit a rule, and every session starts from a blank prompt. The comparison is allowed to change when the docs change. Re-read the four links on the tour pages before you advise someone else.
+
+<ToolChoiceMatrixFigure />
+
+## Real example
+
+A choice you can write in a note:
+
+```
+I will use Claude Code in the terminal.
+Instructions: CLAUDE.md
+Review: the diff, then the command output.
+I will not also run Cursor's agent on this folder today.
+```
+
+Swap the product if your work is a one-line edit in a file you already have open. That is inline chat or Tab, not a terminal session. The matrix figure is that split: one file in the editor, versus a command in the shell.
+
+<TryIt minutes={5}>
+
+Fill the four-line note for yourself. If you cannot name the instruction file, open the tour page for that tool and copy the file name from there. A choice without a file means the rules will live only in a chat you will lose.
+
+</TryIt>
+
+<Mistake>
+
+Installing all four and letting each one auto-apply edits. You will not know which agent wrote the file. One writer. The others can stay installed and closed.
+
+</Mistake>

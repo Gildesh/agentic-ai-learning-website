@@ -1,0 +1,62 @@
+---
+part: 3
+number: 12
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can answer five checks about the agent loop, the four tools, a diff, and a git snapshot."
+minutes: 8
+terms:
+  - diff
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You can sit down at Cursor, VS Code, Antigravity, or Claude Code and ask the same three questions. What did it read, what is the diff, and what did the command print? The product chrome is optional. Those three are not.
+
+</Hook>
+
+## The idea
+
+An AI coding tool is an agent loop: read a file, edit a file, run a command. The chat text is the transcript. The edit is a <Term id="diff">diff</Term>. The result is command output.
+
+Editor agents sit with the file. Terminal agents sit with the shell. Use the one where the evidence already is. Do not let two of them write the same folder.
+
+VS Code documents chat, inline chat, and inline suggestions, and it can use extensions and a model key you bring. Cursor documents project rules in `.cursor/rules`, `AGENTS.md`, and hooks in `hooks.json`, with Tab as the inline-completion surface. Antigravity's docs list the IDE, the CLI, and Antigravity 2.0. Claude Code reads `CLAUDE.md` at session start and can run a subagent with its own tools and context window.
+
+The model picker selects an LLM. Map it to a model id before you compare cost or context length. Plan prices stay on the vendor's page.
+
+<Term id="git">Git</Term> is the undo. Commit a clean snapshot, open one project, let the agent edit, read every minus and plus, run the check, then commit. `git restore` throws away uncommitted work. Use it on purpose.
+
+<Part3RecapFigure />
+
+## Real example
+
+Five lines that match the quiz.
+
+1. A summary is not a diff.
+2. One writer in the folder.
+3. `CLAUDE.md` is read at session start.
+4. A plus line you did not request fails the review.
+5. Commit before the agent starts, not after an unread edit.
+
+<Quiz questions={[
+  { prompt: "What is the edit an AI coding tool made?", choices: ["The closing sentence in the chat", "The diff: removed lines and added lines", "The model id", "The system prompt"], answer: 1, why: "The transcript can claim anything. The diff is the change on disk." },
+  { prompt: "When do you prefer a terminal agent?", choices: ["When you want a new theme", "When the evidence is a failing command and you want that command rerun", "When you need inline completions while typing", "When you have no files yet and want a logo"], answer: 1, why: "The terminal is where the command output already is. Inline completions belong in the editor." },
+  { prompt: "Where do Cursor project rules live, according to Cursor's rules doc?", choices: ["Inside the model weights", "In .cursor/rules, as version-controlled project rules", "Only on a Team plan, with no project file", "In the terminal history"], answer: 1, why: "Project rules are in .cursor/rules. AGENTS.md is the plain-markdown alternative the same doc names." },
+  { prompt: "What does Claude Code's overview say about CLAUDE.md?", choices: ["It is a binary cache of the repository", "It is a markdown file at the project root, read at the start of every session", "It replaces git", "It stores the API key"], answer: 1, why: "Standing instructions go there. Secrets do not." },
+  { prompt: "You have not committed. The agent edit is bad. What does git restore on that file do?", choices: ["It publishes the file", "It discards the uncommitted change and returns the last committed snapshot", "It trains the model", "It accepts the diff"], answer: 1, why: "Restore is the undo for uncommitted work. If you never committed, there may be no snapshot to return to." }
+]} />
+
+<TryIt minutes={5}>
+
+Answer the quiz. Then run `git diff` in a practice repo and point at one minus line and one plus line. If you do not have a repo yet, the try-it on the git page builds one in five minutes.
+
+</TryIt>
+
+<Mistake>
+
+Treating this part as a shopping list. The tools will add buttons. The review will not change: one project, a diff you can read, a command you can rerun, a commit you can restore.
+
+</Mistake>

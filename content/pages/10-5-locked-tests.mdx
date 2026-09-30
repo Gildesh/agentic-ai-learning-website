@@ -1,0 +1,55 @@
+---
+part: 10
+number: 5
+slug: locked-tests
+title: "Locked tests: done is decided before the code"
+summary: "You can commit the check first and forbid the implementation task from editing it."
+minutes: 7
+terms:
+  - spec
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The test failed, so the agent changed the test. The new test expects the bug. The command exits 0. The <Term id="spec">spec</Term> still says 404. Done was redefined by the same run that was supposed to meet it.
+
+</Hook>
+
+## The idea
+
+A locked test is a check that exists before the implementation and that the implementation task is not allowed to edit. You write the test from the spec, watch it fail for the right reason, and commit it. The next card says "do not change the test file." <Term id="git">Git</Term> makes the lock visible: if that file is in the diff, the card failed.
+
+The test is allowed to be wrong. A person changes it in its own card, from the spec, not from a desire to go green. An agent that weakens an assertion, skips a case, or deletes the test has not finished. It has changed what "done" means. Done stays in the spec. The test only states it.
+
+What you lock is the behavior, not a brittle detail. Lock "unknown bookId returns 404." Do not lock the exact whitespace of an error string you have not specified. A locked test that rejects a harmless rename will train the agent to edit the test. Make the assertion the spec.
+
+The failure you want, before the code exists, is a failure that names the missing behavior. A syntax error in the test is not that. Fix the test until the failure is "expected 404, got 200" or "the route does not exist." Then commit. Then implement.
+
+This is the same rule as the course checker. You do not delete a clause to make the command pass. You meet the clause.
+
+<LockedTestFigure />
+
+## Real example
+
+Two commits, in this order:
+
+```
+Commit 1: the test expects 404 for an unknown bookId
+Commit 2: the route, and the test file is not in the diff
+```
+
+If commit 2 touches the test, reject it. Read the assertion. If the assertion was wrong, a third commit fixes the test and you rerun. You do not squash the cheat into the feature.
+
+<TryIt minutes={5}>
+
+Write one assertion you could commit today, before the handler exists, and the file path the implementation card must not change. If you cannot name the assertion, the spec is still too vague to lock.
+
+</TryIt>
+
+<Mistake>
+
+Letting the same message "add the test and the code." The agent will write both so they agree with each other. Write the test, commit, then write the code against the commit you already have.
+
+</Mistake>

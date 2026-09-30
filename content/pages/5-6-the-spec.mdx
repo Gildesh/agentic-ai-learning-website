@@ -1,0 +1,63 @@
+---
+part: 5
+number: 6
+slug: the-spec
+title: "The spec (docs/SPEC.md) as the source of truth"
+summary: "You can write a spec a second person could test, and you can point an agent at docs/SPEC.md."
+minutes: 7
+terms:
+  - spec
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The Pay page says Paid. You asked for that sentence last week. Today you want a real status check, but the chat that decided otherwise is gone. The code and your memory disagree. There is no document that says which one wins.
+
+</Hook>
+
+## The idea
+
+A <Term id="spec">spec</Term> is the description a second person could test without asking you. This course keeps it at `docs/SPEC.md`. That path is a convention of this course, not a file Cursor or Claude Code load by themselves. An <Term id="agent">agent</Term> reads it when a rule or a message names the path. Add one line to `AGENTS.md` or `CLAUDE.md`: "When a task mentions checkout or tax, read docs/SPEC.md and follow it."
+
+A useful spec is a list of behaviors, each with an input and a result.
+
+- Given three titles, the page shows three paragraphs.
+- Given 1000 cents and rate 0.08, the tax line shows 80 cents.
+- The Pay control shows "not connected" and the page has no card field.
+
+Each line can fail. "The shop feels trustworthy" cannot. If the code and the spec disagree, you change one of them in the same commit and you say which. Silent code that contradicts the spec means the next agent will "fix" the code back, or will trust the code and rewrite the spec without telling you. Pick one source of truth. For behavior a user can see, the spec wins until you edit the spec.
+
+Keep the spec shorter than the code. It does not include the function body. It includes what the function must do. The body can change. The 80 cents cannot, until you change the spec on purpose.
+
+Part 4's promotion note, kept / not kept / next check, is a spec with three lines. Grow it as the demo becomes a product. Do not wait for a perfect template.
+
+<SpecTruthFigure />
+
+## Real example
+
+`docs/SPEC.md`:
+
+```
+# Paper Lantern demo
+
+- The page lists Dune, Circe, and Piranesi, one paragraph each.
+- Tax on 1000 cents at rate 0.08 is shown as 80 cents.
+- Pay shows the text "not connected".
+- There is no card number field.
+```
+
+A task that says "make Pay look finished" contradicts the third and fourth lines. The agent should refuse or ask you to change the spec first. If your rules file does not mention the spec, the agent will not know those lines exist.
+
+<TryIt minutes={5}>
+
+Write `docs/SPEC.md` with three checks for something you could actually click. Then write the one rules-file line that tells the agent to read it. If you cannot state a check as input and result, the line is still a wish. Rewrite it until a friend could mark it pass or fail.
+
+</TryIt>
+
+<Mistake>
+
+Letting the latest chat overrule the spec without editing the spec. You will get a second chat next week that follows the file and undoes the quiet exception. Change the file, or do not change the behavior.
+
+</Mistake>

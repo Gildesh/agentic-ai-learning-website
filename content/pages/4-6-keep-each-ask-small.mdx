@@ -1,0 +1,69 @@
+---
+part: 4
+number: 6
+slug: keep-each-ask-small
+title: "Keep each ask small"
+summary: "You can split a demo into asks that each have one screen change and one check."
+minutes: 7
+terms:
+  - prompt
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask for a shop: a list of books, a tax line, a checkout button, and a receipt. The agent writes a dozen files. The list is fine. The receipt shows a price you never specified. You cannot revert the receipt without reverting the list, because they arrived as one diff.
+
+</Hook>
+
+## The idea
+
+A large ask hides cause and effect. <Term id="vibe-coding">Vibe coding</Term> already skips a close reading. If each <Term id="prompt">prompt</Term> also changes five behaviors, you cannot react to one thing you saw. The next screen is a pile.
+
+Keep each ask to one visible change and one check.
+
+1. A page that lists three titles. Check: you see three lines.
+2. A tax line under the list, using `tax_cents(1000, 0.08)` and showing `80`. Check: the page shows 80, and you are not inventing a second rate.
+3. A checkout button that does not charge anything yet. It shows the words "not connected." Check: those words are on screen, and no card field exists.
+
+An <Term id="agent">agent</Term> will try to be helpful and build step 3 during step 1. Say what this pass must not do. "Do not add a form. Do not add a price except the tax line in step 2." The refusal is part of the ask.
+
+After each pass, commit if you would be willing to keep it, or leave it uncommitted until the check looks right, with the pre-session commit still behind you. Small asks make `git diff` short enough to glance at even when you are moving fast. A twelve-file diff is how a prototype becomes unread on purpose.
+
+If you cannot name the check in one sentence, the ask is still too big. Split it before you send it.
+
+<SmallAskFigure />
+
+## Real example
+
+Three messages, sent one at a time, each after a reload:
+
+```
+One HTML file. Three titles in three paragraphs: Dune, Circe, Piranesi.
+No prices. No forms.
+```
+
+```
+Under the list, one line: tax on 1000 cents at 0.08 is 80 cents.
+Do not add any other number.
+```
+
+```
+Add a button labeled Pay later.
+Clicking it changes nothing and does not ask for a card.
+```
+
+The third message is where a vibe session usually invents a card form. The sentence "does not ask for a card" is the constraint that keeps the demo a demo.
+
+<TryIt minutes={5}>
+
+Write a feature you want as three asks, each with a check you can see without reading code. Send only the first one if you have a tool open. If the result includes a piece from ask two, your first message did not forbid it. Add the forbid line and run that ask again from the snapshot.
+
+</TryIt>
+
+<Mistake>
+
+Saving the small asks for "when I am being careful," and using one giant message when you are in a hurry. The hurry is when the giant message does the most damage, because you will not read the diff at all.
+
+</Mistake>

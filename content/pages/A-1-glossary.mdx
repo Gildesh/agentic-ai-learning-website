@@ -1,0 +1,56 @@
+---
+part: "A"
+number: 1
+slug: glossary
+title: "Glossary"
+summary: "You can find every course term in the glossary and jump back to the page that introduced it."
+minutes: 7
+terms:
+  - spec
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You remember the word and not the meaning. The chat that defined it is gone. The glossary is the list that stays: one entry per term, a short definition, and a link to the lesson that introduced it.
+
+</Hook>
+
+## The idea
+
+This course keeps a [glossary](/glossary). Each entry has an id, the term, a definition, and the part and slug of the page that owns the definition. On a lesson, the first careful use is a link. Click it and you land on the entry. The entry points back at that lesson, which is where the examples live. The glossary is an index. It is not a second textbook.
+
+A term is "used" when some page lists it in frontmatter. A word that appears only in a paragraph does not count. That rule is why the checker can tell you a definition nobody attached to a lesson. If you add a term, name the page that teaches it, and put the term in that page's list. If you remove the last page that lists it, the checker fails until another page claims it.
+
+The <Term id="spec">spec</Term> is one of those terms. So is <Term id="agent">agent</Term>. So are HTTP, SQL, and the React hook, which is not the agent hook. When two ideas share an English word, the glossary keeps them apart. Search on the site looks at titles, summaries, and terms. If you cannot remember which part taught status codes, search the term.
+
+Do not paste the whole glossary into a prompt. Paste the two entries the card needs, or tell the agent to read the lesson URL. A wall of definitions crowds out the card. The glossary page on the site is for you, when you are reading. The spec is for the agent, when it is building.
+
+When a vendor renames a product, change the lesson and the entry together, and set `lastChecked` to the month you looked. A definition that outlives the docs is a bug.
+
+<GlossaryMapFigure />
+
+## Real example
+
+A lookup you can do without scrolling the whole list:
+
+```
+Term: status code
+Page: Part 7, REST methods
+Check: 404 is the request, 500 is the server
+```
+
+If the entry and the lesson disagree, the lesson's worked example wins until you fix the entry. They should say the same thing.
+
+<TryIt minutes={5}>
+
+Open `/glossary` and find three terms from different parts. For each, write the lesson it points at. If a term you expected is missing, it was never listed on a page. That is a hole, not a memory failure.
+
+</TryIt>
+
+<Mistake>
+
+Treating the glossary as the spec. The definitions are short on purpose. The request, the status, and the files live in `docs/SPEC.md` and in the lesson. An agent that only reads the glossary will invent the route.
+
+</Mistake>

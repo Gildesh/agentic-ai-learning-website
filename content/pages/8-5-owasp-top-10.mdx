@@ -1,0 +1,66 @@
+---
+part: 8
+number: 5
+slug: owasp-top-10
+title: "The common attacks in plain words"
+summary: "You can name the OWASP Top 10:2025 categories that match a missing owner check, a glued SQL string, and a quiet error log."
+minutes: 8
+terms:
+  - authentication
+  - authorization
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A security page from 2021 will tell you injection is number three and that "vulnerable components" is its own line. The current web list is the OWASP Top 10:2025. The order changed. If an agent quotes the old list, it is studying the wrong map.
+
+</Hook>
+
+## The idea
+
+OWASP publishes the Top 10 as a shared list of the most serious risks in web applications. The 2025 release, at `https://owasp.org/Top10/2025/`, is the one to use. The names, in order, are:
+
+1. Broken access control
+2. Security misconfiguration
+3. Software supply chain failures
+4. Cryptographic failures
+5. Injection
+6. Insecure design
+7. Authentication failures
+8. Software or data integrity failures
+9. Security logging and alerting failures
+10. Mishandling of exceptional conditions
+
+You do not need an exploit for each. You need to see which of your pages already covers the risk.
+
+Broken access control is the owner check. A logged-in user reads another user's order because <Term id="authorization">authorization</Term> never compared the row. Authentication failures are the previous page: a user id taken from the body, a token accepted without a signature. Those are <Term id="authentication">authentication</Term> bugs.
+
+Injection is a string from the request becoming part of a SQL statement, a shell command, or HTML the browser will run. Parameters and the validation page are the ordinary fix. You do not "sanitize" by deleting a few characters you thought of.
+
+Security misconfiguration is the default password, the debug page left on in production, the `.env` that was committed. Supply chain failures are a dependency you did not pin or review. Cryptographic failures include rolling your own password storage. Integrity failures include acting on a webhook you did not verify, which a later page covers. Logging failures mean you cannot tell, afterward, that order 100 was read by the wrong user. Exceptional conditions include a handler that fails open: an error becomes "allow."
+
+<OwaspMapFigure />
+
+## Real example
+
+A review line you can paste onto a task card:
+
+```
+OWASP 2025: this change must not skip the owner check (A01)
+and must not build SQL by concatenation (A05).
+```
+
+That is more useful than a paragraph that says "make it secure."
+
+<TryIt minutes={5}>
+
+Open the 2025 list and write the number and name of the category that matches "any logged-in user can open any order." Then write the one that matches "the title is pasted into the SQL text." Keep those two labels next to the bookstore spec.
+
+</TryIt>
+
+<Mistake>
+
+Memorizing the 2021 numbers. Injection is A05 in the 2025 list, not A03. Broken access control is still first. Quote the year when you quote the id.
+
+</Mistake>

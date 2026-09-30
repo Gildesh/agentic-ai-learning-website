@@ -1,0 +1,71 @@
+---
+part: 12
+number: 9
+slug: turning-a-rule-into-a-check
+title: "Turning a rule into a check"
+summary: "You can turn one written rule into a command that fails on a bad sample, then run that command in pre-commit and in GitHub Actions."
+minutes: 7
+terms:
+  - linter
+  - spec
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The <Term id="spec">spec</Term> says the lessons do not use a banned word. A reviewer might notice. A command notices every time, including at midnight, including when the author is an agent. This repository already did that work. `npm run check:course` is a rule turned into code.
+
+</Hook>
+
+## The idea
+
+Pick one sentence. Make it fail a command. Prove the command fails on a bad sample and passes on a good one. Then put the command where it will run.
+
+Sentence: do not track `.env`.
+
+Command, the shape of it:
+
+```
+git ls-files --error-unmatch .env
+```
+
+Git exits 0 when the file is tracked and non-zero when it is not. That is the opposite of what you want for a gate, so the gate treats "tracked" as failure:
+
+```
+git ls-files --error-unmatch .env >NUL 2>&1 && exit 1 || exit 0
+```
+
+Read that carefully on your shell. The point is the pairing: tracked means exit 1, untracked means exit 0. Test both. A command you have not seen fail is a command you do not understand.
+
+Then install it twice. A pre-commit hook runs it on the laptop. The GitHub Actions workflow runs it on the pull request. A <Term id="linter">linter</Term> rule is a third home when the check is about source text, which is what ESLint and the course checker already are. Do not invent a fourth copy with slightly different logic.
+
+Change the rule only by changing the command in a commit that says so. Pages that fail the new command get fixed in the open, not by commenting out the check.
+
+One rule a week, turned into a command, will outrun a page of new advice. Start with the miss you actually had.
+
+<RuleToCheckFigure />
+
+## Real example
+
+This course's checker is the worked example for prose:
+
+```
+Rule: a page is 250 to 700 words, one figure, no banned word
+Command: npm run check:course
+Bad sample: a page that says the banned word, exit 1
+Good sample: the pages that already pass
+```
+
+You do not get to satisfy that rule by editing the script during a content card. That was the previous page.
+
+<TryIt minutes={5}>
+
+Write one rule as a sentence, then the command, then how you will know it fails. Run it if you can. If you cannot describe the failure, the command is not finished.
+
+</TryIt>
+
+<Mistake>
+
+Adding the command only to the chat as a reminder. The reminder is the request you started with. The hook and the workflow are the enforcement. Both, or you still depend on memory.
+
+</Mistake>

@@ -1,0 +1,54 @@
+---
+part: 12
+number: 2
+slug: linters-formatters-types
+title: "Linters, formatters and type checks"
+summary: "You can say what a linter, a formatter, and a type checker each refuse to accept."
+minutes: 7
+terms:
+  - linter
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The diff is a hundred lines of moved commas and one real change. Reviewing it is guesswork. A formatter should have done the commas yesterday, in its own commit. A <Term id="linter">linter</Term> should have failed the unused import. Neither of those is the type of the tax field.
+
+</Hook>
+
+## The idea
+
+Three tools, three jobs. Do not ask one of them to be the others.
+
+A formatter rewrites layout: indentation, quotes, line breaks. It should not change behavior. Run it on purpose, and commit the result separately from a feature, so `git diff` of the feature is the feature. This repository's scripts do not name a formatter. Add one only when you are ready to format the tree in a commit of its own.
+
+A linter reads the source and fails on rules. This repo's `npm run lint` runs ESLint, through `eslint` and `eslint-config-next`. An unused variable, a broken hook rule in React, a pattern you configured: those are lint failures. Exit 0 means the rules that are turned on held. It does not mean the tax route returns 404. That is a test.
+
+A type checker fails when a value cannot have the type you declared. `tax_cents` as a number cannot be the string `"Paid"` if the type says `number`. TypeScript is how this repo expresses those types. `npm run build` is the production build. Use it when you want the full Next.js check, and do not treat a green lint as a green build.
+
+Put lint on the card's gate when the card touches code the linter covers. A docs-only card does not need a ten-minute build. A route card does need the check that would catch a type lie. <Term id="git">Git</Term> still shows whether the formatter wandered into unrelated files.
+
+<LintFormatTypeFigure />
+
+## Real example
+
+A gate line for a route card in this repo:
+
+```
+npm run lint
+```
+
+And, before you merge, `npm run build` when the change can affect the running app. The course pages also require `npm run check:course`. That script is a linter for the lessons: word counts, banned words, and the page list. It is the same idea, pointed at markdown.
+
+<TryIt minutes={5}>
+
+Run `npm run lint` in this repo, or name the lint command in a repo you have. Write the exit code. If you do not know the command, it is not enforcing anything yet.
+
+</TryIt>
+
+<Mistake>
+
+Disabling a lint rule in the same commit as the code that broke it. You have turned the linter off for the case it caught. Fix the code, or change the rule in a separate commit that says why the rule was wrong.
+
+</Mistake>

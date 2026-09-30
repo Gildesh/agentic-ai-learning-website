@@ -1,0 +1,61 @@
+---
+part: 10
+number: 1
+slug: why-one-prompt-cannot-build-a-product
+title: "Why one prompt can't build a product"
+summary: "You can say what a single answer does not record, and why the next session cannot see it."
+minutes: 7
+terms:
+  - agent
+  - spec
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You ask for the bookstore in one message. The <Term id="agent">agent</Term> replies with files, a cheerful summary, and a button that says Paid. Tomorrow a new session starts empty. Nothing in that reply is a <Term id="spec">spec</Term>, a check, or a commit. The product was a conversation.
+
+</Hook>
+
+## The idea
+
+A model answers the message in front of it. It does not keep a running memory of your project between sessions. Part 1 said that plainly. A product is the opposite shape: behavior that stays true after you close the laptop, plus a way to notice when it stops being true.
+
+One prompt can produce a draft. The draft is not done, because "done" was never written down in a form the next run can fail. A spec says what the tax button sends and what status counts as success. A task says which files may change. A check is a command. A commit is the snapshot you keep after the command exits 0.
+
+Skip any of those and the next prompt papers over the gap. The agent will say the feature works because the transcript says so. You learned in Part 6 that the transcript is not the network panel, and in Part 4 that a painted success is not a server. The loop is how those lessons become a habit instead of a lecture you re-explain every morning.
+
+This part is that habit. It is not a new framework. The same git repository, the same spec file, and a command you can rerun are enough. An agent that offers a platform for "the loop" before those three exist is selling a noun.
+
+<OnePromptFigure />
+
+## Real example
+
+A prompt that looks complete and is not:
+
+```
+Build the bookstore, with tax and checkout.
+```
+
+A loop that can start:
+
+```
+Spec: docs/SPEC.md, GET /books/42 and POST /tax
+Task: only app/books and the tax route
+Check: the test named in the spec
+Commit: after the check exits 0
+```
+
+The second block can fail. The first block can only be admired.
+
+<TryIt minutes={5}>
+
+Take a feature you want and write the four words spec, task, check, and commit, each with one line under it. If check is "looks good," replace it with a command or a status code you will read.
+
+</TryIt>
+
+<Mistake>
+
+Trusting a long first answer because it mentions files. Length is not a check. Open the diff and run the command. The answer is marketing until those two agree.
+
+</Mistake>

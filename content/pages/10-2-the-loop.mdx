@@ -1,0 +1,60 @@
+---
+part: 10
+number: 2
+slug: the-loop
+title: "The loop: spec, task, build, check, commit"
+summary: "You can run one lap of the loop and refuse to commit when the check fails."
+minutes: 7
+terms:
+  - spec
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The agent says it is finished and asks you to commit. The test command is still red. A commit now saves the failure and gives it a message that says the feature works. <Term id="git">Git</Term> will remember that snapshot forever. The loop's last step is not a reward. It is a record of a green check.
+
+</Hook>
+
+## The idea
+
+One lap has five steps you can point at. The order is the point.
+
+1. **Spec.** The behavior, in a file. Status codes, rows, and what must not happen.
+2. **Task.** One card: the job, the files, the check. Part 5's task cards are this step.
+3. **Build.** The agent edits those files. You read the diff. You do not read only the summary.
+4. **Check.** Run the command the card named. Exit 0 is pass. Anything else is fail, including a check that did not run.
+5. **Commit.** `git commit` the files from the card, with a message about why, after the check passed. Do not commit `.env`. Do not commit a red tree because you are tired.
+
+Then the next card starts from that commit. If the check failed, you do not invent a new feature. You paste the failure into the next message and stay on this card. That is a retry, which a later page limits. It is not a reason to skip to commit.
+
+The <Term id="spec">spec</Term> does not update itself to match a surprise diff. If the diff is better than the spec, change the spec in its own commit, on purpose, and rerun the check. A spec that quietly follows the code is a diary.
+
+<LoopStepsFigure />
+
+## Real example
+
+A lap you can do on the tax button:
+
+```
+Spec: POST /tax with bookId 42 returns 200 and tax_cents 80
+Task: app/api/tax/route.ts only
+Build: read the diff
+Check: curl.exe the route, read the status
+Commit: after 200 and 80, not before
+```
+
+If curl returns 500, there is no commit. The next message contains the status and the server log.
+
+<TryIt minutes={5}>
+
+Write the five labels for a feature you are in the middle of, and mark the one you are actually on. If you are about to commit and cannot name the check that passed, you are still on check.
+
+</TryIt>
+
+<Mistake>
+
+Committing because the conversation feels complete. The working tree is the truth. `git status` and the check command decide. The agent's last paragraph does not.
+
+</Mistake>

@@ -1,0 +1,56 @@
+---
+part: 11
+number: 1
+slug: strong-and-fast-models
+title: "Strong models vs fast models"
+summary: "You can assign a model to the spec and another to a narrow card without pretending a family name is a ranking."
+minutes: 7
+terms:
+  - LLM
+  - token
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A thread says Claude is the one that plans and Grok is the one that types. The next thread swaps them. Neither thread ran your tax route. A family name is not a job description.
+
+</Hook>
+
+## The idea
+
+An <Term id="llm">LLM</Term> is the model that reads <Term id="token">token</Term>s and continues them. "Strong" and "fast" in this part are roles you assign, not medals on a box.
+
+The strong role writes and repairs the spec, reviews a diff, and takes a card that is already blocked. The fast role receives one narrow card: a job, a file list, and a gate. You choose the fast role because the card is small and you would rather spend fewer dollars per million tokens on the typing. You do not choose it because a stranger ranked it.
+
+Claude is Anthropic's family. Grok is xAI's family. Part 1 already listed the ids that bills attach to, including `claude-opus-5-5`, `claude-haiku-4-5-20251001`, and `grok-4.7`. Calling the family "Claude" in a task card is how the tool picks whatever default it likes this week. Name the id.
+
+A model earns the strong role on your repo when blocked cards move forward under it and the gate still passes. A model earns the fast role when it finishes the card without editing the locked test or wandering outside the file list. If it cannot, it does not keep the role, whatever the marketing says.
+
+The rest of this part is how to use two roles without letting either one grade itself.
+
+<StrongFastFigure />
+
+## Real example
+
+A line you can put in the spec:
+
+```
+Spec and review: claude-opus-5-5
+Build cards: try claude-haiku-4-5-20251001 and grok-4.7
+Keep the build id that passes the gate on three cards
+```
+
+The third line is the decision. The first two are candidates.
+
+<TryIt minutes={5}>
+
+Write the model id you want in the strong role and the id you want to try in the fast role. If you wrote only "Claude" or only "Grok," replace it with the id from the vendor's model page.
+
+</TryIt>
+
+<Mistake>
+
+Treating a family name as a promise about your codebase. Claude and Grok both contain more than one priced model, or will. The id is the choice. The gate is the evidence.
+
+</Mistake>

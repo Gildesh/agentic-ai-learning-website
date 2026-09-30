@@ -1,0 +1,55 @@
+---
+part: 9
+number: 1
+slug: why-frameworks-exist
+title: "Why frameworks exist"
+summary: "You can say what a framework does that a folder of HTML files does not."
+minutes: 7
+terms:
+  - component
+  - frontend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You copy the book title markup into twelve HTML files. The designer changes the heading level. You update three files and miss nine. The <Term id="frontend">frontend</Term> is still HTML, CSS, and JavaScript. A framework is how you stop copying the same piece.
+
+</Hook>
+
+## The idea
+
+A <Term id="component">component</Term> is a named piece of the interface. `BookTitle` knows how a title looks. A page renders `BookTitle` and passes the string. Change the heading once and every page that uses it follows.
+
+A framework is the program that turns those components into the page the browser shows. It tracks which data a component reads. When that data changes, it updates the part of the document that depends on it, instead of you assigning `textContent` by hand on every click.
+
+That is the whole reason to accept the extra concepts. You are not buying a personality. You are buying one place for the title, and a rule for what happens when the title changes.
+
+The cost is real. The framework has file names, a build, and words like props and state that plain HTML does not. An agent that "adds React" to a one-page poster has added a build for no second copy of anything. Stay with HTML, CSS, and JavaScript until a piece repeats or a click must update one region without reloading the whole document.
+
+This part uses React, because this course's site is React through Next.js, and then it says what Angular, Vue, and Svelte call the same ideas. The ideas transfer. The import paths do not. Do not let an agent install a second framework beside the one the repo already builds.
+
+<WhyFrameworksFigure />
+
+## Real example
+
+One component, used twice:
+
+```
+<BookTitle title="Dune" />
+<BookTitle title="Circe" />
+```
+
+The titles differ. The markup does not. If those two headings are hand-written `<h1>` tags in two files, you do not have a component yet. You have a coincidence.
+
+<TryIt minutes={5}>
+
+Find one chunk of markup that appears twice in a project, or write `BookTitle` if you are starting clean. Name the component. If you cannot find a repeat and there is no click that updates a region, write "plain HTML is enough" and stop there.
+
+</TryIt>
+
+<Mistake>
+
+Adding a framework because a tutorial started with one. The tutorial's second page is a list. Yours might be a single document. Match the tool to the repeat, not to the tutorial's first command.
+
+</Mistake>

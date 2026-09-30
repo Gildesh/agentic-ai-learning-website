@@ -1,0 +1,61 @@
+---
+part: 3
+number: 3
+slug: vs-code-and-extensions
+title: "VS Code and extensions"
+summary: "You can name the three AI surfaces VS Code documents, and you can say what an extension adds to the editor."
+minutes: 7
+terms:
+  - extension
+  - agent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You install Visual Studio Code and it is a text editor: files, a terminal, search. The AI features are not a second product you imagine into it. The VS Code docs describe them as part of the editor, and they also describe bringing a model key and adding tools through extensions.
+
+</Hook>
+
+## The idea
+
+VS Code is the editor from Microsoft. An <Term id="extension">extension</Term> is software you install into it to add a command, a language, or an AI chat. GitHub Copilot is the AI extension the VS Code setup docs tell you to sign in for. The editor can also talk to other models. The agents overview, dated on the docs site 30 September 2026, says you can choose models and agent providers and bring your own model API key.
+
+That same page splits the work into surfaces. Use these names so a tutorial matches the screen.
+
+- **Chat.** Questions about the code, with the project available as context. This is where an <Term id="agent">agent</Term> task that spans files belongs.
+- **Inline chat.** A focused edit described in the editor, next to the code, without a long side conversation.
+- **Inline suggestions.** Completions while you type, and suggested next edits.
+
+You can work beside the agent or hand it a task and review the result. Both end in a diff you read. The editor does not remove that step.
+
+Extensions are also how a language becomes runnable: a Python extension, for example, so the terminal command on the next page has an interpreter. Install the language extension before you ask an agent to run code, or the failure will look like a model failure and will actually be a missing interpreter.
+
+As of those docs, this course does not list Copilot plan prices. The setup page is the place to see what a signature unlocks.
+
+<VsCodeSurfacesFigure />
+
+## Real example
+
+A small map you can check against the docs page [Build with AI in VS Code](https://code.visualstudio.com/docs/agents/overview):
+
+```
+Understand a file     -> chat
+Change one function   -> inline chat
+Finish the line       -> inline suggestions
+A task across files   -> an agent, then review
+```
+
+If your window has none of these, Copilot or another agent provider is not signed in. Fix the sign-in before you judge the model.
+
+<TryIt minutes={5}>
+
+Open the VS Code agents overview and find the three phrases: chat, inline chat, inline suggestions. Write them down. Then look at your own editor, if you have it, and mark which of the three you can see. A missing one is a setup gap, not a prompting gap.
+
+</TryIt>
+
+<Mistake>
+
+Installing three AI extensions that all bind the same keys. Completions will fight. Pick one suggestions provider. You can still switch models inside the chat the docs describe.
+
+</Mistake>

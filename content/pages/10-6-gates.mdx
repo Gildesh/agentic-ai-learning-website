@@ -1,0 +1,55 @@
+---
+part: 10
+number: 6
+slug: gates
+title: "Gates: deterministic checks after every step"
+summary: "You can name a command whose exit code is the gate, and you can ignore a summary that disagrees with it."
+minutes: 7
+terms:
+  - agent
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The <Term id="agent">agent</Term> reports that the tests passed. You run the same command and the exit code is 1. The summary and the terminal disagree. The terminal is the gate. The summary is a story about the gate.
+
+</Hook>
+
+## The idea
+
+A gate is a check that does not depend on the model's mood. The same tree, the same command, the same answer. Examples you already have: a test runner, a type check, a linter, `curl.exe` against a status you specified, and this course's `npm run check:course`. Exit 0 passes. Any other exit fails. A command that did not run is a fail, not a pass.
+
+Put the command on the task card. Run it yourself when the card claims to be done, or have a second step run it and paste the last lines. Do not accept "I ran the tests" without the output. Models summarize failures as successes when the story is more convenient than the log.
+
+Gates are cheap on purpose. They run after every card, not once at the end of the week. A red gate stops the loop. You do not start the next feature on a red tree. <Term id="git">Git</Term> status should be clean or limited to the card's files before you interpret the result. A dirty tree can pass for a reason that is not the card.
+
+Some failures are not gates. "The heading feels cramped" is a review note. It can become a gate later, as a test or a checker rule. Until then it is a person's comment, and it does not flip the exit code.
+
+If the gate is flaky, fix the gate in its own card. A gate that fails at random will be ignored, and then you have no gate.
+
+<GateCheckFigure />
+
+## Real example
+
+A card's check line, and the result you keep:
+
+```
+Check: npm test
+Result: exit 1, "expected 404, received 200"
+```
+
+That result goes in the next message unchanged. You do not translate it into "almost passing." The following card stays on this bug.
+
+<TryIt minutes={5}>
+
+Pick one command you will treat as a gate for the current feature. Run it once and write the exit code. If you do not know how to see the exit code, learn that before you add another feature.
+
+</TryIt>
+
+<Mistake>
+
+Adding `--force` or deleting the failing assertion so the gate exits 0. You have not passed. You have removed the gate. Put it back and fix the product.
+
+</Mistake>

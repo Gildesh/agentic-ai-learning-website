@@ -1,0 +1,73 @@
+---
+part: 4
+number: 5
+slug: git-is-your-undo
+title: "Git is your undo button"
+summary: "You can commit before a vibe-coding session and throw the session away with git restore."
+minutes: 7
+terms:
+  - git
+  - diff
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You let an agent "improve the demo" for twenty minutes. The page is worse, and three files changed, including one you liked. Editor undo remembers the last keystrokes in one buffer. It does not remember the session. Git does, if a commit exists from before the agent started.
+
+</Hook>
+
+## The idea
+
+<Term id="vibe-coding">Vibe coding</Term> produces edits you did not read as they landed. That is the style. The matching safety is a snapshot you can return to without understanding the bad edits. <Term id="git">Git</Term> is that snapshot. Part 3 showed `git commit` and `git diff` for a single reviewed change. Here the point is different: you commit so you are allowed to be careless afterward.
+
+Before the session:
+
+```
+git status
+git add .
+git commit -m "Demo before the experiment"
+```
+
+`git status` should then say the working tree is clean. During the session, do not commit. A commit in the middle freezes a state you have not looked at and makes it harder to drop.
+
+After the session, look at `git status` and `git diff`. If the experiment failed, restore the files:
+
+```
+git restore .
+```
+
+That throws away uncommitted changes and returns the last commit. If one file was good and the others were not, restore only the bad paths: `git restore app.js`. Leave the good file, read its <Term id="diff">diff</Term>, and commit that file alone.
+
+If you already committed the bad experiment, restore will not remove it. You would need a new commit that undoes it, which is more git than this page. The habit that avoids that problem is: commit before, not during.
+
+None of this requires GitHub. The repository can stay on the laptop. The remote is for sharing. The undo is local.
+
+<GitUndoFigure />
+
+## Real example
+
+A session log you can follow in a scratch folder:
+
+```
+echo demo > page.html
+git init
+git add page.html
+git commit -m "Demo before the experiment"
+echo broken > page.html
+git restore page.html
+```
+
+`page.html` says `demo` again. The word `broken` is gone. That is the undo. An agent's twenty-minute edit is the same shape as `echo broken`, spread across more files. `git restore .` still drops it, as long as you did not commit `broken`.
+
+<TryIt minutes={5}>
+
+Run the example in a new folder. Then change `page.html` on purpose to a sentence you want to keep, run `git diff`, and commit only if the diff is that sentence. You are practicing the split: restore the waste, commit the piece you read.
+
+</TryIt>
+
+<Mistake>
+
+Committing after every agent reply "so it is saved." You have saved the unread states as history you must now climb through. One commit before the session. The next commit is for a diff you can explain.
+
+</Mistake>

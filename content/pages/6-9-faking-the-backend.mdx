@@ -1,0 +1,67 @@
+---
+part: 6
+number: 9
+slug: faking-the-backend
+title: "Where AI goes wrong: faking the backend"
+summary: "You can spot a page that only pretends a server decided something."
+minutes: 7
+terms:
+  - agent
+  - backend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The agent says the checkout works. You click Pay and the page replaces itself with the word Paid. There is no request in the network panel. The backend was never asked. The demo is a sentence the frontend already contained.
+
+</Hook>
+
+## The idea
+
+An <Term id="agent">agent</Term> is rewarded, in the conversation, for a screen that looks finished. A <Term id="backend">backend</Term> is a process, a status code, and a decision the browser cannot skip. The screen is faster to fake. This is the same failure as the Part 4 prototype, named as a stack bug.
+
+Signs you are looking at a fake:
+
+- The network panel shows no request when you click the important button.
+- The request returns HTML that always says success, and the body ignores what you sent.
+- The price, the tax, or the "allowed" flag is computed only in JavaScript.
+- A secret, a card field, or a password check lives in the page source.
+- The agent describes the server and the terminal shows no process listening.
+
+The honest version is smaller and less pretty. A button sends POST. `curl` can send the same POST without the button. The status is 200 only when the server did the thing. A bad body gets 400. You can show that in the same demo, and you should, because a demo that cannot fail is the fake.
+
+Write the refusal into the task card. "Do not return success HTML from the button. Add a request I can replay with curl. Show me a 400."
+
+<FakeBackendFigure />
+
+## Real example
+
+A fake, which you should reject:
+
+```
+button.onclick = () => { document.body.textContent = "Paid"; };
+```
+
+A real shape, still tiny:
+
+```
+POST /orders
+body: { "bookId": "42" }
+200 only if the server recorded the order
+400 if bookId is missing
+```
+
+The real shape does not collect a card number. If money is involved, the server talks to the payment company, and that is a later part. The point here is that "Paid" is a status the server earned, not a string the click handler owns.
+
+<TryIt minutes={5}>
+
+Open the prototype from Part 4, or any page an agent called done, and click the main button with the network panel open. Write down whether a request fired. If it did not, the backend is missing, whatever the transcript claimed.
+
+</TryIt>
+
+<Mistake>
+
+Accepting a screenshot as proof of a server. A screenshot is the frontend. The proof is the status line from a request you sent, including one request that should fail.
+
+</Mistake>

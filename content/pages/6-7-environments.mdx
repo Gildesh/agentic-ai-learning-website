@@ -1,0 +1,58 @@
+---
+part: 6
+number: 7
+slug: environments
+title: "Environments: local, staging, production"
+summary: "You can say which copy of the app you are looking at, and you can refuse to test a payment on the live copy."
+minutes: 7
+terms:
+  - hosting
+  - backend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You fix a tax bug and click around on the URL customers use. The fix writes a row into the real shop. Tomorrow someone is billed for a book you added while testing. The code was the same. The data was not. You were in the wrong copy.
+
+</Hook>
+
+## The idea
+
+An environment is one running copy of the app, with its own config and its own data. Three names are enough.
+
+**Local** is your machine. `localhost` is the URL. The <Term id="backend">backend</Term> process is one you started. The database, if you have one, should hold fake books. Breaking it costs you a reset, not a customer.
+
+**Staging** is a hosted copy that is not the public shop. It exists so you can click the real paths, including <Term id="hosting">hosting</Term>, on data you are allowed to ruin. A teammate can open it. A customer should not be sent there.
+
+**Production** is the public URL. Real accounts, real rows, real charges if you have wired a payment company. You deploy here after staging showed the change. You do not invent test orders here.
+
+The code can be identical and the behavior still differs, because each copy reads its own configuration: which database, which payment mode, which public URL. That configuration is not a comment in the frontend. It lives with the process. Part 8 is where secrets go. This page only needs the rule that the three copies are different processes.
+
+Name the environment in the task card. "It works" is incomplete until you say where. An agent that only has local will report success you cannot show a friend. An agent that edits production to try an idea is how a demo deletes a row.
+
+<EnvironmentsFigure />
+
+## Real example
+
+A note you can put at the top of a task card:
+
+```
+Local: http://localhost:3000, fake books
+Staging: the host's preview URL, fake books
+Production: the public URL, do not write test rows
+```
+
+The preview URL is whatever the host prints after a deploy. Copy it from the dashboard. Do not guess a subdomain pattern and hope. If the host has no staging, say so, and keep experiments on local until you have a second copy.
+
+<TryIt minutes={5}>
+
+Write the three lines above for a project you have, or for the bookstore. If staging does not exist yet, write "none" on that line. The point is to notice the gap before you paste a customer URL into a test.
+
+</TryIt>
+
+<Mistake>
+
+Using production because staging is "too much setup" and the change is small. Small changes write rows too. A one-line tax fix that runs on the live database is a live tax fix.
+
+</Mistake>

@@ -1,0 +1,89 @@
+---
+part: 7
+number: 12
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can trace one book from a request, through JSON and SQL, to a migration you would refuse to run blind."
+minutes: 7
+terms:
+  - API
+  - SQL
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You can read a status code. You can also delete a table. This part was the difference: the contract the program calls, the text it sends, and the rows a statement is allowed to touch.
+
+</Hook>
+
+## The idea
+
+An API is the list of operations another program can call. An endpoint is one method plus one URL. REST, on the previous methods page, keeps the method, the URL, and the status code in view. JSON is the body: objects, arrays, strings, numbers, true, false, and null, with double quotes and no comments.
+
+`fetch` delivers the response, including a 404. You check `response.ok` before `response.json()`. A Next.js route handler in this project awaits `params` and returns `Response.json` with a real status. FastAPI uses a path decorator and raises `HTTPException` for a 404. One of those servers is enough.
+
+An API key goes in the header the vendor documents, on a call your server makes. It does not go in the browser bundle or the query string.
+
+Tables hold rows. A primary key identifies one row. A foreign key points at another table's primary key. SQL's SELECT, INSERT, UPDATE, and DELETE need a WHERE when you mean a subset. An ORM generates that SQL from models. A migration is the file that changes the schema in order. Prisma's `prisma migrate dev`, Drizzle's `drizzle-kit generate` and `drizzle-kit migrate`, and Alembic's `alembic revision --autogenerate` plus `alembic upgrade head` are the commands their docs describe. Read the file before you apply it.
+
+Postgres is the database. Supabase's own overview says each project is a full Postgres database, not an abstraction, and tells you to read about Row Level Security before a client queries a table. A document store copies nested JSON. It is a second system, not a default.
+
+<Part7RecapFigure />
+
+<Quiz
+  questions={[
+    {
+      prompt: "fetch resolves and the body has no title. What do you check first?",
+      choices: [
+        "response.ok or the status code",
+        "Whether the CSS loaded",
+        "The primary key of the authors table",
+      ],
+      answer: 0,
+      why: "A 404 still fulfills the fetch promise. The status tells you this body is not a book.",
+    },
+    {
+      prompt: "Which text is valid JSON?",
+      choices: [
+        '{"title":"Dune","year":1965}',
+        "{title:'Dune'}",
+        '{"title":"Dune",}',
+      ],
+      answer: 0,
+      why: "Keys and strings use double quotes, and a trailing comma is not allowed.",
+    },
+    {
+      prompt: "What does a missing WHERE do on DELETE FROM books?",
+      choices: [
+        "It deletes every row in the table",
+        "It deletes the row with id 42",
+        "It refuses to run",
+      ],
+      answer: 0,
+      why: "Without WHERE, the statement matches every row. SQL will do that.",
+    },
+    {
+      prompt: "Supabase's database overview says each project gets what?",
+      choices: [
+        "A full Postgres database, not an abstraction",
+        "A document store that replaces SQL",
+        "A spreadsheet with no keys",
+      ],
+      answer: 0,
+      why: "The overview's sentence is that the project is Postgres. Your SQL still applies.",
+    },
+  ]}
+/>
+
+<TryIt minutes={5}>
+
+Answer the four questions, then write one curl line for GET a book and one SELECT for the same id. If the path and the WHERE do not name the same id, fix the spec before the next part.
+
+</TryIt>
+
+<Mistake>
+
+Memorizing the framework and skipping the status, the JSON, and the WHERE. Those three are what fail in production. The import path is the easy part.
+
+</Mistake>

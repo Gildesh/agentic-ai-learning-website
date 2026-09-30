@@ -1,0 +1,63 @@
+---
+part: 1
+number: 6
+slug: it-doesnt-remember-you
+title: "It doesn't remember you (and how apps fake memory)"
+summary: "You can name the three ways an app makes a new chat look like it remembers you, without the model storing you."
+minutes: 8
+terms:
+  - context window
+  - RAG
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You tell a chat your bookstore is Paper Lantern. You close the tab. Next week a different chat answers "your store, Paper Lantern" before you type the name. The model did not keep a diary. Some app put that phrase into the new request.
+
+</Hook>
+
+## The idea
+
+A model used for inference does not update because you chatted. A new request starts from the weights plus whatever text the app sends. If a later reply knows a fact about you, that fact was written down somewhere and copied into the <Term id="context-window">context window</Term>.
+
+Apps do this in three ordinary ways.
+
+The first is the transcript. The app stores the messages and sends some of them again with your next question. That is why the same chat can use a name you said ten minutes ago. It is also why a new chat, with an empty transcript, cannot.
+
+The second is a saved note. You, or the product, write a short profile: "The store is Paper Lantern. Do not invent a second store." The app prepends that note to every request. Custom instructions and memory features are this pattern. Read the product's own settings page before you trust what it claims to store. The mechanism is still text in the request.
+
+The third is <Term id="rag">RAG</Term> (retrieval-augmented generation). You have a pile of documents. The app searches them for passages that match the question, then pastes those passages into the prompt. The model answers from the passages it was shown. It did not read your whole drive. It read the hits the search returned. If the search missed the page where you defined the tax rate, the model does not have the tax rate, and it may invent one.
+
+None of the three changes the weights. Turn the feature off, delete the note, or start a chat that does not receive the retrieval, and the fact disappears from the replies. That is how you test a "memory" claim: remove the text and see if the knowledge survives.
+
+For coding tools, the same three show up as chat history, a rules file such as `AGENTS.md`, and a search over the repository. Page 5.2 treats the rules file as the note you control.
+
+<NoMemoryFigure />
+
+## Real example
+
+A tiny RAG request, written out so you can see the paste:
+
+```
+Notes:
+- Store name: Paper Lantern
+- Tax rate: 8%
+
+Question: What is the tax rate?
+Answer using only the notes. If the notes do not say, reply "not in the notes".
+```
+
+The model can answer 8% because the note is in the message. Delete the tax line and send again. The honest reply is "not in the notes". If you get a different percentage, the model left the notes and guessed. That is the failure RAG is supposed to prevent, and the reason the instruction "using only the notes" has to be paired with a refusal line.
+
+<TryIt minutes={5}>
+
+Send the note prompt, then send it again with the tax line removed. Record both answers. You have just watched memory as pasted text, and you have watched it vanish when the text is gone.
+
+</TryIt>
+
+<Mistake>
+
+Believing a memory toggle means the model learned you. Open the setting and read what is stored. If you cannot find the sentence, the app cannot send it, and the model cannot know it. Delete a test fact and ask again. Survival after deletion means some other copy is still being pasted in.
+
+</Mistake>

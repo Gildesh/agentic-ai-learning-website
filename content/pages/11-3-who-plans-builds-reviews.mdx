@@ -1,0 +1,58 @@
+---
+part: 11
+number: 3
+slug: who-plans-builds-reviews
+title: "Who plans, who builds, who reviews"
+summary: "You can give planning, building, and review to different passes so the builder does not approve its own diff."
+minutes: 7
+terms:
+  - agent
+  - spec
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+One <Term id="agent">agent</Term> writes the <Term id="spec">spec</Term>, implements it, and then says the implementation matches. You have one context grading itself. Splitting the jobs is how a second model helps. Sharing one chat with a new name at the top is not a split.
+
+</Hook>
+
+## The idea
+
+Three jobs:
+
+**Plan.** The strong role edits the spec and writes the card: one behavior, the files, the gate. It does not open the implementation files except to name them. A plan that pastes the finished code has skipped the build and hidden the design inside a diff.
+
+**Build.** The fast role sees the spec path, the card, and nothing that says "feel free to improve the architecture." It edits the allow-list. It stops on a red gate. It does not update the spec to match a shortcut.
+
+**Review.** A pass that did not write the diff reads the spec and `git diff`. Part 10's checker rules apply. If the builder was Grok, the reviewer can be Claude, or the reverse. The useful part is that the reviewer did not just argue itself into the patch. A command remains the reviewer when the question is a status code.
+
+Do not run all three in one transcript and call it a pipeline. Start the build in a fresh session, or a subagent whose tools cannot edit the spec. Start the review in a fresh session whose tools cannot edit the code. Paste the paths. Do not paste the builder's closing summary as the thing to agree with.
+
+The same person can still be you. The split is the context and the permission, not a hiring plan.
+
+<PlanBuildReviewFigure />
+
+## Real example
+
+Three messages, three sessions:
+
+```
+Plan: edit docs/SPEC.md only. Card for POST /tax.
+Build: follow the card. Model id for the fast role. Do not edit the spec.
+Review: read the spec and the diff. Do not edit. Pass or quote the gap.
+```
+
+If the review session starts with the build session's "I implemented the spec," delete that sentence before you send it.
+
+<TryIt minutes={5}>
+
+Write the three session openers for a feature you are on. Each opener names what that session must not edit. If one opener says "do everything," it is not one of the three jobs.
+
+</TryIt>
+
+<Mistake>
+
+Letting the planner implement "just the obvious part." The obvious part is the whole card. Once the planner has written the code, you no longer have an independent build to review.
+
+</Mistake>

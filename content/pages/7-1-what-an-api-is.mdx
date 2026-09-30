@@ -1,0 +1,55 @@
+---
+part: 7
+number: 1
+slug: what-an-api-is
+title: "What an API is"
+summary: "You can tell a page a person clicks from the contract a program calls."
+minutes: 7
+terms:
+  - API
+  - endpoint
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The bookstore looks done. Titles render, the tax button changes the screen, and the transcript says the API is finished. You ask for the list of requests another program can make. There is no list. There is a page. A page is not an API.
+
+</Hook>
+
+## The idea
+
+An <Term id="api">API</Term> (Application Programming Interface) is the set of operations one program offers another. The word is older than the web. A library has an API: function names, arguments, and what they return. A web API is the same idea over a network. The caller sends a request. The server sends a response. The contract is which requests exist, what they accept, and what they mean when they succeed or fail.
+
+An <Term id="endpoint">endpoint</Term> is one operation in that contract: a method plus a URL, such as `GET /books/42`. The next page is the methods and status codes. This page is the reason those details exist. Without a written list, "the API" is whatever the latest handler happens to do.
+
+A human interface and an API can share a server and still be different products. The human interface is HTML, CSS, and JavaScript. It can hide failures and invent a sentence. The API is what `curl` can call with no browser. If the only way to create a book is to click a button that never leaves the page, you do not have an endpoint yet.
+
+Agents blur the two because both end in something that looks like success. Ask for the contract in the task card:
+
+```
+GET /books/42 returns the book or 404
+POST /books creates one book and returns 201
+```
+
+That is enough to test. A screenshot of the shop is not.
+
+<ApiContractFigure />
+
+## Real example
+
+GitHub publishes a web API. A public read needs no key. This course already checked one call: `GET https://api.github.com/repos/github/docs` returned 200, and a missing repository returned a JSON body with status 404. That is an API. The github.com website is a different client of related data. You can use the API without opening the website.
+
+When you design the bookstore, write the same kind of list before any component. The page can come after, and it should call the list, not replace it.
+
+<TryIt minutes={5}>
+
+Write three lines for a feature you care about, each with a method and a path. If the only line you can write is "the button works," you have a page. Stop and name the request.
+
+</TryIt>
+
+<Mistake>
+
+Calling the React components "the API" because other code imports them. That is a library inside one program. A web API is a request a different program can send. This part means the second one, unless a page says otherwise.
+
+</Mistake>

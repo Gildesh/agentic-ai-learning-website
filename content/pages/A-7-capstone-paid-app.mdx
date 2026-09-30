@@ -1,0 +1,70 @@
+---
+part: "A"
+number: 7
+slug: capstone-paid-app
+title: "Capstone: build and ship a small paid app with an agent loop"
+summary: "You can ship a single paid order by walking the loop: spec, locked test, checkout, webhook, then live keys."
+minutes: 8
+terms:
+  - spec
+  - webhook
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The course is a set of pages until you use them on one small thing that takes money. The capstone is that thing: one product, one price, one order row, paid through a gateway, built with the loop. Not a platform. Not a second framework.
+
+</Hook>
+
+## The idea
+
+Pick a product you can describe in a sentence. A PDF, a single book, a one-hour office hour. The <Term id="spec">spec</Term> in `docs/SPEC.md` names:
+
+```
+POST /orders creates an unpaid order for the signed-in user
+Checkout is Stripe, or Razorpay, and the card never hits our server
+The order becomes paid only after a verified webhook
+A second delivery of the same event does not fulfill twice
+Another user gets 404 or 403
+```
+
+Then the cards, in order, each with a file allow-list and a gate. Commit between them.
+
+1. **Spec only.** No code. You can point at every status.
+2. **Locked test.** Unknown order returns 404. The test is committed. Later cards may not edit it.
+3. **Create the unpaid order.** Session required. Price comes from the server, not the body.
+4. **Checkout.** The server creates the session or the Razorpay order with the secret key. The button does not set the page to Paid by itself.
+5. **Webhook.** Signature on the raw body. Store the event id. Fulfill once.
+6. **Test mode.** Stripe's test card `4242424242424242`, or Razorpay's test mode. Duplicate event. Then the security checklist and the launch checklist.
+
+The fast model may take cards 3 and 4 if your notes say it passes this kind of card. The strong model writes the spec and reviews the diff. The reviewer sees the diff, not the builder's speech. A red gate blocks the card. You do not weaken the test.
+
+Ship means a host, a live key, a live <Term id="webhook">webhook</Term> secret, and one real charge you can refund. It does not mean a new chat that says "make it production ready."
+
+<CapstoneFigure />
+
+## Real example
+
+A card from the middle of the list:
+
+```
+Job: mark the order paid only when the webhook signature verifies
+Files: app/api/webhook/route.ts
+Check: a bad signature returns 400 and the order stays unpaid
+Do not edit: the locked test
+```
+
+If the diff includes the test, reject it. If the order flips to paid on the success URL alone, reject it.
+
+<TryIt minutes={5}>
+
+Write the one-sentence product and the six card titles, without implementing them. If a title contains two behaviors, split it. The list is the capstone. The code comes after the list is something you would bet a refund on.
+
+</TryIt>
+
+<Mistake>
+
+Starting at card 4 because checkout looks like the product. Without the unpaid order and the webhook, the button is the Part 4 fake with a logo. The order row is the product. The gateway is how it becomes paid.
+
+</Mistake>

@@ -1,0 +1,61 @@
+---
+part: 2
+number: 8
+slug: prompting-for-code
+title: "Prompting for code specifically"
+summary: "You can write a code prompt that names the file, the signature, what must stay, and the command that defines done."
+minutes: 8
+terms:
+  - prompt
+  - tool call
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+"Add tax" produces a new framework, a sample database, and a function named `calculate` that returns a string. You wanted one function that takes cents and a rate and returns cents. The prompt described a mood. The code prompt describes a signature and a command.
+
+</Hook>
+
+## The idea
+
+A code <Term id="prompt">prompt</Term> is still a prompt. The artifact is source text, and the check is a command. Four lines keep an agent inside the job.
+
+- **File.** The path it may edit. "Only `tax.py`."
+- **Signature.** The function name, the arguments, and the return type in words. "`tax_cents(price_cents: int, rate: float) -> int`."
+- **Non-goals.** What must not appear. "Do not add a web framework. Do not read a price from the network."
+- **Done.** The command and the output you expect. "Run `python -c \"from tax import tax_cents; print(tax_cents(1000, 0.08))\"` and show the output. I expect `80`."
+
+The model does not execute by writing the function. A <Term id="tool-call">tool call</Term> runs the command, and the transcript should contain the output. If you are in a plain chat with no tools, the prompt still ends with the command, and you run it yourself. Either way the number 80 is the test, not the model's closing sentence.
+
+Include one example call when the rounding rule is easy to miss. "1,000 cents at rate 0.08 is 80 cents. 105 cents at rate 0.08 is 8 cents, because 8.4 rounds half up to 8." Those two lines are few-shot for the math, inside a code prompt.
+
+Ask for the whole function, not a patch described in prose, until you are comfortable reading a diff. A full function is easier to compare against the signature.
+
+<CodePromptFigure />
+
+## Real example
+
+```
+Only edit tax.py.
+Add tax_cents(price_cents: int, rate: float) -> int.
+rate 0.08 means 8 percent.
+Round half up to the nearest cent.
+1000 at 0.08 returns 80.
+Do not add other functions.
+Done: run python -c "from tax import tax_cents; print(tax_cents(1000, 0.08))" and paste the output.
+```
+
+If the pasted output is `80.0` or `"80"`, the return type missed the contract. The second prompt quotes that output and says "return an int, so the line prints 80 with no decimal."
+
+<TryIt minutes={5}>
+
+Send the prompt. If you have Python, run the command yourself even if the reply claims it ran. The digit you see in your terminal is the result. If you do not have Python, check the source for `round` or integer arithmetic and for a return that is not a string.
+
+</TryIt>
+
+<Mistake>
+
+Saying "write clean, production-ready code" and nothing else. Those words do not name a file or a number. The model will add layers you then have to delete. The signature and the expected output are the prompt.
+
+</Mistake>

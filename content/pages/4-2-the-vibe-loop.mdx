@@ -1,0 +1,64 @@
+---
+part: 4
+number: 2
+slug: the-vibe-loop
+title: "The vibe loop: describe, run, react"
+summary: "You can run one describe-run-react pass and point at the thing you reacted to."
+minutes: 7
+terms:
+  - vibe coding
+  - prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The first page of titles looks crowded. You type "make it nicer" and the agent changes the font, the copy, and the data file. You cannot tell which sentence of yours caused which change, because the reaction was not about a thing you saw. It was a mood.
+
+</Hook>
+
+## The idea
+
+The vibe loop has three moves, and the third one has to be specific.
+
+**Describe.** One outcome, and how you will look. "A page that lists three titles, one per line. I will open it in the browser." That is a <Term id="prompt">prompt</Term> with a task and a check, even when you are <Term id="vibe-coding">vibe coding</Term> and you do not plan to read the source.
+
+**Run.** Start the thing. A static file can be opened directly. A script is `python app.py` or whatever the agent printed. If you do not run it, you are reacting to the agent's description of the page, which is another generated paragraph.
+
+**React.** Quote what you saw. "The three titles are on one wrapped line. Put each title on its own line." The agent now has a defect, which is the second-prompt habit from Part 2. "Make it nicer" has no defect.
+
+Stay on one pass until the thing you named has changed. A second reaction before you reload the page is a guess about a screen you have not seen. Reload, then speak.
+
+You are allowed to ignore the file during this loop when the folder is disposable. You are not allowed to skip the run. The loop without a run is a chat.
+
+<VibeLoopFigure />
+
+## Real example
+
+```
+Describe: one HTML file, three titles, each in its own paragraph.
+Titles: Dune, Circe, Piranesi.
+Run: open the file in a browser.
+```
+
+After it opens, the reaction is a quote:
+
+```
+I see all three titles in one paragraph.
+Put each title in its own paragraph.
+Do not add a stylesheet on this pass.
+```
+
+The second sentence keeps the pass small. The stylesheet can be the next loop, after you reload and see three paragraphs.
+
+<TryIt minutes={5}>
+
+If you have an editor agent, run the describe step in an empty folder and open the file. If you do not, write the describe and the reaction on paper as if the page had put all three titles in one line. The skill is the quoted reaction. The tool can wait.
+
+</TryIt>
+
+<Mistake>
+
+Stacking three reactions in one message before you have reloaded. The agent will apply all three to a page you have not looked at, and the next screen will mix them. One quote, one reload, then the next quote.
+
+</Mistake>

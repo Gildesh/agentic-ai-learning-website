@@ -1,0 +1,56 @@
+---
+part: 3
+number: 11
+slug: plans-and-limits
+title: "Plans, usage limits and cost"
+summary: "You can tell a subscription cap from an API token bill, and you know where to read the number before you pay."
+minutes: 7
+terms:
+  - rate limit
+  - API key
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A coding tool stops mid-edit and says you have hit a limit. Nothing is wrong with the prompt. A second meter, on an API key you pasted into the tool, is still climbing. You are paying two ways, and only one of them announced itself.
+
+</Hook>
+
+## The idea
+
+Coding products sell access in more than one shape. A plan is a subscription with a cap the vendor defines: a number of requests, a pool of usage, or a seat. An API bill is the token price from Part 1, charged to an <Term id="api-key">API key</Term>. VS Code's docs say you can bring your own model key. If you do, the key's account is billed per token even when the editor feels included.
+
+A <Term id="rate-limit">rate limit</Term> is a speed cap, separate from the monthly plan. Hit it and the next request fails until the window resets. The number is on your account dashboard. This course does not copy plan prices or rate-limit numbers for Cursor, VS Code, Antigravity, or Claude Code. They move, and a stale table would be worse than a link. Open the pricing or usage page for the tool you use, on the day you start, and write down three fields: what is counted, what happens at the cap, and whether a model id you pick costs extra.
+
+Two habits keep the meter small. Ask for a short diff on a named file, so the tool is not pasting the whole repository into every turn. And do not run a second agent on the same task "to compare" unless you meant to pay for both.
+
+When a session hits a limit, save the diff you already reviewed and commit it if it is good. The uncommitted half is the part you will lose if the tool locks. Git is the copy that does not depend on the plan.
+
+<UsageLimitFigure />
+
+## Real example
+
+A note to fill from the vendor's own page, not from memory:
+
+```
+Tool:
+What is counted (requests, tokens, or something else):
+What stops when I hit the cap:
+Does the model picker change the price:
+Date I checked:
+```
+
+Leave a line blank if the page does not say. Do not fill it from a forum. Part 1 has token prices only for the model pages that stated them. A tool plan is a different document.
+
+<TryIt minutes={5}>
+
+Open the usage or pricing page for one tool you might use. Fill the note. If the page requires a login to see the cap, write "cap is inside the account" and stop there. You have still learned where the number lives.
+
+</TryIt>
+
+<Mistake>
+
+Pasting an API key into a tool and also paying a subscription, then being surprised by two charges. Read which meter the picker uses before the first long agent run.
+
+</Mistake>

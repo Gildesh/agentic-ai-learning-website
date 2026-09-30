@@ -1,0 +1,85 @@
+---
+part: 8
+number: 12
+slug: recap-and-quiz
+title: "Recap and quiz"
+summary: "You can place a bug in the secret, the caller, the row, the input, or the payment event."
+minutes: 7
+terms:
+  - authentication
+  - authorization
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A paid order, a leaked key, and a stranger's invoice can arrive in the same afternoon. They are different checks. Naming the check is how you keep the fix smaller than the app.
+
+</Hook>
+
+## The idea
+
+Secrets live in `.env` and in the host's environment. `.env.example` is the committed list of names. A key that reached git is already published. Rotate it.
+
+Authentication answers who is calling: a session cookie, a signed JWT, an OAuth code exchanged on the server, or a single-use magic link. The user id does not come from the body. Authorization answers whether that caller may touch this row. The owner column is the comparison. OWASP Top 10:2025 puts broken access control first and injection at A05.
+
+Every input is checked on the server. SQL takes parameters. HTTPS encrypts the connection. CORS is a browser rule, not the owner check. Session cookies are `HttpOnly`, `Secure`, and `SameSite`.
+
+For agents, the 2026 LLM list names prompt injection, sensitive information disclosure, and excessive agency. Do not put `.env` in the prompt. Do not give a docs task a payment tool.
+
+Stripe Checkout and Razorpay Standard Checkout collect the card. Your server creates the session or the order with the secret key and verifies the result. A webhook is accepted only after the signature matches the raw body. Idempotency means a repeated event id fulfills once. Test mode uses test keys and Stripe's test card `4242424242424242`. Live mode uses live keys and the live webhook secret. The success URL is not proof of payment.
+
+<Part8RecapFigure />
+
+<Quiz
+  questions={[
+    {
+      prompt: "A logged-in user opens another customer's order by changing the id. Which check failed?",
+      choices: [
+        "Authorization, the owner comparison",
+        "HTTPS, the certificate",
+        "The CSS on the order page",
+      ],
+      answer: 0,
+      why: "They are authenticated. The handler never compared the order's owner to the caller.",
+    },
+    {
+      prompt: "Where does a Stripe secret key belong?",
+      choices: [
+        "In the server environment, not in git and not in the browser",
+        "In a React component so Checkout can see it",
+        "In the success URL",
+      ],
+      answer: 0,
+      why: "The Checkout docs say the secret key cannot safely be exposed in client-side code.",
+    },
+    {
+      prompt: "Stripe delivers the same webhook event twice and you return 200 both times. What should the second delivery do?",
+      choices: [
+        "Notice the stored event id and not fulfill again",
+        "Ship a second copy",
+        "Skip the signature because it passed last time",
+      ],
+      answer: 0,
+      why: "Retries are normal. Idempotency is storing the event id and applying the effect once.",
+    },
+    {
+      prompt: "Which OWASP Top 10:2025 item is injection?",
+      choices: ["A05", "A01", "A03"],
+      answer: 0,
+      why: "In the 2025 list, A05 is injection. A01 is broken access control. A03 is software supply chain failures.",
+    },
+  ]}
+/>
+
+<TryIt minutes={5}>
+
+Answer the four questions, then write the status code you return when the owner does not match, and the status you return when a webhook signature fails. If either one is 200, change it before you build the handler.
+
+</TryIt>
+
+<Mistake>
+
+Calling the whole review "security" and rewriting the app. The failed check has a name. Fix that check.
+
+</Mistake>

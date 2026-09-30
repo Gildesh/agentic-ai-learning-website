@@ -1,0 +1,62 @@
+---
+part: 9
+number: 9
+slug: angular-in-brief
+title: "Angular in brief, and when teams choose it"
+summary: "You can describe an Angular component as a class with a template, and you can read a signal by calling it."
+minutes: 7
+terms:
+  - Angular
+  - component
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The team says the bookstore is Angular, and the agent installs React beside it because this course spent more pages on React. The repo already has a `src/app` of Angular files. A second <Term id="component">component</Term> model does not make the title easier to change. It makes two titles.
+
+</Hook>
+
+## The idea
+
+<Term id="angular">Angular</Term> components are classes marked with `@Component`. The decorator points at a template. Angular's component API says a component is always tied to a template, and only one component is instantiated for a given element. That is the same job as a React function that returns elements: a named piece of UI. The syntax is the class and the template, not JSX.
+
+Current Angular docs manage changing data with signals. A signal holds a value. You create one with `signal`. You read it by calling it, because that call is how Angular tracks where the value is used. `computed` derives a value from other signals and does not have a setter. The essentials guide shows a component field:
+
+```
+isTrial = signal(false);
+showTrial = computed(() => this.isTrial());
+```
+
+In the template you read `isTrial()`, not `isTrial` as a bare field. Parent-to-child data uses `input()` and `input.required()`. Angular's own tutorial says that if you know props from another framework, inputs are the same idea. The child does not own the parent's product name. It receives it.
+
+Teams keep Angular when the codebase is already Angular: the build, the tests, and the hiring all assume `@Component`. You choose it for a new app when that is the stack the team will maintain. You do not choose it to sit next to Next.js in one bookstore. One framework owns the screen.
+
+The words from this part still apply. Props are inputs. State is the signal the component owns. A click handler updates the signal. The server still validates the body.
+
+<AngularSignalFigure />
+
+## Real example
+
+A title you can point at in a review:
+
+```
+@Component({ /* template shows title() */ })
+export class BookTitle {
+  title = input.required<string>();
+}
+```
+
+The parent binds `[title]="bookTitle()"`. If the agent rewrites this as a React function in the same app, revert it. The class was the assignment.
+
+<TryIt minutes={5}>
+
+If you have an Angular file, find one `signal(` and one `input(`. Write what each owns. If you do not have Angular, write "this repo is Next.js" and do not add `@angular/core` to try the snippet.
+
+</TryIt>
+
+<Mistake>
+
+Calling a signal by forgetting the parentheses in the template. Angular's docs say you read the value by calling it. `title` without `()` is the signal object, not the string.
+
+</Mistake>

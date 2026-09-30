@@ -1,0 +1,72 @@
+---
+part: 5
+number: 8
+slug: short-and-true
+title: "Keeping instructions short and true"
+summary: "You can cut a rules file until every remaining line is still true and still able to reject a diff."
+minutes: 7
+terms:
+  - prompt
+  - system prompt
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The rules file is longer than the program. Half the lines describe a receipt page you deleted. The agent mentions the receipt in a heading tweak. The file is not a memory of the project. It is a pile of old orders that still get sent.
+
+</Hook>
+
+## The idea
+
+Instructions enter the context window. A long <Term id="system-prompt">system prompt</Term> crowds out the file you wanted read and the <Term id="prompt">prompt</Term> you just typed. Length is not thoroughness. Length is competition for the tokens the model can see.
+
+Keep a rules file short by testing each line.
+
+- Is it true today? If the code no longer does that, delete the line or change the code. Do not leave both.
+- Could you reject a diff with it? If the line is "be clear," you cannot. Cut it.
+- Does it apply to most tasks? If it applies to one job, move it to a skill or a task card.
+- Is it already in the spec? A rules file can point at `docs/SPEC.md`. It should not paste the whole spec. Two copies will diverge.
+
+True means you would bet a small amount that a stranger, reading only the file, would not be misled about the Pay button. "We might add cards later" is not true enough to instruct an agent. "There is no card field" is true until the spec changes.
+
+Review the file when you promote a demo, the way Part 4 said to rewrite the README. The same commit can delete a stale line. A monthly rewrite of a huge file is a sign the file should have stayed small.
+
+Skills stay short for the same reason. A `SKILL.md` that includes the entire spec will be loaded, when invoked, as a second copy. Point at the path. Do not paste.
+
+<ShortRulesFigure />
+
+## Real example
+
+Before:
+
+```
+Be helpful.
+The receipt page uses blue.
+Old bug: TypeError on line 4, ignore if fixed.
+We hope to take cards someday.
+Tax is 80 cents on the example.
+Also read the spec, which says tax is 80 cents, and also says no card field, pasted below in full...
+```
+
+After:
+
+```
+Read docs/SPEC.md for checkout and tax.
+Do not add a card field.
+Paste command output before saying a check passed.
+```
+
+The tax number lives in the spec once. The rule tells the agent to open it.
+
+<TryIt minutes={5}>
+
+Count the lines in your rules file or in the "before" example. Delete or move every line that fails one of the four tests. Stop when what remains fits on a phone screen without scrolling much. If a line is painful to delete, it is probably a spec line. Move it, do not keep it in both places.
+
+</TryIt>
+
+<Mistake>
+
+Adding a sentence every time the agent misbehaves, and never removing one. The file becomes a scrapbook of incidents. Fix the incident in the spec or the skill, then keep the standing file boring.
+
+</Mistake>

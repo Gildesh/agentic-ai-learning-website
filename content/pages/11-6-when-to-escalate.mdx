@@ -1,0 +1,67 @@
+---
+part: 11
+number: 6
+slug: when-to-escalate
+title: "When to escalate to the strong model"
+summary: "You can move a blocked card to the strong role with the spec, the diff, and the gate output, and you can leave the locked test alone."
+minutes: 7
+terms:
+  - agent
+  - spec
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The fast role has failed the gate twice. You open a new chat and type "fix the bookstore" with a more expensive model. That is not escalation. That is a new, vaguer project. Escalation carries the failure with it.
+
+</Hook>
+
+## The idea
+
+Escalate when the card is blocked, in the sense of Part 10: the retries you allowed are used up, and the gate is still red. You do not escalate because you are impatient on the first failure. The first failure is a retry with the output pasted in, on the same model id. The second failure is the last automatic retry. Then you move.
+
+The packet for the strong role:
+
+```
+Spec: docs/SPEC.md
+Card: the three lines, unchanged
+Model that failed: grok-4.7 or the Haiku id you used
+git diff
+Gate: the command and the last output
+Do not edit the locked test
+```
+
+The strong <Term id="agent">agent</Term> may write a smaller card, name a wrong assumption in the <Term id="spec">spec</Term>, or implement the fix itself inside the allow-list. It may not widen the file list without you editing the card. It may not "clean up" unrelated files. If it believes the spec is wrong, it says so and stops. You change the spec in a separate commit.
+
+Claude in the strong role does not outrank the spec because it costs more. Grok in the strong role does not either, if that is the id you assigned. Money is not authority. The spec and the gate are.
+
+After a pass, the next ordinary card returns to the fast role. Escalating every card means you are paying the strong price for typing. That is a sign the cards are too big, not a sign you need a standing expensive builder.
+
+<EscalateModelFigure />
+
+## Real example
+
+A blocked note that is ready to send:
+
+```
+Blocked after 2 tries on claude-haiku-4-5-20251001
+Command: npm test
+Output: expected 404, received 200
+Diff: app/api/tax/route.ts only
+Ask claude-opus-5-5 for the next card, not a rewrite of the app
+```
+
+The last line keeps the strong model inside the loop you already have.
+
+<TryIt minutes={5}>
+
+Write the escalation packet for a card you care about, with the headings spec, diff, and gate. If any heading has nothing under it, you are not ready to spend the stronger id.
+
+</TryIt>
+
+<Mistake>
+
+Escalating with a blank prompt because the strong model "will figure it out." It will figure something out. It will not reliably figure out the constraint you forgot to send.
+
+</Mistake>

@@ -1,0 +1,63 @@
+---
+part: 4
+number: 4
+slug: the-ninety-percent-wall
+title: 'The "90% done" wall'
+summary: "You can name the case the demo never ran, instead of calling the prototype finished."
+minutes: 7
+terms:
+  - agent
+  - diff
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The list page works. You showed it to a friend. They type a blank search and the page throws a stack trace across the titles. You had called it done. The blank search was never in the demo. The last slice of the work is the inputs you have not tried, and it does not shrink because the happy path looks good.
+
+</Hook>
+
+## The idea
+
+"Ninety percent done" is a feeling about the path you already clicked. The remaining work is a list of cases, and each case is an input plus what should happen. An <Term id="agent">agent</Term> will happily declare the page finished after the path you praised. It does not invent the blank search unless you name it.
+
+Write the untried cases down before you ask for more polish. Polish on a single path makes the wall worse: the screen looks more finished, and the untried input is still broken.
+
+Typical cases for a small web page:
+
+- Empty input.
+- One item, and many items.
+- An id that is not in the list.
+- Clicking the action twice.
+- A string where a number was assumed, as with `price_cents` in earlier pages.
+
+Each case is a small ask with a check. "Search for an empty string and show the three titles, not a traceback." When that run works, you have moved a case from untried to tried. The percent was never the point. The list is.
+
+If the <Term id="diff">diff</Term> for a "last fix" touches files outside that case, reject it. The wall is not an invitation to rewrite the app. It is a queue of inputs.
+
+<NinetyWallFigure />
+
+## Real example
+
+A list you can keep in the demo README:
+
+```
+Tried: three hard-coded titles render.
+Untried: empty search string.
+Untried: a title that is not in the list.
+Untried: reload after the search.
+```
+
+The page is not done while a line says untried and a user can reach that input. For a narrated demo, you may still show it, if you do not touch the untried control. Saying "don't click search" in the room is a temporary fence. It is not a fix.
+
+<TryIt minutes={5}>
+
+Take any page you have, even a static file, and write three inputs you have not tried. Run one of them. If it fails, the failure is the next ask, quoted exactly. If it works, mark that line tried. Either result is progress. "It looks done" is not.
+
+</TryIt>
+
+<Mistake>
+
+Asking the agent to "handle edge cases" as one message. You will get a wide diff and no list of what was tried. Name one input and the sentence the screen should show.
+
+</Mistake>

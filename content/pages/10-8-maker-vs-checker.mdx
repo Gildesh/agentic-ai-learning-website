@@ -1,0 +1,55 @@
+---
+part: 10
+number: 8
+slug: maker-vs-checker
+title: "Maker vs checker"
+summary: "You can split the agent that edits from the one that judges the diff, and you can refuse to let the maker grade itself."
+minutes: 7
+terms:
+  - agent
+  - subagent
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The same <Term id="agent">agent</Term> writes the route and then announces that the route matches the spec. It is grading its own homework in the same conversation that is trying to be finished. The announcement is not a check. A checker that did not write the code is.
+
+</Hook>
+
+## The idea
+
+The maker edits files. The checker reads the spec and the diff and says what is missing. They are different jobs. When one context does both, the checker inherits the maker's excuses: the test was awkward, the status code was close, the extra file was helpful.
+
+Give the checker the spec path, the diff, and the gate output. Do not give it the maker's summary as evidence. A <Term id="subagent">subagent</Term> can be the checker if it has its own context and cannot edit, or if its edits are discarded. Claude Code's docs describe a subagent as its own context window with its own tool list. A checker whose tools include "write" will fix the code and then approve the fix. Take write away, or run a command instead of a second model.
+
+A command is the best checker when the question is deterministic. Status 404 does not need a model. Use a model as checker for a question a command cannot answer yet: "does this diff touch a file outside the card?" can be `git diff --name-only`. "Does the empty state still make sense?" might need a person. Do not hire a model to restate an exit code.
+
+The maker does not get to rerun until the checker is satisfied and then edit the checker's notes. If the checker names a gap, that gap is the next card. If the checker is wrong, a person says so and the spec gets clearer.
+
+<MakerCheckerFigure />
+
+## Real example
+
+A checker message you can paste into a fresh chat:
+
+```
+Read docs/SPEC.md and the diff. Do not edit files.
+Pass only if POST /tax returns 404 for an unknown book
+and the diff is only app/api/tax/route.ts.
+Quote the line that fails, or say pass.
+```
+
+If the reply says pass and does not mention the file list, ask again. A pass without the constraint is the maker's habit leaking in.
+
+<TryIt minutes={5}>
+
+Write the checker prompt for your current card in four lines: the spec path, the diff command, what pass means, and "do not edit." If pass means "use your judgment," add a fact it can quote.
+
+</TryIt>
+
+<Mistake>
+
+Asking the maker "did you follow the spec?" as the review. It will say yes. The checker is a different context, or a command, looking at the diff.
+
+</Mistake>

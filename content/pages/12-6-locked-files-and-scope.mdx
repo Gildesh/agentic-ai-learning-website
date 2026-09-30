@@ -1,0 +1,65 @@
+---
+part: 12
+number: 6
+slug: locked-files-and-scope
+title: "Locked files and scope limits"
+summary: "You can list the files an implementation card must not change, including the checker and the workflow."
+minutes: 7
+terms:
+  - diff
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The course checker was going to fail, so the diff edits `scripts/check-course.mjs` and lowers the word-count floor. The pages pass. The rule is gone. The <Term id="diff">diff</Term> did not implement the lesson. It implemented a weaker judge.
+
+</Hook>
+
+## The idea
+
+A locked file is a path the card is not allowed to change. Part 10 locked the test. This page locks the enforcement itself.
+
+For this repository, an implementation card does not edit:
+
+```
+scripts/check-course.mjs
+.github/workflows/
+.git/hooks/   (and the script you copy from the repo)
+the locked test file named on the card
+```
+
+`git diff --name-only` is the check. Any of those paths in the list fails the card, even if the new checker is "clearer." A person can change the checker in a separate card whose only job is the rule change, with a message that says what the rule used to require and what it requires now.
+
+Scope is the other half. The card names the files that may change. Locked files are the ones that must not. Write both. An empty allow-list means the agent may touch anything, and it will, including the workflow that runs the <Term id="git">git</Term> gate on GitHub.
+
+Generated noise is not an exception you discover at review. If a command rewrites a lockfile, the card should have said so. If it did not, revert the lockfile.
+
+The same list belongs in the agent hook if you have one: refuse a write to `scripts/check-course.mjs` during an ordinary lesson card. The hook and the human review are checking one list. Do not keep two lists that disagree.
+
+<LockedFileFigure />
+
+## Real example
+
+A card footer:
+
+```
+May edit: content/pages/12-6-locked-files-and-scope.mdx
+Must not edit: scripts/check-course.mjs
+Check: git diff --name-only
+```
+
+If the name-only output includes the checker, stop. Do not read the prose change as if the checker edit were harmless.
+
+<TryIt minutes={5}>
+
+Write three paths a feature card must not edit in your repo. Include the test or the workflow if you have one. Put the list where the next agent message will see it.
+
+</TryIt>
+
+<Mistake>
+
+Allowing a "tiny" edit to the checker because the new page is one word short. The tiny edit is the rule change. Shorten nothing in the checker. Lengthen the page, or change the rule in the open.
+
+</Mistake>

@@ -1,0 +1,61 @@
+---
+part: 9
+number: 2
+slug: components
+title: "Components"
+summary: "You can draw a page as a tree of named components and say what each one is responsible for."
+minutes: 7
+terms:
+  - component
+  - HTML
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The book page is one file, four hundred lines, and the tax button is in the middle of the title markup. You ask for a color change on the title and the diff also rewrites the button. The file was doing too many jobs. A <Term id="component">component</Term> is how you give each job a name.
+
+</Hook>
+
+## The idea
+
+A component receives input and returns elements. In React, that is a function whose name starts with a capital letter, so it is not confused with an <Term id="html">HTML</Term> tag. `booktitle` would be a tag. `BookTitle` is your component.
+
+```
+function BookTitle({ title }) {
+  return <h1>{title}</h1>;
+}
+```
+
+A parent renders children. `BookPage` renders `BookTitle` and `TaxButton`. The tree is the page. The parent decides whether the button exists. The button does not reach up and rewrite the title's markup. It can be told the title, if you pass it.
+
+Keep a component on one job. `BookTitle` shows the title. It does not fetch the tax and it does not know which user is logged in. `TaxButton` sends the request from Part 6. If a component's name needs the word "and," it is two components.
+
+The file can export one component. Agents like a folder of `utils` that also renders buttons. Prefer a file named for the component it exports. When you review a diff, ask which component changed and what that component is allowed to know. A title component that imports the database client is in the wrong layer. The server page can load the row and pass the string down.
+
+<ComponentTreeFigure />
+
+## Real example
+
+A tree you can put in the spec:
+
+```
+BookPage
+  BookTitle
+  TaxButton
+    Cents
+```
+
+`Cents` formats a number of cents as money. It does not know the book id. If the diff to `Cents` mentions `bookId`, the split is wrong.
+
+<TryIt minutes={5}>
+
+Write the tree for one screen, three or four names, indented as above. If a name contains "page and button and modal," split it before you ask an agent to build the file.
+
+</TryIt>
+
+<Mistake>
+
+Making every `<div>` a component. A component is a piece you can name and reuse or review. An extra element with no job of its own is another file to open. Name the piece or leave the element in its parent.
+
+</Mistake>

@@ -1,0 +1,54 @@
+---
+part: 6
+number: 4
+slug: what-servers-do
+title: "Backend: what servers do"
+summary: "You can name the three jobs a backend does with a request: check it, touch stored data, and answer with a status."
+minutes: 7
+terms:
+  - backend
+  - HTTP
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The browser sends a price of zero because someone edited the form. The page would have blocked that, but the page is on their machine. The number that gets stored is whichever program you run where they cannot edit it. That program is the backend.
+
+</Hook>
+
+## The idea
+
+A <Term id="backend">backend</Term> is a program that waits for <Term id="http">HTTP</Term> requests and answers them. It is not a folder of HTML. Frameworks and hosts differ. The jobs do not.
+
+1. **Read the request.** Method, path, headers, body. A POST that creates a book is not a GET that lists books. Part 7's REST page is the vocabulary. This page is why a server exists at all.
+2. **Decide.** Is the body the shape you accept? Is this caller allowed? Is the price one you computed, or one they typed? Decisions that protect money or data happen here. A JavaScript check in the browser is a courtesy that saves a round trip. The server repeats the check.
+3. **Respond.** A status code and a body. 200 with the tax. 400 when the body is nonsense. 404 when the id is not stored. The browser can display those. It should not invent a success the server did not send.
+
+The backend also talks to a database, which later pages cover. For now, "stored data" can be a file or a single number, as long as the browser cannot write it except by asking the server.
+
+An agent that builds only HTML has not built a backend. An agent that adds a server file and never runs it has a draft. The check is a request you send yourself, with a tool such as `curl`, and a status you read.
+
+<ServerJobsFigure />
+
+## Real example
+
+A request you can send once a server is running:
+
+```
+curl -i http://localhost:3000/tax?cents=1000
+```
+
+A real backend answers with a status line and a body, for example `HTTP/1.1 200` and `80`. A fake one is a file named `tax.html` that contains the digits 80 no matter what you pass. Change `cents=1000` to `cents=0` and send again. If the body does not change, nothing computed. The page was a poster.
+
+<TryIt minutes={5}>
+
+Write the curl line in a note, including the query you would change. If you already have a local server, run it twice with two cent values. If you do not, keep the note. The point is the second request. A backend that ignores its input is still a poster.
+
+</TryIt>
+
+<Mistake>
+
+Letting the browser be the only place that computes tax, then trusting the number it posts back. The visitor can post a different number. Recompute on the server from the rate you store and the price you store.
+
+</Mistake>

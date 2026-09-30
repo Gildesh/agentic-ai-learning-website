@@ -1,0 +1,86 @@
+---
+part: "A"
+number: 3
+slug: git-cheat-sheet
+title: "Git cheat sheet"
+summary: "You can inspect a change, commit only the files on the card, and leave a red gate uncommitted."
+minutes: 7
+terms:
+  - git
+  - diff
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The summary says the feature is done. <Term id="git">Git</Term> status shows files you never named, and the test command is red. The commands below are the ones that tell you that. Run them before you trust the summary.
+
+</Hook>
+
+## The idea
+
+Look first.
+
+```
+git status
+git diff
+git diff --name-only
+```
+
+`status` shows what is changed and what is staged. `diff` shows the patch. `--name-only` is the scope check from Part 10: every path is on the card, or the card failed. A <Term id="diff">diff</Term> you have not read is a diff you have not reviewed.
+
+Stage the named files, not everything.
+
+```
+git add app/api/tax/route.ts
+git commit -m "Return 404 for an unknown book id"
+```
+
+The message says why. Commit after the gate exits 0. Do not commit `.env`. Do not commit to get the red test "out of the way."
+
+Branches keep parallel cards apart.
+
+```
+git switch -c tax-404
+git switch main
+git merge tax-404
+```
+
+Merge one green branch, rerun the gate, then the next. A conflict means the file lists overlapped. Read it. Do not keep both hunks because both agents were confident.
+
+History:
+
+```
+git log --oneline -5
+```
+
+Five lines is enough to see whether the spec commit landed before the implementation. If you need to undo work that is not pushed, `git` can return you to the previous commit. Look up `git restore` and `git reset` in the git documentation for the exact safety of each, and do not guess a flag that discards work you have not copied.
+
+Push sends commits to the remote. It is not a deploy, and it is not a test. The GitHub Actions job is the test that runs after the push.
+
+<GitSheetFigure />
+
+## Real example
+
+A review in four commands:
+
+```
+git diff --name-only
+git diff
+npm run lint
+git status
+```
+
+The last one should be clean, or limited to files you are about to commit on purpose. A dirty tree after a "finished" card means the card is not finished.
+
+<TryIt minutes={5}>
+
+Run `git status` and `git diff --name-only` in a repo you have open. Write one path that a current card did not name. That path is the thing to revert or to add to the card before you commit.
+
+</TryIt>
+
+<Mistake>
+
+Running `git add` on the whole directory because it is faster. You will stage the env file, the checker edit, and the experiment. Name the paths.
+
+</Mistake>

@@ -1,0 +1,57 @@
+---
+part: 1
+number: 2
+slug: llms-and-tokens
+title: "LLMs and tokens: predicting the next piece"
+summary: "You can explain why an LLM answers a letter-count question from the shape of a reply, and how to make it count instead."
+minutes: 8
+terms:
+  - LLM
+  - token
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+Ask a chat "How many r's are in strawberry?" A common reply is a short, confident sentence that says two. The word has three r's: one in straw, two in berry. The model did not miscount on a whiteboard. It never looked at the letters.
+
+</Hook>
+
+## The idea
+
+A <Term id="llm">large language model (LLM)</Term> predicts the next <Term id="token">token</Term>, over and over. A token is a chunk of text, often a piece of a word, not a single letter. The word strawberry is commonly split into something like `straw` and `berry`. The model sees those chunks. It does not see the characters `s t r a w b e r r y` as nine separate items it can tally.
+
+When you ask for a count, the model still does the only job it was trained for: pick a likely next token, append it, and continue. The likely shape of an answer is "There are two r's in strawberry." That sentence has appeared, in spirit, in lots of writing. Producing a sentence that looks like an answer is not the same as running a count. Confidence is the tone of the sentence, not a measurement.
+
+This is the same mechanism as every other reply. A product name, a paragraph, and a function are all next-token predictions. The strawberry question is useful because you can check it with your eyes in one second. When the check is harder, as with a library function you have not used, the failure looks the same: fluent, specific, and wrong.
+
+Two fixes work because they change the job.
+
+- Ask the model to spell the word letter by letter first, then count the r's in that list. You forced the letters into the text it can see.
+- Ask it to use code. A few lines of Python count characters. The model writes the program; the program does the arithmetic. Page 1.11 names that pattern: the model calls a tool, and the tool returns a result the model did not invent.
+
+<TokenLoopFigure />
+
+## Real example
+
+Paste this as one message:
+
+```
+Spell "strawberry" as a comma-separated list of letters.
+Then count the r's in that list.
+Show the list before the count.
+```
+
+A careful reply prints `s, t, r, a, w, b, e, r, r, y` and then `3`. The list is the check. If the list is wrong, the count is wrong, and you can see which step failed. That is the habit for the rest of this course: make the intermediate artifact visible before you trust the final sentence.
+
+<TryIt minutes={5}>
+
+Send the plain question first: "How many r's are in strawberry?" Note the number. Then send the spell-then-count prompt. If the first answer was 2 and the second list shows three r's, you have seen a next-token guess corrected by a visible procedure. Keep both replies. You will compare them with hallucination on page 1.4.
+
+</TryIt>
+
+<Mistake>
+
+Treating a confident sentence as a calculation. "There are two" is a predicted token sequence. It is not a loop over characters. When the question is a count, a date, a price, or an ID, ask for the list, the quote, or the code that produced the number, and read that artifact before you read the conclusion.
+
+</Mistake>

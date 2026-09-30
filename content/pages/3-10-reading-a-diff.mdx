@@ -1,0 +1,64 @@
+---
+part: 3
+number: 10
+slug: reading-a-diff
+title: "Reading a diff and accepting changes safely"
+summary: "You can read a diff's removed lines and added lines, and accept only the edit that matches the task."
+minutes: 7
+terms:
+  - diff
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The agent says the tax bug is fixed and highlights a button labeled Accept. The file grew by forty lines, including a new import you did not ask for. Accept writes all of it. The diff is the list that tells you the import is there. The button does not.
+
+</Hook>
+
+## The idea
+
+A <Term id="diff">diff</Term> is the edit as lines. In the unified form that <Term id="git">git</Term> prints, a removed line starts with `-` and an added line starts with `+`. A space at the start means the line did not change and is there so you can see neighbors. A header names the file.
+
+Read in this order.
+
+1. The file name. Is it a file you allowed?
+2. Every minus line. What behavior disappeared?
+3. Every plus line. What replaced it? Look for new imports, new files, and comments that claim a test passed.
+4. The size. A one-line type fix that adds a framework is the wrong edit even if the type fix is present.
+
+Then run the command from the prompt. A diff that looks right and a command that still throws are both information. Do not commit until the command matches the expected output.
+
+Accepting in the editor applies the diff to the working file. It is not a commit. You can still `git diff` and `git restore`. Rejecting a hunk, when the tool lets you, keeps the rest. If the tool only offers accept-all, accept it into the working tree only when the diff is short enough to have read, then restore if you were wrong. Prefer a tool setting that shows the diff first.
+
+Generated comments that restate the change are noise. The plus line is the change.
+
+<DiffReviewFigure />
+
+## Real example
+
+```
+diff --git a/tax.py b/tax.py
+--- a/tax.py
++++ b/tax.py
+@@
+-    return price_cents * rate
++    return int(price_cents) * rate
+```
+
+This diff touches `tax.py` only. One line leaves, one line arrives. `int` matches the task "price_cents is a string." There is no new import. This is an edit you can accept, then confirm with the Python command that prints `80`.
+
+A second hunk that adds `import requests` fails the review even if the first hunk is perfect. Restore or edit that hunk out before you commit.
+
+<TryIt minutes={5}>
+
+Use the folder from the previous page. After a small edit, run `git diff` and say aloud the file name, the minus line, and the plus line. If you cannot say the plus line without looking back, you have not reviewed it. Only then run `git add` and `git commit` for a diff you mean to keep.
+
+</TryIt>
+
+<Mistake>
+
+Accepting a diff because the tests "probably" passed. The command output is part of the review. A green sentence in the chat is not a test run.
+
+</Mistake>

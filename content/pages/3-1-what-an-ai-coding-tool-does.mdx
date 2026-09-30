@@ -1,0 +1,59 @@
+---
+part: 3
+number: 1
+slug: what-an-ai-coding-tool-does
+title: "What an AI coding tool actually does"
+summary: "You can name the three actions an AI coding tool takes on a project: read a file, edit a file, and run a command."
+minutes: 7
+terms:
+  - agent
+  - tool call
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+A coding product answers "I'll update the tax function" and a file on disk changes. The sentence was not the work. The work was a tool that read `tax.py`, a tool that wrote a new version, and, if you were lucky, a tool that ran Python and showed the output.
+
+</Hook>
+
+## The idea
+
+An AI coding tool is an <Term id="agent">agent</Term> pointed at a folder. The model still predicts tokens. The product adds tools that touch the project. Three actions cover almost every session.
+
+- **Read.** A <Term id="tool-call">tool call</Term> returns the text of a file, a search hit, or a page. That text enters the context window. If the transcript never shows the file, the model is guessing about a file it did not read.
+- **Edit.** The tool writes a change. The artifact you review is a diff: the old lines and the new lines. A paragraph that says "I updated tax" is not the edit.
+- **Run.** The tool executes a command in a terminal. The artifact is the output and the exit code. "Tests passed" without that output is the same failure as a letter count with no code.
+
+The chat panel is the transcript of those calls. Products differ in where the panel sits. Cursor, VS Code, Antigravity, and Claude Code all advertise some version of this loop. Later pages say what each one documents. This page is the loop itself, so you can recognize it in a tool you have not opened yet.
+
+You remain the person who accepts the edit. The tool can apply a diff automatically if you turned that on. Turn it off until you can read a diff in under a minute. Page 3.10 is that reading.
+
+<CodingToolLoopFigure />
+
+## Real example
+
+A transcript worth trusting has three blocks, even when the product styles them as cards:
+
+```
+Read tax.py
+Edit tax.py
+  - return price_cents * rate
+  + return int(price_cents) * rate
+Run python -c "from tax import tax_cents; print(tax_cents(1000, 0.08))"
+80
+```
+
+If the third block is missing, you run the command yourself. If the first block is missing, ask which file was read before you accept the plus line.
+
+<TryIt minutes={5}>
+
+Open any coding chat you already have and scroll a recent session. Mark each step Read, Edit, or Run. If a reply claims a result and you cannot find the matching block, write "missing artifact" next to it. That mark is the habit for the rest of this part.
+
+</TryIt>
+
+<Mistake>
+
+Treating the assistant's summary as the change. The summary is more generated text. The change is the diff. The result is the command output. Accept those two, not the summary.
+
+</Mistake>

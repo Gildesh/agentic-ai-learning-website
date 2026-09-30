@@ -1,0 +1,58 @@
+---
+part: 8
+number: 10
+slug: webhooks-and-idempotency
+title: "Webhooks, signatures and idempotency"
+summary: "You can verify a Stripe webhook signature on the raw body, and you can make a repeated event fulfill the order only once."
+minutes: 8
+terms:
+  - webhook
+  - idempotency
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The success page ran, marked the order paid, and emailed the warehouse. Stripe also posted the same news to your server, and the handler emailed the warehouse again. Two true reports, two shipments. The second one was your bug.
+
+</Hook>
+
+## The idea
+
+A <Term id="webhook">webhook</Term> is an HTTP request the gateway sends to you when something happens. Stripe's webhook docs say each event includes a `Stripe-Signature` header, and that you verify it with the raw body, that header, and the endpoint's secret. Official libraries do this with a construct-event call. If verification fails, reject the request. Do not mark anything paid.
+
+The body must be the exact bytes Stripe sent. Frameworks that parse JSON and rebuild it can change whitespace or key order and break the signature. Read the raw body for this route only.
+
+The signing secret is per endpoint. Stripe's docs say the secret starts with `whsec_`, and that a Dashboard endpoint and the Stripe CLI's `stripe listen` output use different secrets. Test and live secrets differ too. The secret lives in the environment, like any other key.
+
+Stripe retries when your endpoint does not answer with a 2xx status. A retry is the same event again. <Term id="idempotency">Idempotency</Term> means handling it twice does not ship twice. Store the event id. If you have stored it, return 200 and stop. If you have not, fulfill inside a check that will not double-apply, then store the id, then return 200. Return 500 only when you want Stripe to retry because you failed before fulfilling.
+
+The timestamp in the signature is there so a captured, valid payload cannot be replayed forever. Stripe's docs describe rejecting a valid signature whose timestamp is too old. Use the library's check rather than inventing a window.
+
+Razorpay's guide also tells you to verify a signature on the server and to listen for webhooks. The header names differ. Read that guide if Razorpay is the gateway. Do not verify a Razorpay body with Stripe's header.
+
+<WebhookOnceFigure />
+
+## Real example
+
+The handler, in order:
+
+```
+raw body + Stripe-Signature + whsec_ secret -> event or 400
+if event.id is already stored -> 200
+else fulfill the order once, store event.id, return 200
+```
+
+A second delivery of that id does not send a second email.
+
+<TryIt minutes={5}>
+
+Write the event id column you will use, and the status you return when it is already there. If the success page is the only place that marks the order paid, move that write into this handler.
+
+</TryIt>
+
+<Mistake>
+
+Verifying the signature after you have already parsed and rebuilt the JSON. The signature is over the original bytes. Parse only after the library says the signature holds.
+
+</Mistake>

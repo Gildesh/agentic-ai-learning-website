@@ -1,0 +1,67 @@
+---
+part: 2
+number: 6
+slug: the-second-prompt
+title: "Iterate: the second prompt matters more"
+summary: "You can write a second prompt that quotes what failed and what must stay, instead of starting over."
+minutes: 7
+terms:
+  - prompt
+  - hallucination
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The first reply is a shelf label with the right comma and the wrong note. It says "good condition" for a book with a water stain. You delete the chat and type the whole request again, a little louder. The second draft repeats the miss, because you never said what the miss was.
+
+</Hook>
+
+## The idea
+
+The second <Term id="prompt">prompt</Term> should name the defect in the draft you already have. The model can see the previous turn if the app still sends it. Use that. Quote the bad line. Say the replacement rule. Say what was already right so the revision does not throw it away.
+
+A useful second message has three lines.
+
+- What to keep. "Keep the title and the comma."
+- What is wrong. "The note says good condition. The input said water stain on page 12."
+- What to return. "One line only."
+
+Starting over feels cleaner and usually is not. You lose the part that worked, and you spend the window on a repeated brief. A <Term id="hallucination">hallucination</Term> in the first draft does not get fixed by "try again." It gets fixed by pointing at the invented phrase and at the source that contradicts it.
+
+Stop after a small number of passes. If the third reply still invents a price, the context does not contain the price rule in a place the model is using. Add the rule in the new message itself, rather than hoping the first message is still in view.
+
+Read the diff between drafts. If you cannot point to a change that matches your note, the second prompt was as vague as the first.
+
+<SecondPromptFigure />
+
+## Real example
+
+First reply:
+
+```
+Piranesi, good condition
+```
+
+Second prompt:
+
+```
+Keep the title and the comma.
+Replace the note. The source note is "water stain on page 12".
+"good condition" is not in the source.
+Return one line only.
+```
+
+The line you want is `Piranesi, water stain on page 12`. If the reply adds a sentence of apology and then the line, say "the line only" once more. The apology is extra output. The label is the artifact.
+
+<TryIt minutes={5}>
+
+Run a first prompt that asks for a shelf label and does not include an example. When the shape is wrong, do not clear the chat. Send a second message that quotes the exact bad line and shows one correct line as the shape to match. Save both replies. The second one should be closer. If it is not, the quote was about your feelings ("this is wrong") and not about the line.
+
+</TryIt>
+
+<Mistake>
+
+Writing "make it better" as the whole second prompt. Better is not a defect. A defect is a line you can paste: the wrong note, the extra key, the file that should not have changed.
+
+</Mistake>

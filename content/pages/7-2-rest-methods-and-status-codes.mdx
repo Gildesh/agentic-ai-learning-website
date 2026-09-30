@@ -1,0 +1,84 @@
+---
+part: 7
+number: 2
+slug: rest-methods-and-status-codes
+title: "REST: methods, URLs and status codes"
+summary: "You can read a REST request, name its method and URL, and say what 200, 201, and 404 mean."
+minutes: 8
+terms:
+  - API
+  - REST
+  - HTTP
+  - HTTP method
+  - URL
+  - status code
+  - endpoint
+  - JSON
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You open the docs for a bookstore's web API and find three lines. `GET /books/42` returns 200. `POST /books` returns 201. A book that is not there returns 404. The path `/books/42` shows up more than once. That path is not the instruction. The method is the instruction, the URL names the book, and the status code reports what the server did.
+
+</Hook>
+
+## The idea
+
+An <Term id="api">API</Term> (Application Programming Interface) is the contract for how one program asks another to do something. A web API is a set of URLs. <Term id="rest">REST</Term> (Representational State Transfer) is a style for that contract, described by Roy Fielding in 2000: a URL names a resource, and the client acts on it with <Term id="http">HTTP</Term> (Hypertext Transfer Protocol). Methods and status codes are defined in [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html). A tutorial that says "REST API" means an HTTP API that keeps three pieces: the method, the URL, and the status code. Many skip Fielding's rule that a response also links to what you can do next.
+
+An <Term id="http-method">HTTP method</Term> is the verb on the request line.
+
+- **GET** reads a resource and should not change stored data.
+- **POST** sends a body for the server to process. Use it to create something when the server will choose the new URL.
+- **PUT** replaces whatever is at that URL.
+- **PATCH** changes only the fields you name. It is defined in [RFC 5789](https://www.rfc-editor.org/rfc/rfc5789).
+- **DELETE** removes the resource at that URL.
+
+The same URL can be read or removed. The method is the difference.
+
+A <Term id="url">URL</Term> (Uniform Resource Locator) is the address. `/books/42` names one book. `/books?author=ada` names the collection, and the query narrows it. The query does not choose the method.
+
+A <Term id="status-code">status code</Term> is the three-digit number on the status line, before the body. The first digit is the group. **2xx** worked: `200` OK, `201` Created, `204` success with an empty body. **4xx** means the request was the problem: `400` bad request, `401` not authenticated (the spec still says "Unauthorized"), `403` authenticated but refused, `404` nothing at that URL. **5xx** means the server failed. `500` is the generic one.
+
+An <Term id="endpoint">endpoint</Term> is one URL plus the methods it accepts. `GET /books/42` is an endpoint. `/books/42` alone is only a path.
+
+<RestMethodsFigure />
+
+## A real request and response
+
+A read starts with a request line: method, path, and HTTP version. `Host` names the server. `Accept` asks for <Term id="json">JSON</Term> (JavaScript Object Notation), a text format of keys and values. The status line sits above that JSON. It is not a field inside it.
+
+<Code
+  filename="read-book.http"
+  source={"GET /books/42 HTTP/1.1\nHost: api.example.com\nAccept: application/json"}
+/>
+
+<Code
+  filename="read-book.response.http"
+  source={'HTTP/1.1 200 OK\nContent-Type: application/json\n\n{"id": 42, "title": "The Left Hand of Darkness"}'}
+/>
+
+Creating a book uses POST and the collection URL. The client does not invent the new id. The `201` response names it with a `Location` header, which is the URL you can GET next.
+
+<Code
+  filename="create-book.http"
+  source={"POST /books HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\n\n{\"title\": \"The Dispossessed\"}"}
+/>
+
+<Code
+  filename="create-book.response.http"
+  source={'HTTP/1.1 201 Created\nLocation: /books/43\nContent-Type: application/json\n\n{"id": 43, "title": "The Dispossessed"}'}
+/>
+
+<TryIt>
+
+Open [https://api.github.com/repos/github/docs](https://api.github.com/repos/github/docs). As of September 2026 that public URL needs no account. The browser sends GET, and you get JSON for the docs repository: the 200 case. Then open [https://api.github.com/repos/github/this-repo-does-not-exist](https://api.github.com/repos/github/this-repo-does-not-exist). Same host, same GET, a URL that names nothing. The JSON includes `"status": "404"`. GitHub documents the call in its [REST docs](https://docs.github.com/rest/repos/repos#get-a-repository). If the body mentions a rate limit, wait and try again.
+
+</TryIt>
+
+<Mistake>
+
+Naming a path and leaving out the method. `/books/42` can be a read or a delete. A task that says "hit this endpoint" without GET or DELETE is incomplete, and an agent will guess. The matching mistake on the way back is reading a 404 as "the API is down." A down API looks like a timeout or a 5xx status. A 404 means this URL did not match a resource.
+
+</Mistake>

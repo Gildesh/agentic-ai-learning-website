@@ -1,0 +1,60 @@
+---
+part: 1
+number: 10
+slug: chat-app-vs-api
+title: "Chat app vs API: the same model, two doors"
+summary: "You can point at the four pieces of an API request and say what the chat app was hiding."
+minutes: 7
+terms:
+  - API
+  - API key
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+In a chat window you type a sentence and a reply appears. There is no URL on screen, no model id, and no bill per message. The same model, called from a program, is an HTTP request. The chat app was sending that request for you.
+
+</Hook>
+
+## The idea
+
+An <Term id="api">API</Term> (Application Programming Interface) here is the vendor's HTTP contract. Your program sends a request. The response is JSON, which is text your program can read. The chat app is a client of that API, plus a transcript, plus a text box. The model id can be the same on both doors. `grok-4.7` in a picker and `grok-4.7` in a request are the same model, as of the xAI docs checked for this page.
+
+Four pieces show up in every vendor's quickstart:
+
+- A URL, the endpoint.
+- An <Term id="api-key">API key</Term> in an `Authorization` header. The key is a secret. It selects the account to bill. Put it in an environment variable. Do not paste it into a chat, and do not commit it.
+- A model id.
+- The input: the prompt, and often the earlier turns the app decided to resend.
+
+The chat app chooses defaults you do not see. It may prepend instructions, attach memory notes, and pick a model when you never opened the picker. The API does none of that unless your program sends it. That is why a prompt that "worked in the chat" can behave differently in code. The hidden preamble is gone.
+
+You do not need a key for the rest of this course's early pages. You do need to recognize the request, because coding agents call APIs, and the diff they write will contain a URL and a header.
+
+<ChatVsApiFigure />
+
+## Real example
+
+As of September 2026, the [xAI quickstart](https://docs.x.ai/developers/quickstart) sends a request of this shape. The prompt below is ours. The URL, the header, and the model id are theirs.
+
+```
+curl https://api.x.ai/v1/responses \
+  -H "Authorization: Bearer $XAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"grok-4.7","input":"Reply with the single word ready."}'
+```
+
+`$XAI_API_KEY` is the environment variable. The key itself is not in the file. `model` is the id from the previous pages. `input` is the prompt. A chat app builds a request like this and then draws the reply as a bubble. OpenAI, Anthropic, and Google publish their own URLs and JSON fields. Match the quickstart for the vendor you are calling. Do not reuse this URL for a different family.
+
+<TryIt minutes={5}>
+
+Open the [xAI quickstart](https://docs.x.ai/developers/quickstart) and find the four pieces: URL, Authorization header, model id, and input. Write them in a note as four labels. You do not need to create a key or spend money. If the live page uses a different path than `/v1/responses`, copy the live path. The page wins.
+
+</TryIt>
+
+<Mistake>
+
+Pasting a real API key into a chat to "help the agent debug." The chat transcript is text that can be stored, and a screenshot of it leaks the key. Use the environment variable name in the prompt. If a key has already been pasted anywhere public, revoke it in the vendor's dashboard and create a new one.
+
+</Mistake>

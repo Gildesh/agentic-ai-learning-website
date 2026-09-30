@@ -1,0 +1,62 @@
+---
+part: "A"
+number: 5
+slug: security-checklist
+title: "Security checklist before launch"
+summary: "You can answer yes or no to the checks that keep secrets, rows, and card numbers in the right place."
+minutes: 7
+terms:
+  - API key
+  - authentication
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The demo works on your laptop with a test key in a file you almost committed. Launch is when a stranger can hit the URL. The checklist is the set of nos you still have to clear. A single no means you are not launching.
+
+</Hook>
+
+## The idea
+
+Answer each line against the tree you will deploy, not against the plan.
+
+**Secrets.** `.env` is not tracked. `git ls-files .env` is empty. The <Term id="api-key">API key</Term> is in the host's environment. The client bundle does not contain it. A leaked key has been rotated, not merely deleted in a later commit.
+
+**Who is calling.** <Term id="authentication">Authentication</Term> does not trust a user id in the body. Sessions, a verified token, or the provider's code exchange: one of those, checked on the server. A Server Action checks it too, because a direct POST can call the action.
+
+**Which row.** The order has an owner. Another user gets 403 or 404, whichever the spec promised. Hiding the button is not the check.
+
+**Input.** The handler rejects a bad title with 400. SQL uses parameters. The price is computed on the server.
+
+**Money.** The card number is collected by Stripe or Razorpay, not by an input you own. The webhook signature is verified on the raw body. A repeated event id does not fulfill twice. Test keys are not the live keys.
+
+**The agent.** The task that deploys cannot read production `.env` into the chat. Tools that can charge or drop tables are off for a docs card.
+
+OWASP's 2025 list is the map if you want a name for a miss: broken access control first, injection at A05. The lines above are the misses this course keeps seeing.
+
+<SecurityListFigure />
+
+## Real example
+
+A launch note with one no still open:
+
+```
+.env untracked: yes
+Owner check: yes
+Webhook raw body: no, the framework parses JSON first
+```
+
+You do not go live on that third line. Fix the raw body, then ask again.
+
+<TryIt minutes={5}>
+
+Write yes or no for secrets, the owner check, and the webhook signature. Any no becomes the next card. Do not average them into "mostly ready."
+
+</TryIt>
+
+<Mistake>
+
+Launching because the happy path worked in test mode. Test mode never proved that a second user cannot read the first user's order. Run that request before you switch keys.
+
+</Mistake>

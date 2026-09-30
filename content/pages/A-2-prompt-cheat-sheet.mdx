@@ -1,0 +1,76 @@
+---
+part: "A"
+number: 2
+slug: prompt-cheat-sheet
+title: "Prompt cheat sheet"
+summary: "You can fill a four-line card the model cannot quietly expand."
+minutes: 6
+terms:
+  - prompt
+  - spec
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+You type "build checkout" and get a card form, a second database, and a success sentence. The <Term id="prompt">prompt</Term> asked for a product. The card below asks for one behavior. Use the card.
+
+</Hook>
+
+## The idea
+
+Copy this shape. Delete nothing except the examples.
+
+```
+Spec: docs/SPEC.md
+Job: POST /tax returns 404 when bookId is unknown
+Files: app/api/tax/route.ts
+Check: the locked test, exit 0
+Do not edit: the test, scripts/check-course.mjs
+```
+
+The <Term id="spec">spec</Term> path is required. The tool does not open it because you thought about it. The job is one sentence without "and." The file list is an allow-list. The check is a command, not "make sure." The do-not-edit line is how a locked test stays locked.
+
+Add a model id when you are mixing, from Part 11: `claude-haiku-4-5-20251001` or `grok-4.7` for the build, and a different id for review. Add "do not commit" until you have seen the exit code. Add "do not use --no-verify" when a pre-commit hook exists.
+
+For a review session, swap the job:
+
+```
+Read the spec and the diff. Do not edit.
+Pass only if the job's check would pass and the files match.
+Quote the failing line, or say pass.
+```
+
+Do not paste the builder's summary above that. The diff is the evidence.
+
+A prompt that needs a page of background is a spec you have not written. Move the background into the spec. Keep the card short enough to reread before you send it.
+
+<PromptCardFigure />
+
+## Real example
+
+Too big, then small enough:
+
+```
+Build the bookstore, tax, and accounts.
+```
+
+```
+Job: GET /books/42 returns 200 and a title, or 404
+Files: app/api/books/[id]/route.ts
+Check: curl.exe both ids
+```
+
+Accounts are a later card, after this one is committed.
+
+<TryIt minutes={5}>
+
+Fill the four lines for the next change you want. If the job contains "and," split it and send only the first card.
+
+</TryIt>
+
+<Mistake>
+
+Adding "while you are there, clean up" at the bottom. That is a second card with no check. The model will rewrite files you did not name.
+
+</Mistake>

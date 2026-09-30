@@ -1,0 +1,60 @@
+---
+part: 4
+number: 10
+slug: from-vibe-coding-to-engineering
+title: "From vibe coding to engineering: what changes"
+summary: "You can list what you add when a vibe-coded folder has to be kept: a spec, a diff, and a check that fails loudly."
+minutes: 7
+terms:
+  - vibe coding
+  - git
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The Tuesday demo is over and someone says "let's use this." The folder still has a Pay button that returns the word Paid. Keeping it is not a longer vibe session. It is a change in what you refuse to skip.
+
+</Hook>
+
+## The idea
+
+<Term id="vibe-coding">Vibe coding</Term> can stay as the way you explore. Engineering is the set of artifacts you add before the folder is allowed to be the shop. You do not throw away the agent. You stop accepting the screen as the only spec.
+
+What changes:
+
+- **A written check someone else can run.** Not "it looked right in the room." A command, or a click with an input and an expected sentence. The Pay case becomes: show "not connected" until a payment status exists. Part 5 will call a fuller version of this a spec. The seed is one paragraph.
+- **A diff you read on the paths that touch money, login, or stored rows.** Generated code elsewhere can wait. The handler cannot.
+- **Git history you would hand to someone.** <Term id="git">Git</Term> commits after a check, not after a feeling. The demo commit and the "we will keep this" commit are different messages, so a reader can see the promotion.
+- **One project, one writer.** The scratch repository does not get merged by an agent in a single ask. You copy the pieces you read.
+- **Secrets and card fields stay out** until the page that teaches where a card number is allowed to go. That is later. The promotion does not sneak them in.
+
+What does not change: small asks, quoted reactions, and a snapshot before experiments. Those were never the opposite of engineering. They were the part of engineering you can do on a disposable folder too.
+
+If you cannot write the check, the folder is still a demo. Say so in the README and do not point the real domain at it.
+
+<VibeToEngineeringFigure />
+
+## Real example
+
+A promotion note at the top of the README, replacing "delete after Tuesday":
+
+```
+Kept: the title list and the 80-cent tax line.
+Not kept: the Pay button that only returned the word Paid.
+Next check: the page shows "not connected" and has no card field.
+```
+
+That note is the spec of the promotion. An agent can implement the next check. You read the diff on the handler before you commit it with a message that says why this commit is different from the demo.
+
+<TryIt minutes={5}>
+
+Take any demo folder, even a single HTML file, and write the three lines: kept, not kept, next check. If "not kept" is empty, name one input you have not tried and put that in the next check. A promotion with an empty "not kept" line is how the Paid button survives.
+
+</TryIt>
+
+<Mistake>
+
+Calling the same unread folder "version 1" because the meeting went well. The version number is a label. The check is the change. Without the check, you have renamed a prototype.
+
+</Mistake>

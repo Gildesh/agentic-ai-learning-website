@@ -1,0 +1,63 @@
+---
+part: 7
+number: 7
+slug: tables-rows-keys
+title: "Databases: tables, rows, keys"
+summary: "You can draw a books table and an authors table, and you can point at the primary key and the foreign key."
+minutes: 7
+terms:
+  - primary key
+  - SQL
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The app stores books in a JSON file the server reads on each request. Two clicks save two different files, and one title disappears. A file can be a start. It is a bad shared notebook. A database is the shared notebook, with rules about which line is which.
+
+</Hook>
+
+## The idea
+
+A relational database stores data in tables. A table is a named set of columns. A row is one record. `books` might have columns `id`, `title`, and `author_id`. One row is `42`, `Dune`, `7`.
+
+The <Term id="primary-key">primary key</Term> is the column, or the combination of columns, that identifies that row inside the table. Two books do not share an `id`. You look up `42` and you get one row or zero. If you look up by title, you can get two editions, and you will not know which one the buyer meant.
+
+A foreign key is a column that stores the primary key of a row in another table. `author_id` 7 means "the row in `authors` whose id is 7." The author's name lives once. Rename Herbert in that row and every book that points at 7 follows. Copying the name into every book row means a rename is a scavenger hunt.
+
+<Term id="sql">SQL</Term> (Structured Query Language) is how you talk to this kind of database. The next page is the four statements. This page is the shape those statements assume. If you cannot name the primary key, you are not ready for a query, and an agent will invent `id`, `_id`, and `bookId` in three files.
+
+Write the tables in the spec before the endpoint reads them:
+
+```
+books(id primary key, title, author_id)
+authors(id primary key, name)
+```
+
+The endpoint `GET /books/42` reads the row whose primary key is 42. It does not scan a folder of files and hope.
+
+<TableKeysFigure />
+
+## Real example
+
+Two tables, three rows, one fact that is easy to get wrong:
+
+```
+authors: (7, "Herbert")
+books: (42, "Dune", 7)
+books: (43, "Dune Messiah", 7)
+```
+
+Both books point at author 7. Delete author 7 and the book rows still say 7 unless the database is told to refuse that delete, or to clear the column. That rule is a foreign-key constraint. Ask for it. A number with no constraint is only a habit.
+
+<TryIt minutes={5}>
+
+Write the two tables for something you are building, with the primary key underlined in words. Add one foreign key or write "none yet" and why. If two rows could share the key you chose, pick a different column.
+
+</TryIt>
+
+<Mistake>
+
+Using the title as the primary key because it is unique today. Titles change, and two books can share one. Use an id you assign, and let the title be an ordinary column.
+
+</Mistake>

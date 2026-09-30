@@ -1,0 +1,67 @@
+---
+part: 9
+number: 8
+slug: forms-and-mutations
+title: "Forms and mutations"
+summary: "You can submit a form to a Server Function and still check authentication inside that function."
+minutes: 7
+terms:
+  - state
+  - backend
+lastChecked: "2026-09"
+---
+
+<Hook>
+
+The form adds a book when you click Save, and it also adds a book when someone posts to the action with no session. The button lived in a Client Component. The function lived on the server. The server function never asked who was calling. A hidden form is not a lock.
+
+</Hook>
+
+## The idea
+
+This project's mutation docs call an async function that runs on the server a Server Function. In a form, the same idea is a Server Action. You mark it with `'use server'` at the top of the function, or at the top of a file of such functions. A form's `action` prop can be that function. Next.js sends the submission as POST. Only POST can invoke it. The docs warn that Server Functions are reachable by a direct POST, not only by your button. Check authentication and authorization inside every one of them.
+
+```
+export async function createBook(formData) {
+  "use server";
+  const session = await getSession();
+  if (!session) throw new Error("Unauthorized");
+  const title = String(formData.get("title") ?? "");
+  if (title.length < 1 || title.length > 200) {
+    throw new Error("Bad title");
+  }
+}
+```
+
+The <Term id="backend">backend</Term> rules from Part 8 still apply. Validate the title. Do not trust a user id in a hidden field. The session is the caller.
+
+The client can still keep <Term id="state">state</Term> for the field while the person types. The submitted value is what the action receives in `FormData`. After a successful write, the page should show the new row because the server rendered it, not because the client appended a fake list item and hoped.
+
+Do not put a secret in the form. Do not skip the owner check because "the form is on their page." Their page is not the boundary.
+
+<FormActionFigure />
+
+## Real example
+
+A form that names the action:
+
+```
+<form action={createBook}>
+  <input name="title" />
+  <button type="submit">Save</button>
+</form>
+```
+
+The input needs a `name`. Without it, `formData.get("title")` is null and the action should return a 400-style failure, not insert an empty book. The docs throw on a missing session. Match that with the status behavior you already specified for the HTTP endpoint, so the form and `curl` agree.
+
+<TryIt minutes={5}>
+
+Write the first three lines of the action: read the session, refuse if it is missing, then read `title`. If the user id comes from `formData`, move it to the session before you let an agent implement the insert.
+
+</TryIt>
+
+<Mistake>
+
+Treating a Server Action as private because the button is the only UI. The docs say a direct POST can call it. The session check is the first line, every time.
+
+</Mistake>
