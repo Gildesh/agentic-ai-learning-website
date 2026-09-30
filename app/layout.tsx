@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Source_Sans_3, Source_Serif_4 } from "next/font/google";
 import { SiteShell } from "@/components/site-shell";
 import { getPages } from "@/lib/course";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({
@@ -15,6 +16,7 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "From Gen AI to shipping real software",
     template: "%s · From Gen AI to shipping real software",
